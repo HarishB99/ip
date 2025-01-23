@@ -1,5 +1,8 @@
+import java.util.Scanner;
+
 public class Bhaymax {
     public static final String NAME = "Bhaymax";
+    public static final String EXIT_COMMAND = "bye";
 
     public static void printHorizontalLine() {
         System.out.println("\t____________________________________________________________");
@@ -17,6 +20,24 @@ public class Bhaymax {
     public static void main(String[] args) {
         Bhaymax.printHorizontalLine();
         Bhaymax.greetHello(Bhaymax.NAME);
+        Bhaymax.printHorizontalLine();
+
+        Scanner sc = new Scanner(System.in);
+        String command = "";
+
+        while (!command.equals(Bhaymax.EXIT_COMMAND)) {
+            System.out.println();
+            command = sc.nextLine();
+            if (command.equals(Bhaymax.EXIT_COMMAND)) {
+                break;
+            }
+            Bhaymax.printHorizontalLine();
+            System.out.println("\t " + command);
+            Bhaymax.printHorizontalLine();
+        }
+
+        sc.close();
+
         Bhaymax.printHorizontalLine();
         Bhaymax.sayFarewell();
         Bhaymax.printHorizontalLine();
