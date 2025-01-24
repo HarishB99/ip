@@ -55,12 +55,12 @@ public class Bhaymax {
             } else if (command.equals(Bhaymax.COMMAND_LIST)) {
                 Bhaymax.printHorizontalLine();
                 if (tasks.isEmpty()) {
-                    System.out.println("\t There are no tasks available.");
+                    Bhaymax.printWithIndent("There are no tasks available.", true);
                 } else {
                     Bhaymax.printWithIndent("Here are the tasks in your list:", true);
                 }
                 for (int i = 0; i < tasks.size(); i++) {
-                    System.out.println("\t " + (i + 1) + "." + tasks.get(i));
+                    Bhaymax.printWithIndent((i + 1) + "." + tasks.get(i), true);
                 }
                 Bhaymax.printHorizontalLine();
                 continue;
@@ -68,22 +68,22 @@ public class Bhaymax {
                 Bhaymax.printHorizontalLine();
                 String[] tokens = command.split(Bhaymax.COMMAND_SEP);
                 if (tokens.length != 2) {
-                    System.out.println("\t Invalid command syntax provided. Try again.");
+                    Bhaymax.printWithIndent("Invalid command syntax provided. Try again.", true);
                     Bhaymax.printHorizontalLine();
                     continue;
                 }
                 try {
                     int indexOfTaskToMark = Integer.parseInt(tokens[1]) - 1;
                     if (indexOfTaskToMark < 0 || indexOfTaskToMark >= tasks.size()) {
-                        System.out.println("\t Provided Task Number could not be found.");
+                        Bhaymax.printWithIndent("Provided Task Number could not be found.", true);
                         Bhaymax.printHorizontalLine();
                         continue;
                     }
                     Task taskToMark = tasks.get(indexOfTaskToMark);
                     taskToMark.markAsDone();
                     tasks.set(indexOfTaskToMark, taskToMark);
-                    System.out.println("\t Nice! I've marked this task as done:");
-                    System.out.println("\t   " + tasks.get(indexOfTaskToMark));
+                    Bhaymax.printWithIndent("Nice! I've marked this task as done:", true);
+                    Bhaymax.printWithIndent("  " + tasks.get(indexOfTaskToMark), true);
                 } catch (NumberFormatException e) {
                     Bhaymax.printWithIndent("Invalid command syntax provided. Try again.", true);
                 }
@@ -93,22 +93,22 @@ public class Bhaymax {
                 Bhaymax.printHorizontalLine();
                 String[] tokens = command.split(Bhaymax.COMMAND_SEP);
                 if (tokens.length != 2) {
-                    System.out.println("\t Invalid command syntax provided. Try again.");
+                    Bhaymax.printWithIndent("Invalid command syntax provided. Try again.", true);
                     Bhaymax.printHorizontalLine();
                     continue;
                 }
                 try {
                     int indexOfTaskToMark = Integer.parseInt(tokens[1]) - 1;
                     if (indexOfTaskToMark < 0 || indexOfTaskToMark >= tasks.size()) {
-                        System.out.println("\t Provided Task Number could not be found.");
+                        Bhaymax.printWithIndent("Provided Task Number could not be found.", true);
                         Bhaymax.printHorizontalLine();
                         continue;
                     }
                     Task taskToMark = tasks.get(indexOfTaskToMark);
                     taskToMark.markAsUndone();
                     tasks.set(indexOfTaskToMark, taskToMark);
-                    System.out.println("\t OK, I've marked this task as not done yet:");
-                    System.out.println("\t   " + tasks.get(indexOfTaskToMark));
+                    Bhaymax.printWithIndent("OK, I've marked this task as not done yet:", true);
+                    Bhaymax.printWithIndent("  " + tasks.get(indexOfTaskToMark), true);
                 } catch (NumberFormatException e) {
                     Bhaymax.printWithIndent("Invalid command syntax provided. Try again.", true);
                 }
