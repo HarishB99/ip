@@ -15,17 +15,27 @@ public class Bhaymax {
     public static final String EVENT_OPT_START = " /from ";
     public static final String EVENT_OPT_END = " /to ";
 
+    public static void printWithIndent(String msg, boolean includeAdditionalSpace) {
+        System.out.print("    ");
+        if (includeAdditionalSpace) {
+            System.out.print(" ");
+        }
+        System.out.println(msg);
+    }
+
     public static void printHorizontalLine() {
-        System.out.println("\t____________________________________________________________");
+        Bhaymax.printWithIndent(
+                "____________________________________________________________",
+                false);
     }
 
     public static void greetHello(String name) {
-        System.out.println("\t Hello! I'm " + name);
-        System.out.println("\t What can I do for you?");
+        Bhaymax.printWithIndent("Hello! I'm " + name, true);
+        Bhaymax.printWithIndent("What can I do for you?", true);
     }
 
     public static void sayFarewell() {
-        System.out.println("\t Bye. Hope to see you again soon!");
+        Bhaymax.printWithIndent("Bye. Hope to see you again soon!", true);
     }
 
     public static void main(String[] args) {
@@ -47,7 +57,7 @@ public class Bhaymax {
                 if (tasks.isEmpty()) {
                     System.out.println("\t There are no tasks available.");
                 } else {
-                    System.out.println("\t Here are the tasks in your list:");
+                    Bhaymax.printWithIndent("Here are the tasks in your list:", true);
                 }
                 for (int i = 0; i < tasks.size(); i++) {
                     System.out.println("\t " + (i + 1) + "." + tasks.get(i));
@@ -75,7 +85,7 @@ public class Bhaymax {
                     System.out.println("\t Nice! I've marked this task as done:");
                     System.out.println("\t   " + tasks.get(indexOfTaskToMark));
                 } catch (NumberFormatException e) {
-                    System.out.println("\t Invalid command syntax provided. Try again.");
+                    Bhaymax.printWithIndent("Invalid command syntax provided. Try again.", true);
                 }
                 Bhaymax.printHorizontalLine();
                 continue;
@@ -100,7 +110,7 @@ public class Bhaymax {
                     System.out.println("\t OK, I've marked this task as not done yet:");
                     System.out.println("\t   " + tasks.get(indexOfTaskToMark));
                 } catch (NumberFormatException e) {
-                    System.out.println("\t Invalid command syntax provided. Try again.");
+                    Bhaymax.printWithIndent("Invalid command syntax provided. Try again.", true);
                 }
                 Bhaymax.printHorizontalLine();
                 continue;
@@ -108,38 +118,38 @@ public class Bhaymax {
                 Bhaymax.printHorizontalLine();
                 String[] tokens = command.split(Bhaymax.COMMAND_TODO + Bhaymax.COMMAND_SEP);
                 if (tokens.length != 2) {
-                    System.out.println("\t Invalid command syntax provided. Try again.");
+                    Bhaymax.printWithIndent("Invalid command syntax provided. Try again.", true);
                     Bhaymax.printHorizontalLine();
                     continue;
                 }
                 Task task = new Todo(tokens[1]);
                 tasks.add(task);
-                System.out.println("\t Got it. I've added this task:");
-                System.out.println("\t   " + task);
-                System.out.println("\t Now you have " + tasks.size() + " tasks in the list.");
+                Bhaymax.printWithIndent("Got it. I've added this task:", true);
+                Bhaymax.printWithIndent("  " + task, true);
+                Bhaymax.printWithIndent("Now you have " + tasks.size() + " tasks in the list.", true);
                 Bhaymax.printHorizontalLine();
                 continue;
             } else if (command.startsWith(Bhaymax.COMMAND_DEADLINE)) {
                 Bhaymax.printHorizontalLine();
                 String[] tokens = command.split(Bhaymax.COMMAND_DEADLINE + Bhaymax.COMMAND_SEP);
                 if (tokens.length != 2) {
-                    System.out.println("\t Invalid command syntax provided. Try again.");
+                    Bhaymax.printWithIndent("Invalid command syntax provided. Try again.", true);
                     Bhaymax.printHorizontalLine();
                     continue;
                 }
                 tokens = tokens[1].split(Bhaymax.DEADLINE_OPT_BY);
                 Task task = new Deadline(tokens[0], tokens[1]);
                 tasks.add(task);
-                System.out.println("\t Got it. I've added this task:");
-                System.out.println("\t   " + task);
-                System.out.println("\t Now you have " + tasks.size() + " tasks in the list.");
+                Bhaymax.printWithIndent("Got it. I've added this task:", true);
+                Bhaymax.printWithIndent("  " + task, true);
+                Bhaymax.printWithIndent("Now you have " + tasks.size() + " tasks in the list.", true);
                 Bhaymax.printHorizontalLine();
                 continue;
             } else if (command.startsWith(Bhaymax.COMMAND_EVENT)) {
                 Bhaymax.printHorizontalLine();
                 String[] tokens = command.split(Bhaymax.COMMAND_EVENT + Bhaymax.COMMAND_SEP);
                 if (tokens.length != 2) {
-                    System.out.println("\t Invalid command syntax provided. Try again.");
+                    Bhaymax.printWithIndent("Invalid command syntax provided. Try again.", true);
                     Bhaymax.printHorizontalLine();
                     continue;
                 }
@@ -148,14 +158,14 @@ public class Bhaymax {
                 tokens = tokens[1].split(Bhaymax.EVENT_OPT_END);
                 Task task = new Event(description, tokens[0], tokens[1]);
                 tasks.add(task);
-                System.out.println("\t Got it. I've added this task:");
-                System.out.println("\t   " + task);
-                System.out.println("\t Now you have " + tasks.size() + " tasks in the list.");
+                Bhaymax.printWithIndent("Got it. I've added this task:", true);
+                Bhaymax.printWithIndent("  " + task, true);
+                Bhaymax.printWithIndent("Now you have " + tasks.size() + " tasks in the list.", true);
                 Bhaymax.printHorizontalLine();
                 continue;
             }
             Bhaymax.printHorizontalLine();
-            System.out.println("\t I don't recognise the command you entered. Please try again.");
+            Bhaymax.printWithIndent("I don't recognise the command you entered. Please try again.", true);
             Bhaymax.printHorizontalLine();
         }
 
