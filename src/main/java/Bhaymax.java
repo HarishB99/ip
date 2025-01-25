@@ -10,6 +10,7 @@ public class Bhaymax {
     public static final String COMMAND_TODO = "todo";
     public static final String COMMAND_DEADLINE = "deadline";
     public static final String COMMAND_EVENT = "event";
+    public static final String COMMAND_DELETE = "delete";
     public static final String COMMAND_EXIT = "bye";
     public static final String DEADLINE_OPT_BY = "/by";
     public static final String EVENT_OPT_START = "/from";
@@ -68,6 +69,24 @@ public class Bhaymax {
                 }
                 for (int i = 0; i < tasks.size(); i++) {
                     Bhaymax.printWithIndent((i + 1) + "." + tasks.get(i), true);
+                }
+                break;
+            case Bhaymax.COMMAND_DELETE:
+                try {
+                    if (!tokenizer.hasMoreTokens()) {
+                        throw new InvalidCommandFormatException("Not enough arguments");
+                    }
+                    int indexOfTaskToDelete = Integer.parseInt(tokenizer.nextToken()) - 1;
+                    if (indexOfTaskToDelete < 0 || indexOfTaskToDelete >= tasks.size()) {
+                        throw new InvalidCommandFormatException("Provided task number could not be found");
+                    }
+                    Task taskToDelete = tasks.get(indexOfTaskToDelete);
+                    tasks.remove(taskToDelete);
+                    Bhaymax.printWithIndent("Noted. I've removed this task:", true);
+                    Bhaymax.printWithIndent("  " + taskToDelete, true);
+                    Bhaymax.printWithIndent("Now you have " + tasks.size() + " tasks in the list.", true);
+                } catch (NumberFormatException | InvalidCommandFormatException e) {
+                    Bhaymax.printWithIndent("Invalid command syntax provided. Try again.", true);
                 }
                 break;
             case Bhaymax.COMMAND_MARK:
