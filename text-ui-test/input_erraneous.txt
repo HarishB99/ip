@@ -32,5 +32,9 @@ mark 3
 unmark 2
 lis
 list
+delete
+delete 
+delete 3
+list
 by
 bye
