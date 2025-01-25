@@ -79,8 +79,7 @@ public class Bhaymax {
                     }
                     int indexOfTaskToMark = Integer.parseInt(tokenizer.nextToken()) - 1;
                     if (indexOfTaskToMark < 0 || indexOfTaskToMark >= tasks.size()) {
-                        Bhaymax.printWithIndent("Provided Task Number could not be found.", true);
-                        break;
+                        throw new InvalidCommandFormatException("Provided task number could not be found");
                     }
                     Task taskToMark = tasks.get(indexOfTaskToMark);
                     if (command.equals(Bhaymax.COMMAND_MARK)) {
@@ -135,8 +134,8 @@ public class Bhaymax {
                         taskDescription.append(' ');
                     }
                     taskDescription.deleteCharAt(taskDescription.length() - 1);
-                    if (!deadlineExists) {
-                        throw new InvalidCommandFormatException("No deadline provided for deadline");
+                    if (!deadlineExists || !tokenizer.hasMoreTokens()) {
+                        throw new InvalidCommandFormatException("No deadline provided");
                     }
                     while (tokenizer.hasMoreTokens()) {
                         String token = tokenizer.nextToken();
@@ -175,7 +174,7 @@ public class Bhaymax {
                         taskDescription.append(' ');
                     }
                     taskDescription.deleteCharAt(taskDescription.length() - 1);
-                    if (!startExists) {
+                    if (!startExists || !tokenizer.hasMoreTokens()) {
                         throw new InvalidCommandFormatException("No start provided for event");
                     }
                     while (tokenizer.hasMoreTokens()) {
@@ -188,7 +187,7 @@ public class Bhaymax {
                         start.append(' ');
                     }
                     start.deleteCharAt(start.length() - 1);
-                    if (!endExists) {
+                    if (!endExists || !tokenizer.hasMoreTokens()) {
                         throw new InvalidCommandFormatException("No end provided for event");
                     }
                     while (tokenizer.hasMoreTokens()) {
