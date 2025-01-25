@@ -1,0 +1,36 @@
+todo
+todo 
+todo a
+todo finish up week 2 tasks
+deadline
+deadline 
+deadline return book
+deadline return book 
+deadline return book /by
+deadline return book /by 
+deadline return book /by June 6th
+event
+event 
+event project meeting
+event project meeting 
+event project meeting /from
+event project meeting /from 
+event project meeting /from Aug 6th 2pm
+event project meeting /from Aug 6th 2pm 
+event project meeting /from Aug 6th 2pm /to
+event project meeting /from Aug 6th 2pm /to 
+event project meeting /from Aug 6th 2pm /to 4pm
+mark a
+mark 
+mark
+unmark a
+unmark 
+unmark
+mark 1
+mark 2
+mark 3
+unmark 2
+lis
+list
+by
+bye
