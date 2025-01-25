@@ -1,5 +1,6 @@
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class Bhaymax {
     public static final String NAME = "Bhaymax";
@@ -10,10 +11,9 @@ public class Bhaymax {
     public static final String COMMAND_DEADLINE = "deadline";
     public static final String COMMAND_EVENT = "event";
     public static final String COMMAND_EXIT = "bye";
-    public static final String COMMAND_SEP = " ";
-    public static final String DEADLINE_OPT_BY = " /by ";
-    public static final String EVENT_OPT_START = " /from ";
-    public static final String EVENT_OPT_END = " /to ";
+    public static final String DEADLINE_OPT_BY = "/by";
+    public static final String EVENT_OPT_START = "/from";
+    public static final String EVENT_OPT_END = "/to";
 
     public static void printWithIndent(String msg, boolean includeAdditionalSpace) {
         System.out.print("    ");
@@ -45,15 +45,22 @@ public class Bhaymax {
 
         LinkedList<Task> tasks = new LinkedList<Task>();
         Scanner sc = new Scanner(System.in);
-        String command = "";
+        String userInput = "";
 
-        while (!command.equals(Bhaymax.COMMAND_EXIT)) {
+        while (!userInput.equals(Bhaymax.COMMAND_EXIT)) {
             System.out.println();
-            command = sc.nextLine();
-            if (command.equals(Bhaymax.COMMAND_EXIT)) {
-                break;
-            } else if (command.equals(Bhaymax.COMMAND_LIST)) {
+            userInput = sc.nextLine();
+            StringTokenizer tokenizer = new StringTokenizer(userInput);
+            if (!tokenizer.hasMoreTokens()) {
                 Bhaymax.printHorizontalLine();
+                Bhaymax.printWithIndent("Please type something.", true);
+                Bhaymax.printHorizontalLine();
+                continue;
+            }
+            String command = tokenizer.nextToken();
+            Bhaymax.printHorizontalLine();
+            switch (command) {
+            case Bhaymax.COMMAND_LIST:
                 if (tasks.isEmpty()) {
                     Bhaymax.printWithIndent("There are no tasks available.", true);
                 } else {
@@ -62,117 +69,154 @@ public class Bhaymax {
                 for (int i = 0; i < tasks.size(); i++) {
                     Bhaymax.printWithIndent((i + 1) + "." + tasks.get(i), true);
                 }
-                Bhaymax.printHorizontalLine();
-                continue;
-            } else if (command.startsWith(Bhaymax.COMMAND_MARK)) {
-                Bhaymax.printHorizontalLine();
-                String[] tokens = command.split(Bhaymax.COMMAND_SEP);
-                if (tokens.length != 2) {
-                    Bhaymax.printWithIndent("Invalid command syntax provided. Try again.", true);
-                    Bhaymax.printHorizontalLine();
-                    continue;
-                }
+                break;
+            case Bhaymax.COMMAND_MARK:
+                // Fallthrough
+            case Bhaymax.COMMAND_UNMARK:
                 try {
-                    int indexOfTaskToMark = Integer.parseInt(tokens[1]) - 1;
+                    if (!tokenizer.hasMoreTokens()) {
+                        throw new InvalidCommandFormatException("Not enough arguments");
+                    }
+                    int indexOfTaskToMark = Integer.parseInt(tokenizer.nextToken()) - 1;
                     if (indexOfTaskToMark < 0 || indexOfTaskToMark >= tasks.size()) {
                         Bhaymax.printWithIndent("Provided Task Number could not be found.", true);
-                        Bhaymax.printHorizontalLine();
-                        continue;
+                        break;
                     }
                     Task taskToMark = tasks.get(indexOfTaskToMark);
-                    taskToMark.markAsDone();
+                    if (command.equals(Bhaymax.COMMAND_MARK)) {
+                        taskToMark.markAsDone();
+                        Bhaymax.printWithIndent("Nice! I've marked this task as done:", true);
+                    } else {
+                        taskToMark.markAsUndone();
+                        Bhaymax.printWithIndent("OK, I've marked this task as not done yet:", true);
+                    }
                     tasks.set(indexOfTaskToMark, taskToMark);
-                    Bhaymax.printWithIndent("Nice! I've marked this task as done:", true);
                     Bhaymax.printWithIndent("  " + tasks.get(indexOfTaskToMark), true);
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException | InvalidCommandFormatException e) {
                     Bhaymax.printWithIndent("Invalid command syntax provided. Try again.", true);
                 }
-                Bhaymax.printHorizontalLine();
-                continue;
-            } else if (command.startsWith(Bhaymax.COMMAND_UNMARK)) {
-                Bhaymax.printHorizontalLine();
-                String[] tokens = command.split(Bhaymax.COMMAND_SEP);
-                if (tokens.length != 2) {
-                    Bhaymax.printWithIndent("Invalid command syntax provided. Try again.", true);
-                    Bhaymax.printHorizontalLine();
-                    continue;
-                }
+                break;
+            case Bhaymax.COMMAND_TODO:
                 try {
-                    int indexOfTaskToMark = Integer.parseInt(tokens[1]) - 1;
-                    if (indexOfTaskToMark < 0 || indexOfTaskToMark >= tasks.size()) {
-                        Bhaymax.printWithIndent("Provided Task Number could not be found.", true);
-                        Bhaymax.printHorizontalLine();
-                        continue;
+                    if (!tokenizer.hasMoreTokens()) {
+                        throw new InvalidCommandFormatException("Not enough arguments");
                     }
-                    Task taskToMark = tasks.get(indexOfTaskToMark);
-                    taskToMark.markAsUndone();
-                    tasks.set(indexOfTaskToMark, taskToMark);
-                    Bhaymax.printWithIndent("OK, I've marked this task as not done yet:", true);
-                    Bhaymax.printWithIndent("  " + tasks.get(indexOfTaskToMark), true);
-                } catch (NumberFormatException e) {
+                    StringBuilder taskDescription = new StringBuilder();
+                    while (tokenizer.hasMoreTokens()) {
+                        taskDescription.append(tokenizer.nextToken());
+                        if (tokenizer.hasMoreTokens()) {
+                            taskDescription.append(' ');
+                        }
+                    }
+                    Task task = new Todo(taskDescription.toString());
+                    tasks.add(task);
+                    Bhaymax.printWithIndent("Got it. I've added this task:", true);
+                    Bhaymax.printWithIndent("  " + task, true);
+                    Bhaymax.printWithIndent("Now you have " + tasks.size() + " tasks in the list.", true);
+                } catch (InvalidCommandFormatException e) {
                     Bhaymax.printWithIndent("Invalid command syntax provided. Try again.", true);
                 }
-                Bhaymax.printHorizontalLine();
-                continue;
-            } else if (command.startsWith(Bhaymax.COMMAND_TODO)) {
-                Bhaymax.printHorizontalLine();
-                String[] tokens = command.split(Bhaymax.COMMAND_TODO + Bhaymax.COMMAND_SEP);
-                if (tokens.length != 2) {
+                break;
+            case Bhaymax.COMMAND_DEADLINE:
+                try {
+                    if (!tokenizer.hasMoreElements()) {
+                        throw new InvalidCommandFormatException("Not enough arguments");
+                    }
+                    StringBuilder taskDescription = new StringBuilder();
+                    StringBuilder deadline = new StringBuilder();
+                    boolean deadlineExists = false;
+                    while (tokenizer.hasMoreTokens()) {
+                        String token = tokenizer.nextToken();
+                        if (token.equals(Bhaymax.DEADLINE_OPT_BY)) {
+                            deadlineExists = true;
+                            break;
+                        }
+                        taskDescription.append(token);
+                        taskDescription.append(' ');
+                    }
+                    taskDescription.deleteCharAt(taskDescription.length() - 1);
+                    if (!deadlineExists) {
+                        throw new InvalidCommandFormatException("No deadline provided for deadline");
+                    }
+                    while (tokenizer.hasMoreTokens()) {
+                        String token = tokenizer.nextToken();
+                        deadline.append(token);
+                        if (tokenizer.hasMoreTokens()) {
+                            deadline.append(' ');
+                        }
+                    }
+                    Task task = new Deadline(
+                            taskDescription.toString(), deadline.toString());
+                    tasks.add(task);
+                    Bhaymax.printWithIndent("Got it. I've added this task:", true);
+                    Bhaymax.printWithIndent("  " + task, true);
+                    Bhaymax.printWithIndent("Now you have " + tasks.size() + " tasks in the list.", true);
+                } catch (InvalidCommandFormatException e) {
                     Bhaymax.printWithIndent("Invalid command syntax provided. Try again.", true);
-                    Bhaymax.printHorizontalLine();
-                    continue;
                 }
-                Task task = new Todo(tokens[1]);
-                tasks.add(task);
-                Bhaymax.printWithIndent("Got it. I've added this task:", true);
-                Bhaymax.printWithIndent("  " + task, true);
-                Bhaymax.printWithIndent("Now you have " + tasks.size() + " tasks in the list.", true);
-                Bhaymax.printHorizontalLine();
-                continue;
-            } else if (command.startsWith(Bhaymax.COMMAND_DEADLINE)) {
-                Bhaymax.printHorizontalLine();
-                String[] tokens = command.split(Bhaymax.COMMAND_DEADLINE + Bhaymax.COMMAND_SEP);
-                if (tokens.length != 2) {
+                break;
+            case Bhaymax.COMMAND_EVENT:
+                try {
+                    if (!tokenizer.hasMoreElements()) {
+                        throw new InvalidCommandFormatException("Not enough arguments");
+                    }
+                    StringBuilder taskDescription = new StringBuilder();
+                    StringBuilder start = new StringBuilder();
+                    StringBuilder end = new StringBuilder();
+                    boolean startExists = false;
+                    boolean endExists = false;
+                    while (tokenizer.hasMoreTokens()) {
+                        String token = tokenizer.nextToken();
+                        if (token.equals(Bhaymax.EVENT_OPT_START)) {
+                            startExists = true;
+                            break;
+                        }
+                        taskDescription.append(token);
+                        taskDescription.append(' ');
+                    }
+                    taskDescription.deleteCharAt(taskDescription.length() - 1);
+                    if (!startExists) {
+                        throw new InvalidCommandFormatException("No start provided for event");
+                    }
+                    while (tokenizer.hasMoreTokens()) {
+                        String token = tokenizer.nextToken();
+                        if (token.equals(Bhaymax.EVENT_OPT_END)) {
+                            endExists = true;
+                            break;
+                        }
+                        start.append(token);
+                        start.append(' ');
+                    }
+                    start.deleteCharAt(start.length() - 1);
+                    if (!endExists) {
+                        throw new InvalidCommandFormatException("No end provided for event");
+                    }
+                    while (tokenizer.hasMoreTokens()) {
+                        String token = tokenizer.nextToken();
+                        end.append(token);
+                        if (tokenizer.hasMoreTokens()) {
+                            end.append(' ');
+                        }
+                    }
+                    Task task = new Event(taskDescription.toString(), start.toString(), end.toString());
+                    tasks.add(task);
+                    Bhaymax.printWithIndent("Got it. I've added this task:", true);
+                    Bhaymax.printWithIndent("  " + task, true);
+                    Bhaymax.printWithIndent("Now you have " + tasks.size() + " tasks in the list.", true);
+                } catch (InvalidCommandFormatException e) {
                     Bhaymax.printWithIndent("Invalid command syntax provided. Try again.", true);
-                    Bhaymax.printHorizontalLine();
-                    continue;
                 }
-                tokens = tokens[1].split(Bhaymax.DEADLINE_OPT_BY);
-                Task task = new Deadline(tokens[0], tokens[1]);
-                tasks.add(task);
-                Bhaymax.printWithIndent("Got it. I've added this task:", true);
-                Bhaymax.printWithIndent("  " + task, true);
-                Bhaymax.printWithIndent("Now you have " + tasks.size() + " tasks in the list.", true);
-                Bhaymax.printHorizontalLine();
-                continue;
-            } else if (command.startsWith(Bhaymax.COMMAND_EVENT)) {
-                Bhaymax.printHorizontalLine();
-                String[] tokens = command.split(Bhaymax.COMMAND_EVENT + Bhaymax.COMMAND_SEP);
-                if (tokens.length != 2) {
-                    Bhaymax.printWithIndent("Invalid command syntax provided. Try again.", true);
-                    Bhaymax.printHorizontalLine();
-                    continue;
-                }
-                tokens = tokens[1].split(Bhaymax.EVENT_OPT_START);
-                String description = tokens[0];
-                tokens = tokens[1].split(Bhaymax.EVENT_OPT_END);
-                Task task = new Event(description, tokens[0], tokens[1]);
-                tasks.add(task);
-                Bhaymax.printWithIndent("Got it. I've added this task:", true);
-                Bhaymax.printWithIndent("  " + task, true);
-                Bhaymax.printWithIndent("Now you have " + tasks.size() + " tasks in the list.", true);
-                Bhaymax.printHorizontalLine();
-                continue;
+                break;
+            case Bhaymax.COMMAND_EXIT:
+                Bhaymax.sayFarewell();
+                break;
+            default:
+                Bhaymax.printWithIndent("I don't recognise the command you entered. Please try again.", true);
+                break;
             }
-            Bhaymax.printHorizontalLine();
-            Bhaymax.printWithIndent("I don't recognise the command you entered. Please try again.", true);
             Bhaymax.printHorizontalLine();
         }
 
         sc.close();
-
-        Bhaymax.printHorizontalLine();
-        Bhaymax.sayFarewell();
-        Bhaymax.printHorizontalLine();
     }
 }
