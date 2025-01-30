@@ -3,27 +3,38 @@ import java.io.PrintWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
 public class Bhaymax {
-    public static final String NAME             = "Bhaymax";
-    public static final String COMMAND_LIST     = "list";
-    public static final String COMMAND_MARK     = "mark";
-    public static final String COMMAND_UNMARK   = "unmark";
-    public static final String COMMAND_TODO     = "todo";
-    public static final String COMMAND_DEADLINE = "deadline";
-    public static final String COMMAND_EVENT    = "event";
-    public static final String COMMAND_DELETE   = "delete";
-    public static final String COMMAND_EXIT     = "bye";
-    public static final String DEADLINE_OPT_BY  = "/by";
-    public static final String EVENT_OPT_START  = "/from";
-    public static final String EVENT_OPT_END    = "/to";
-    public static final String TASKS_FILE_PATH  = "data/tasks.txt";
+    public static final String NAME                     = "Bhaymax";
+    public static final String COMMAND_LIST             = "list";
+    public static final String COMMAND_MARK             = "mark";
+    public static final String COMMAND_UNMARK           = "unmark";
+    public static final String COMMAND_TODO             = "todo";
+    public static final String COMMAND_DEADLINE         = "deadline";
+    public static final String COMMAND_FILTER           = "filter";
+    public static final String COMMAND_EVENT            = "event";
+    public static final String COMMAND_DELETE           = "delete";
+    public static final String COMMAND_EXIT             = "bye";
+    public static final String DATETIME_INPUT_FORMAT    = "dd-MM-yyyy HH:mm";
+    public static final String DATE_FORMAT              = "dd-MM-yyyy";
+    public static final String DATETIME_OUTPUT_FORMAT   = "dd MMM yyyy, EEE @ HH:mm";
+    public static final String DEADLINE_OPT_BY          = "/by";
+    public static final String EVENT_OPT_START          = "/from";
+    public static final String EVENT_OPT_END            = "/to";
+    public static final String FILTER_OPT_BEFORE        = "/before";
+    public static final String FILTER_OPT_AFTER         = "/after";
+    public static final String FILTER_OPT_ON            = "/on";
+    public static final String FILTER_OPT_BEFORE_TIME   = "/before_time";
+    public static final String FILTER_OPT_AFTER_TIME    = "/after_time";
+    public static final String FILTER_OPT_ON_TIME       = "/on_time";
+    public static final String TASKS_FILE_PATH          = "data/tasks.txt";
 
     public static boolean readTasksFromFile(String filePath, LinkedList<Task> tasks)
-            throws InvalidFileFormatException {
+            throws InvalidFileFormatException, DateTimeParseException {
         try {
             File file = new File(filePath);
             Scanner sc = new Scanner(file);
@@ -154,6 +165,15 @@ public class Bhaymax {
             Bhaymax.printWithIndent("    " + e.getMessage(), true);
             Bhaymax.printWithIndent("[-] Please check your task file and try again", true);
             Bhaymax.printHorizontalLine();
+            System.exit(1);
+        } catch (DateTimeParseException e) {
+            System.out.println();
+            Bhaymax.printHorizontalLine();
+            Bhaymax.printWithIndent("[-] Format of task file is incorrect:", true);
+            Bhaymax.printWithIndent("    Wrong date/time format", true);
+            Bhaymax.printWithIndent("[-] Please check your task file and try again", true);
+            Bhaymax.printHorizontalLine();
+            System.exit(1);
         }
         Scanner sc = new Scanner(System.in);
         String userInput = "";
@@ -327,6 +347,89 @@ public class Bhaymax {
                     Bhaymax.printWithIndent("[-] Unable to save task to file:", true);
                     Bhaymax.printWithIndent("    " + e.getMessage(), true);
                     System.exit(1);
+                } catch (DateTimeParseException e) {
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    Wrong date/time format", true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
+                }
+                break;
+            case Bhaymax.COMMAND_FILTER:
+                try {
+                    if (!tokenizer.hasMoreElements()) {
+                        throw new InvalidCommandFormatException("Not enough arguments");
+                    }
+                    String filterOpt = tokenizer.nextToken();
+                    if (!tokenizer.hasMoreElements()) {
+                        throw new InvalidCommandFormatException("Missing date and time");
+                    }
+                    StringBuilder dateTimeSb = new StringBuilder();
+                    while (tokenizer.hasMoreTokens()) {
+                        String token = tokenizer.nextToken();
+                        dateTimeSb.append(token);
+                        if (tokenizer.hasMoreTokens()) {
+                            dateTimeSb.append(' ');
+                        }
+                    }
+                    String dateTime = dateTimeSb.toString();
+                    for (Task task : tasks) {
+                        if (!(task instanceof TimeSensitiveTask timeSensitiveTask)) {
+                            continue;
+                        }
+                        switch (filterOpt) {
+                        case Bhaymax.FILTER_OPT_ON:
+                            if (timeSensitiveTask.isOnDate(dateTime)) {
+                                Bhaymax.printWithIndent(
+                                        tasks.indexOf(timeSensitiveTask) + "." + timeSensitiveTask,
+                                        true);
+                            }
+                            break;
+                        case Bhaymax.FILTER_OPT_BEFORE:
+                            if (timeSensitiveTask.isBeforeDate(dateTime)) {
+                                Bhaymax.printWithIndent(
+                                        tasks.indexOf(timeSensitiveTask) + "." + timeSensitiveTask,
+                                        true);
+                            }
+                            break;
+                        case Bhaymax.FILTER_OPT_AFTER:
+                            if (timeSensitiveTask.isAfterDate(dateTime)) {
+                                Bhaymax.printWithIndent(
+                                        tasks.indexOf(timeSensitiveTask) + "." + timeSensitiveTask,
+                                        true);
+                            }
+                            break;
+                        case Bhaymax.FILTER_OPT_ON_TIME:
+                            if (timeSensitiveTask.isOnDateTime(dateTime)) {
+                                Bhaymax.printWithIndent(
+                                        tasks.indexOf(timeSensitiveTask) + "." + timeSensitiveTask,
+                                        true);
+                            }
+                            break;
+                        case Bhaymax.FILTER_OPT_BEFORE_TIME:
+                            if (timeSensitiveTask.isBeforeDateTime(dateTime)) {
+                                Bhaymax.printWithIndent(
+                                        tasks.indexOf(timeSensitiveTask) + "." + timeSensitiveTask,
+                                        true);
+                            }
+                            break;
+                        case Bhaymax.FILTER_OPT_AFTER_TIME:
+                            if (timeSensitiveTask.isAfterDateTime(dateTime)) {
+                                Bhaymax.printWithIndent(
+                                        tasks.indexOf(timeSensitiveTask) + "." + timeSensitiveTask,
+                                        true);
+                            }
+                            break;
+                        default:
+                            throw new InvalidCommandFormatException("Unknown filter option");
+                        }
+                    }
+                } catch (InvalidCommandFormatException e) {
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
+                } catch (DateTimeParseException e) {
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    Wrong date/time format", true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
                 }
                 break;
             case Bhaymax.COMMAND_EVENT:
@@ -387,6 +490,10 @@ public class Bhaymax {
                     Bhaymax.printWithIndent("[-] Unable to save task to file:", true);
                     Bhaymax.printWithIndent("    " + e.getMessage(), true);
                     System.exit(1);
+                } catch (DateTimeParseException e) {
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    Wrong date/time format", true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
                 }
                 break;
             case Bhaymax.COMMAND_EXIT:
