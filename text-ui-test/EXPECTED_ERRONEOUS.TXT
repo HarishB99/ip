@@ -4,11 +4,15 @@
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         Not enough arguments
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         Not enough arguments
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
@@ -24,27 +28,39 @@
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         Not enough arguments
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         Not enough arguments
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         No deadline provided
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         No deadline provided
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         No deadline provided
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         No deadline provided
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
@@ -54,43 +70,63 @@
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         Not enough arguments
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         Not enough arguments
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         No start date/time provided for event
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         No start date/time provided for event
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         No start date/time provided for event
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         No start date/time provided for event
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         No end date/time provided for event
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         No end date/time provided for event
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         No end date/time provided for event
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         No end date/time provided for event
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
@@ -100,27 +136,39 @@
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         Task number should be numerical
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         Not enough arguments
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         Not enough arguments
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         Task number should be numerical
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         Not enough arguments
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         Not enough arguments
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
@@ -144,7 +192,7 @@
     ____________________________________________________________
 
     ____________________________________________________________
-     I don't recognise the command you entered. Please try again.
+     [-] I don't recognise the command you entered. Please try again.
     ____________________________________________________________
 
     ____________________________________________________________
@@ -156,11 +204,21 @@
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         Not enough arguments
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid command syntax provided. Try again.
+     [-] Invalid command syntax provided:
+         Not enough arguments
+     [-] Try again.
+    ____________________________________________________________
+
+    ____________________________________________________________
+     [-] Invalid command syntax provided:
+         Task number should be numerical
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
@@ -177,7 +235,7 @@
     ____________________________________________________________
 
     ____________________________________________________________
-     I don't recognise the command you entered. Please try again.
+     [-] I don't recognise the command you entered. Please try again.
     ____________________________________________________________
 
     ____________________________________________________________

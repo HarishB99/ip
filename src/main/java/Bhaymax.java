@@ -1,3 +1,8 @@
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -15,6 +20,95 @@ public class Bhaymax {
     public static final String DEADLINE_OPT_BY  = "/by";
     public static final String EVENT_OPT_START  = "/from";
     public static final String EVENT_OPT_END    = "/to";
+    public static final String TASKS_FILE_PATH  = "data/tasks.txt";
+
+    public static boolean readTasksFromFile(String filePath, LinkedList<Task> tasks)
+            throws InvalidFileFormatException {
+        try {
+            File file = new File(filePath);
+            Scanner sc = new Scanner(file);
+            int lineNumber = 1;
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine().strip();
+                StringTokenizer tokenizer = new StringTokenizer(line, "|");
+                if (!tokenizer.hasMoreTokens()) {
+                    // File exists but is empty. Should be acceptable.
+                    return false;
+                }
+                String taskType = tokenizer.nextToken().strip();
+                if (!tokenizer.hasMoreTokens()) {
+                    throw new InvalidFileFormatException("Line " + lineNumber + ": Status of task is missing");
+                }
+                String taskStatus = tokenizer.nextToken().strip();
+                boolean taskWasDone;
+                try {
+                    taskWasDone = Integer.parseInt(taskStatus) == 1;
+                } catch (NumberFormatException e) {
+                    throw new InvalidFileFormatException(
+                            "Line " + lineNumber + ": Status of task is not a valid value");
+                }
+                if (!tokenizer.hasMoreTokens()) {
+                    throw new InvalidFileFormatException("Line " + lineNumber + ": Task description is missing");
+                }
+                String taskDescription = tokenizer.nextToken().strip();
+                Task task;
+                switch (taskType) {
+                case Todo.TYPE:
+                    task = new Todo(taskDescription);
+                    if (taskWasDone) {
+                        task.markAsDone();
+                    }
+                    break;
+                case Deadline.TYPE:
+                    if (!tokenizer.hasMoreTokens()) {
+                        throw new InvalidFileFormatException(
+                                "Line " + lineNumber + ": Deadline Task doesn't have a deadline");
+                    }
+                    String deadline = tokenizer.nextToken().strip();
+                    task = new Deadline(taskDescription, deadline);
+                    if (taskWasDone) {
+                        task.markAsDone();
+                    }
+                    break;
+                case Event.TYPE:
+                    if (!tokenizer.hasMoreTokens()) {
+                        throw new InvalidFileFormatException(
+                                "Line " + lineNumber + ": Event doesn't have a start date/time");
+                    }
+                    String start = tokenizer.nextToken().strip();
+                    if (!tokenizer.hasMoreTokens()) {
+                        throw new InvalidFileFormatException(
+                                "Line " + lineNumber + ": Event doesn't have an end date/time");
+                    }
+                    String end = tokenizer.nextToken().strip();
+                    task = new Event(taskDescription, start, end);
+                    if (taskWasDone) {
+                        task.markAsDone();
+                    }
+                    break;
+                default:
+                    throw new InvalidFileFormatException("Line " + lineNumber + ": Unrecognised task type");
+                }
+                tasks.add(task);
+                lineNumber++;
+            }
+            sc.close();
+            return true;
+        } catch (FileNotFoundException e) {
+            return false;
+        }
+    }
+
+    public static void writeTasksToFile(String filePath, LinkedList<Task> tasks) throws IOException {
+        File file = new File(filePath);
+        FileOutputStream fileOutputStream = new FileOutputStream(file, false);
+        PrintWriter writer = new PrintWriter(fileOutputStream);
+        for (Task task : tasks) {
+            writer.println(task.serialise());
+        }
+        writer.close();
+        fileOutputStream.close();
+    }
 
     public static void printWithIndent(String msg, boolean includeAdditionalSpace) {
         System.out.print("    ");
@@ -45,6 +139,22 @@ public class Bhaymax {
         Bhaymax.printHorizontalLine();
 
         LinkedList<Task> tasks = new LinkedList<Task>();
+        try {
+            boolean wasAbleToReadFile = Bhaymax.readTasksFromFile(Bhaymax.TASKS_FILE_PATH, tasks);
+            if (wasAbleToReadFile) {
+                System.out.println();
+                Bhaymax.printHorizontalLine();
+                Bhaymax.printWithIndent("Task file was read successfully", true);
+                Bhaymax.printHorizontalLine();
+            }
+        } catch (InvalidFileFormatException e) {
+            System.out.println();
+            Bhaymax.printHorizontalLine();
+            Bhaymax.printWithIndent("[-] Format of task file is incorrect:", true);
+            Bhaymax.printWithIndent("    " + e.getMessage(), true);
+            Bhaymax.printWithIndent("[-] Please check your task file and try again", true);
+            Bhaymax.printHorizontalLine();
+        }
         Scanner sc = new Scanner(System.in);
         String userInput = "";
 
@@ -63,7 +173,8 @@ public class Bhaymax {
             switch (command) {
             case Bhaymax.COMMAND_LIST:
                 if (tasks.isEmpty()) {
-                    Bhaymax.printWithIndent("There are no tasks available.", true);
+                    Bhaymax.printWithIndent(
+                            "You're all caught up! You have no pending tasks!", true);
                 } else {
                     Bhaymax.printWithIndent("Here are the tasks in your list:", true);
                 }
@@ -82,15 +193,25 @@ public class Bhaymax {
                     }
                     Task taskToDelete = tasks.get(indexOfTaskToDelete);
                     tasks.remove(taskToDelete);
+                    Bhaymax.writeTasksToFile(Bhaymax.TASKS_FILE_PATH, tasks);
                     Bhaymax.printWithIndent(
                             "Noted. I've removed this task:", true);
                     Bhaymax.printWithIndent(
                             "  " + taskToDelete, true);
                     Bhaymax.printWithIndent(
                             "Now you have " + tasks.size() + " tasks in the list.", true);
-                } catch (NumberFormatException | InvalidCommandFormatException e) {
-                    Bhaymax.printWithIndent(
-                            "Invalid command syntax provided. Try again.", true);
+                } catch (InvalidCommandFormatException e) {
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
+                } catch (NumberFormatException e) {
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    Task number should be numerical", true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
+                } catch (IOException e) {
+                    Bhaymax.printWithIndent("[-] Unable to save task to file:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    System.exit(1);
                 }
                 break;
             case Bhaymax.COMMAND_MARK:
@@ -107,19 +228,30 @@ public class Bhaymax {
                     Task taskToMark = tasks.get(indexOfTaskToMark);
                     if (command.equals(Bhaymax.COMMAND_MARK)) {
                         taskToMark.markAsDone();
+                        Bhaymax.writeTasksToFile(Bhaymax.TASKS_FILE_PATH, tasks);
                         Bhaymax.printWithIndent(
                                 "Nice! I've marked this task as done:", true);
                     } else {
                         taskToMark.markAsUndone();
+                        Bhaymax.writeTasksToFile(Bhaymax.TASKS_FILE_PATH, tasks);
                         Bhaymax.printWithIndent(
                                 "OK, I've marked this task as not done yet:", true);
                     }
                     tasks.set(indexOfTaskToMark, taskToMark);
                     Bhaymax.printWithIndent(
                             "  " + tasks.get(indexOfTaskToMark), true);
-                } catch (NumberFormatException | InvalidCommandFormatException e) {
-                    Bhaymax.printWithIndent(
-                            "Invalid command syntax provided. Try again.", true);
+                } catch (InvalidCommandFormatException e) {
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
+                } catch (NumberFormatException e) {
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    Task number should be numerical", true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
+                } catch (IOException e) {
+                    Bhaymax.printWithIndent("[-] Unable to save task to file:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    System.exit(1);
                 }
                 break;
             case Bhaymax.COMMAND_TODO:
@@ -136,13 +268,19 @@ public class Bhaymax {
                     }
                     Task task = new Todo(taskDescription.toString());
                     tasks.add(task);
+                    Bhaymax.writeTasksToFile(Bhaymax.TASKS_FILE_PATH, tasks);
                     Bhaymax.printWithIndent("Got it. I've added this task:", true);
                     Bhaymax.printWithIndent("  " + task, true);
                     Bhaymax.printWithIndent(
                             "Now you have " + tasks.size() + " tasks in the list.", true);
                 } catch (InvalidCommandFormatException e) {
-                    Bhaymax.printWithIndent(
-                            "Invalid command syntax provided. Try again.", true);
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
+                } catch (IOException e) {
+                    Bhaymax.printWithIndent("[-] Unable to save task to file:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    System.exit(1);
                 }
                 break;
             case Bhaymax.COMMAND_DEADLINE:
@@ -176,13 +314,19 @@ public class Bhaymax {
                     Task task = new Deadline(
                             taskDescription.toString(), deadline.toString());
                     tasks.add(task);
+                    Bhaymax.writeTasksToFile(Bhaymax.TASKS_FILE_PATH, tasks);
                     Bhaymax.printWithIndent("Got it. I've added this task:", true);
                     Bhaymax.printWithIndent("  " + task, true);
                     Bhaymax.printWithIndent(
                             "Now you have " + tasks.size() + " tasks in the list.", true);
                 } catch (InvalidCommandFormatException e) {
-                    Bhaymax.printWithIndent(
-                            "Invalid command syntax provided. Try again.", true);
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
+                } catch (IOException e) {
+                    Bhaymax.printWithIndent("[-] Unable to save task to file:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    System.exit(1);
                 }
                 break;
             case Bhaymax.COMMAND_EVENT:
@@ -206,7 +350,7 @@ public class Bhaymax {
                     }
                     taskDescription.deleteCharAt(taskDescription.length() - 1);
                     if (!startExists || !tokenizer.hasMoreTokens()) {
-                        throw new InvalidCommandFormatException("No start provided for event");
+                        throw new InvalidCommandFormatException("No start date/time provided for event");
                     }
                     while (tokenizer.hasMoreTokens()) {
                         String token = tokenizer.nextToken();
@@ -219,7 +363,7 @@ public class Bhaymax {
                     }
                     start.deleteCharAt(start.length() - 1);
                     if (!endExists || !tokenizer.hasMoreTokens()) {
-                        throw new InvalidCommandFormatException("No end provided for event");
+                        throw new InvalidCommandFormatException("No end date/time provided for event");
                     }
                     while (tokenizer.hasMoreTokens()) {
                         String token = tokenizer.nextToken();
@@ -230,13 +374,19 @@ public class Bhaymax {
                     }
                     Task task = new Event(taskDescription.toString(), start.toString(), end.toString());
                     tasks.add(task);
+                    Bhaymax.writeTasksToFile(Bhaymax.TASKS_FILE_PATH, tasks);
                     Bhaymax.printWithIndent("Got it. I've added this task:", true);
                     Bhaymax.printWithIndent("  " + task, true);
                     Bhaymax.printWithIndent(
                             "Now you have " + tasks.size() + " tasks in the list.", true);
                 } catch (InvalidCommandFormatException e) {
-                    Bhaymax.printWithIndent(
-                            "Invalid command syntax provided. Try again.", true);
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
+                } catch (IOException e) {
+                    Bhaymax.printWithIndent("[-] Unable to save task to file:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    System.exit(1);
                 }
                 break;
             case Bhaymax.COMMAND_EXIT:
@@ -244,7 +394,8 @@ public class Bhaymax {
                 break;
             default:
                 Bhaymax.printWithIndent(
-                        "I don't recognise the command you entered. Please try again.", true);
+                        "[-] I don't recognise the command you entered. Please try again.",
+                        true);
                 break;
             }
             Bhaymax.printHorizontalLine();
