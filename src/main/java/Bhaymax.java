@@ -99,20 +99,15 @@ public class Bhaymax {
         }
     }
 
-    public static boolean writeTasksToFile(String filePath, LinkedList<Task> tasks) {
-        try {
-            File file = new File(filePath);
-            FileOutputStream fileOutputStream = new FileOutputStream(file, false);
-            PrintWriter writer = new PrintWriter(fileOutputStream);
-            for (Task task : tasks) {
-                writer.println(task.serialise());
-            }
-            writer.close();
-            fileOutputStream.close();
-            return true;
-        } catch (IOException e) {
-            return false;
+    public static void writeTasksToFile(String filePath, LinkedList<Task> tasks) throws IOException {
+        File file = new File(filePath);
+        FileOutputStream fileOutputStream = new FileOutputStream(file, false);
+        PrintWriter writer = new PrintWriter(fileOutputStream);
+        for (Task task : tasks) {
+            writer.println(task.serialise());
         }
+        writer.close();
+        fileOutputStream.close();
     }
 
     public static void printWithIndent(String msg, boolean includeAdditionalSpace) {
@@ -198,6 +193,7 @@ public class Bhaymax {
                     }
                     Task taskToDelete = tasks.get(indexOfTaskToDelete);
                     tasks.remove(taskToDelete);
+                    Bhaymax.writeTasksToFile(Bhaymax.TASKS_FILE_PATH, tasks);
                     Bhaymax.printWithIndent(
                             "Noted. I've removed this task:", true);
                     Bhaymax.printWithIndent(
@@ -212,6 +208,10 @@ public class Bhaymax {
                     Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
                     Bhaymax.printWithIndent("    Task number should be numerical", true);
                     Bhaymax.printWithIndent("[-] Try again.", true);
+                } catch (IOException e) {
+                    Bhaymax.printWithIndent("[-] Unable to save task to file:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    System.exit(1);
                 }
                 break;
             case Bhaymax.COMMAND_MARK:
@@ -228,10 +228,12 @@ public class Bhaymax {
                     Task taskToMark = tasks.get(indexOfTaskToMark);
                     if (command.equals(Bhaymax.COMMAND_MARK)) {
                         taskToMark.markAsDone();
+                        Bhaymax.writeTasksToFile(Bhaymax.TASKS_FILE_PATH, tasks);
                         Bhaymax.printWithIndent(
                                 "Nice! I've marked this task as done:", true);
                     } else {
                         taskToMark.markAsUndone();
+                        Bhaymax.writeTasksToFile(Bhaymax.TASKS_FILE_PATH, tasks);
                         Bhaymax.printWithIndent(
                                 "OK, I've marked this task as not done yet:", true);
                     }
@@ -246,6 +248,10 @@ public class Bhaymax {
                     Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
                     Bhaymax.printWithIndent("    Task number should be numerical", true);
                     Bhaymax.printWithIndent("[-] Try again.", true);
+                } catch (IOException e) {
+                    Bhaymax.printWithIndent("[-] Unable to save task to file:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    System.exit(1);
                 }
                 break;
             case Bhaymax.COMMAND_TODO:
@@ -262,6 +268,7 @@ public class Bhaymax {
                     }
                     Task task = new Todo(taskDescription.toString());
                     tasks.add(task);
+                    Bhaymax.writeTasksToFile(Bhaymax.TASKS_FILE_PATH, tasks);
                     Bhaymax.printWithIndent("Got it. I've added this task:", true);
                     Bhaymax.printWithIndent("  " + task, true);
                     Bhaymax.printWithIndent(
@@ -270,6 +277,10 @@ public class Bhaymax {
                     Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
                     Bhaymax.printWithIndent("    " + e.getMessage(), true);
                     Bhaymax.printWithIndent("[-] Try again.", true);
+                } catch (IOException e) {
+                    Bhaymax.printWithIndent("[-] Unable to save task to file:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    System.exit(1);
                 }
                 break;
             case Bhaymax.COMMAND_DEADLINE:
@@ -303,6 +314,7 @@ public class Bhaymax {
                     Task task = new Deadline(
                             taskDescription.toString(), deadline.toString());
                     tasks.add(task);
+                    Bhaymax.writeTasksToFile(Bhaymax.TASKS_FILE_PATH, tasks);
                     Bhaymax.printWithIndent("Got it. I've added this task:", true);
                     Bhaymax.printWithIndent("  " + task, true);
                     Bhaymax.printWithIndent(
@@ -311,6 +323,10 @@ public class Bhaymax {
                     Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
                     Bhaymax.printWithIndent("    " + e.getMessage(), true);
                     Bhaymax.printWithIndent("[-] Try again.", true);
+                } catch (IOException e) {
+                    Bhaymax.printWithIndent("[-] Unable to save task to file:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    System.exit(1);
                 }
                 break;
             case Bhaymax.COMMAND_EVENT:
@@ -358,6 +374,7 @@ public class Bhaymax {
                     }
                     Task task = new Event(taskDescription.toString(), start.toString(), end.toString());
                     tasks.add(task);
+                    Bhaymax.writeTasksToFile(Bhaymax.TASKS_FILE_PATH, tasks);
                     Bhaymax.printWithIndent("Got it. I've added this task:", true);
                     Bhaymax.printWithIndent("  " + task, true);
                     Bhaymax.printWithIndent(
@@ -366,6 +383,10 @@ public class Bhaymax {
                     Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
                     Bhaymax.printWithIndent("    " + e.getMessage(), true);
                     Bhaymax.printWithIndent("[-] Try again.", true);
+                } catch (IOException e) {
+                    Bhaymax.printWithIndent("[-] Unable to save task to file:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    System.exit(1);
                 }
                 break;
             case Bhaymax.COMMAND_EXIT:
