@@ -63,7 +63,8 @@ public class Bhaymax {
             switch (command) {
             case Bhaymax.COMMAND_LIST:
                 if (tasks.isEmpty()) {
-                    Bhaymax.printWithIndent("There are no tasks available.", true);
+                    Bhaymax.printWithIndent(
+                            "You're all caught up! You have no pending tasks!", true);
                 } else {
                     Bhaymax.printWithIndent("Here are the tasks in your list:", true);
                 }
@@ -88,9 +89,14 @@ public class Bhaymax {
                             "  " + taskToDelete, true);
                     Bhaymax.printWithIndent(
                             "Now you have " + tasks.size() + " tasks in the list.", true);
-                } catch (NumberFormatException | InvalidCommandFormatException e) {
-                    Bhaymax.printWithIndent(
-                            "Invalid command syntax provided. Try again.", true);
+                } catch (InvalidCommandFormatException e) {
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
+                } catch (NumberFormatException e) {
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    Task number should be numerical", true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
                 }
                 break;
             case Bhaymax.COMMAND_MARK:
@@ -117,9 +123,14 @@ public class Bhaymax {
                     tasks.set(indexOfTaskToMark, taskToMark);
                     Bhaymax.printWithIndent(
                             "  " + tasks.get(indexOfTaskToMark), true);
-                } catch (NumberFormatException | InvalidCommandFormatException e) {
-                    Bhaymax.printWithIndent(
-                            "Invalid command syntax provided. Try again.", true);
+                } catch (InvalidCommandFormatException e) {
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
+                } catch (NumberFormatException e) {
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    Task number should be numerical", true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
                 }
                 break;
             case Bhaymax.COMMAND_TODO:
@@ -141,8 +152,9 @@ public class Bhaymax {
                     Bhaymax.printWithIndent(
                             "Now you have " + tasks.size() + " tasks in the list.", true);
                 } catch (InvalidCommandFormatException e) {
-                    Bhaymax.printWithIndent(
-                            "Invalid command syntax provided. Try again.", true);
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
                 }
                 break;
             case Bhaymax.COMMAND_DEADLINE:
@@ -181,8 +193,9 @@ public class Bhaymax {
                     Bhaymax.printWithIndent(
                             "Now you have " + tasks.size() + " tasks in the list.", true);
                 } catch (InvalidCommandFormatException e) {
-                    Bhaymax.printWithIndent(
-                            "Invalid command syntax provided. Try again.", true);
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
                 }
                 break;
             case Bhaymax.COMMAND_EVENT:
@@ -206,7 +219,7 @@ public class Bhaymax {
                     }
                     taskDescription.deleteCharAt(taskDescription.length() - 1);
                     if (!startExists || !tokenizer.hasMoreTokens()) {
-                        throw new InvalidCommandFormatException("No start provided for event");
+                        throw new InvalidCommandFormatException("No start date/time provided for event");
                     }
                     while (tokenizer.hasMoreTokens()) {
                         String token = tokenizer.nextToken();
@@ -219,7 +232,7 @@ public class Bhaymax {
                     }
                     start.deleteCharAt(start.length() - 1);
                     if (!endExists || !tokenizer.hasMoreTokens()) {
-                        throw new InvalidCommandFormatException("No end provided for event");
+                        throw new InvalidCommandFormatException("No end date/time provided for event");
                     }
                     while (tokenizer.hasMoreTokens()) {
                         String token = tokenizer.nextToken();
@@ -235,8 +248,9 @@ public class Bhaymax {
                     Bhaymax.printWithIndent(
                             "Now you have " + tasks.size() + " tasks in the list.", true);
                 } catch (InvalidCommandFormatException e) {
-                    Bhaymax.printWithIndent(
-                            "Invalid command syntax provided. Try again.", true);
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    " + e.getMessage(), true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
                 }
                 break;
             case Bhaymax.COMMAND_EXIT:
@@ -244,7 +258,8 @@ public class Bhaymax {
                 break;
             default:
                 Bhaymax.printWithIndent(
-                        "I don't recognise the command you entered. Please try again.", true);
+                        "[-] I don't recognise the command you entered. Please try again.",
+                        true);
                 break;
             }
             Bhaymax.printHorizontalLine();

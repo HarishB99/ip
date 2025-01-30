@@ -15,7 +15,7 @@ bin/
 
 /text-ui-test/ACTUAL.TXT
 /text-ui-test/ACTUAL_BLANK.TXT
-/text-ui-test/ACTUAL_ERRANEOUS.TXT
+/text-ui-test/ACTUAL_ERRONEOUS.TXT
 text-ui-test/EXPECTED-UNIX.TXT
 text-ui-test/EXPECTED_BLANK-UNIX.TXT
-text-ui-test/EXPECTED_ERRANEOUS-UNIX.TXT
+text-ui-test/EXPECTED_ERRONEOUS-UNIX.TXT
