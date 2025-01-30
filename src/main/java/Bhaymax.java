@@ -3,6 +3,7 @@ import java.io.PrintWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -17,13 +18,15 @@ public class Bhaymax {
     public static final String COMMAND_EVENT    = "event";
     public static final String COMMAND_DELETE   = "delete";
     public static final String COMMAND_EXIT     = "bye";
+    public static final String DATETIME_INPUT_FORMAT = "dd-MM-yyyy HH:mm";
+    public static final String DATETIME_OUTPUT_FORMAT = "dd MMM yyyy, EEE @ HH:mm";
     public static final String DEADLINE_OPT_BY  = "/by";
     public static final String EVENT_OPT_START  = "/from";
     public static final String EVENT_OPT_END    = "/to";
     public static final String TASKS_FILE_PATH  = "data/tasks.txt";
 
     public static boolean readTasksFromFile(String filePath, LinkedList<Task> tasks)
-            throws InvalidFileFormatException {
+            throws InvalidFileFormatException, DateTimeParseException {
         try {
             File file = new File(filePath);
             Scanner sc = new Scanner(file);
@@ -154,6 +157,15 @@ public class Bhaymax {
             Bhaymax.printWithIndent("    " + e.getMessage(), true);
             Bhaymax.printWithIndent("[-] Please check your task file and try again", true);
             Bhaymax.printHorizontalLine();
+            System.exit(1);
+        } catch (DateTimeParseException e) {
+            System.out.println();
+            Bhaymax.printHorizontalLine();
+            Bhaymax.printWithIndent("[-] Format of task file is incorrect:", true);
+            Bhaymax.printWithIndent("    Wrong date/time format", true);
+            Bhaymax.printWithIndent("[-] Please check your task file and try again", true);
+            Bhaymax.printHorizontalLine();
+            System.exit(1);
         }
         Scanner sc = new Scanner(System.in);
         String userInput = "";
@@ -327,6 +339,10 @@ public class Bhaymax {
                     Bhaymax.printWithIndent("[-] Unable to save task to file:", true);
                     Bhaymax.printWithIndent("    " + e.getMessage(), true);
                     System.exit(1);
+                } catch (DateTimeParseException e) {
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    Wrong date/time format", true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
                 }
                 break;
             case Bhaymax.COMMAND_EVENT:
@@ -387,6 +403,10 @@ public class Bhaymax {
                     Bhaymax.printWithIndent("[-] Unable to save task to file:", true);
                     Bhaymax.printWithIndent("    " + e.getMessage(), true);
                     System.exit(1);
+                } catch (DateTimeParseException e) {
+                    Bhaymax.printWithIndent("[-] Invalid command syntax provided:", true);
+                    Bhaymax.printWithIndent("    Wrong date/time format", true);
+                    Bhaymax.printWithIndent("[-] Try again.", true);
                 }
                 break;
             case Bhaymax.COMMAND_EXIT:
