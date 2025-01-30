@@ -1,4 +1,7 @@
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Scanner;
@@ -50,13 +53,13 @@ public class Bhaymax {
                 String taskDescription = tokenizer.nextToken().strip();
                 Task task;
                 switch (taskType) {
-                case "T":
+                case Todo.TYPE:
                     task = new Todo(taskDescription);
                     if (taskWasDone) {
                         task.markAsDone();
                     }
                     break;
-                case "D":
+                case Deadline.TYPE:
                     if (!tokenizer.hasMoreTokens()) {
                         throw new InvalidFileFormatException(
                                 "Line " + lineNumber + ": Deadline Task doesn't have a deadline");
@@ -67,7 +70,7 @@ public class Bhaymax {
                         task.markAsDone();
                     }
                     break;
-                case "E":
+                case Event.TYPE:
                     if (!tokenizer.hasMoreTokens()) {
                         throw new InvalidFileFormatException(
                                 "Line " + lineNumber + ": Event doesn't have a start date/time");
@@ -91,13 +94,25 @@ public class Bhaymax {
             }
             sc.close();
             return true;
-        } catch (FileNotFoundException ignored) {
+        } catch (FileNotFoundException e) {
             return false;
         }
     }
 
     public static boolean writeTasksToFile(String filePath, LinkedList<Task> tasks) {
-        return false;
+        try {
+            File file = new File(filePath);
+            FileOutputStream fileOutputStream = new FileOutputStream(file, false);
+            PrintWriter writer = new PrintWriter(fileOutputStream);
+            for (Task task : tasks) {
+                writer.println(task.serialise());
+            }
+            writer.close();
+            fileOutputStream.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     public static void printWithIndent(String msg, boolean includeAdditionalSpace) {
@@ -132,6 +147,7 @@ public class Bhaymax {
         try {
             boolean wasAbleToReadFile = Bhaymax.readTasksFromFile(Bhaymax.TASKS_FILE_PATH, tasks);
             if (wasAbleToReadFile) {
+                System.out.println();
                 Bhaymax.printHorizontalLine();
                 Bhaymax.printWithIndent("Task file was read successfully", true);
                 Bhaymax.printHorizontalLine();

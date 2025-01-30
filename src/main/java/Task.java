@@ -1,8 +1,11 @@
 public class Task {
+    public static final String DELIMITER = "|";
     protected String description;
+    protected String type;
     protected boolean isDone;
 
-    public Task(String description) {
+    public Task(String type, String description) {
+        this.type = type;
         this.description = description;
         this.isDone = false;
     }
@@ -17,6 +20,13 @@ public class Task {
 
     public void markAsUndone() {
         this.isDone = false;
+    }
+
+    public String serialise() {
+        return this.type + " " + Task.DELIMITER + " "
+                + (this.isDone ? "1" : "0")
+                + " " + Task.DELIMITER + " "
+                + this.description;
     }
 
     @Override
