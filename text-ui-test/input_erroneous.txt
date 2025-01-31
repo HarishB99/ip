@@ -1,3 +1,6 @@
+mark 1
+unmark 2
+delete 3
 todo
 todo 
 todo a
@@ -8,7 +11,7 @@ deadline return book
 deadline return book 
 deadline return book /by
 deadline return book /by 
-deadline return book /by June 6th
+deadline return book /by 06-06-2025 12:00
 event
 event 
 event project meeting
@@ -16,10 +19,10 @@ event project meeting
 event project meeting /from
 event project meeting /from 
 event project meeting /from Aug 6th 2pm
-event project meeting /from Aug 6th 2pm 
-event project meeting /from Aug 6th 2pm /to
-event project meeting /from Aug 6th 2pm /to 
-event project meeting /from Aug 6th 2pm /to 4pm
+event project meeting /from 06-08-2025 14:00
+event project meeting /from 06-08-2025 14:00 /to
+event project meeting /from 06-08-2025 14:00 /to 16:00
+event project meeting /from 06-08-2025 14:00 /to 06-08-2025 16:00
 mark a
 mark 
 mark
