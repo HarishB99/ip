@@ -7,6 +7,7 @@ REM delete output from previous run
 if exist ACTUAL.TXT del ACTUAL.TXT
 if exist ACTUAL_BLANK.TXT del ACTUAL_BLANK.TXT
 if exist ACTUAL_ERRONEOUS.TXT del ACTUAL_ERRONEOUS.TXT
+if exist data rmdir /s /q data
 
 REM compile the code into the bin folder
 javac  -cp ..\src\main\java -Xlint:none -d ..\bin ..\src\main\java\*.java
@@ -18,7 +19,9 @@ REM no error here, errorlevel == 0
 
 REM run the program, feed commands from input.txt file and redirect the output to the ACTUAL.TXT
 java -classpath ..\bin Bhaymax < input.txt > ACTUAL.TXT
+rmdir /s /q data
 java -classpath ..\bin Bhaymax < input_blank.txt > ACTUAL_BLANK.TXT
+rmdir /s /q data
 java -classpath ..\bin Bhaymax < input_erroneous.txt > ACTUAL_ERRONEOUS.TXT
 
 REM compare the output to the expected output
