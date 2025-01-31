@@ -1,19 +1,24 @@
+package bhaymax.command;
+
 import java.io.IOException;
+import bhaymax.storage.Storage;
+import bhaymax.ui.Ui;
+import bhaymax.task.Task;
+import bhaymax.task.TaskList;
+import bhaymax.task.timesensitive.Deadline;
 
-public class EventCommand extends Command {
+public class DeadlineCommand extends Command {
     private final String taskDescription;
-    private final String start;
-    private final String end;
+    private final String deadline;
 
-    public EventCommand(String taskDescription, String start, String end) {
+    public DeadlineCommand(String taskDescription, String deadline) {
         this.taskDescription = taskDescription;
-        this.start = start;
-        this.end = end;
+        this.deadline = deadline;
     }
 
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws IOException {
-        Task task = new Event(this.taskDescription, this.start, this.end);
+        Task task = new Deadline(this.taskDescription, this.deadline);
         int taskListCount = taskList.addTask(task);
         storage.saveTasks(taskList);
         ui.printWithIndent("Got it. I've added this task:", true);

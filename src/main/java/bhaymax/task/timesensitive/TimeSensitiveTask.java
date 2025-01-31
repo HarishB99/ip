@@ -1,6 +1,8 @@
+package bhaymax.task.timesensitive;
+
 import java.time.format.DateTimeParseException;
 
-interface TimeSensitiveTask {
+public interface TimeSensitiveTask {
     boolean isBeforeDate(String date)
             throws DateTimeParseException;
 

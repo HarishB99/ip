@@ -1,3 +1,5 @@
+package bhaymax.command;
+
 public enum FilterOpt {
     DATE_ON,
     DATE_BEFORE,

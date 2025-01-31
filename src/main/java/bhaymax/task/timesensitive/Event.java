@@ -1,7 +1,11 @@
+package bhaymax.task.timesensitive;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.time.format.DateTimeFormatter;
+import bhaymax.task.Task;
+import bhaymax.parser.Parser;
 
 public class Event extends Task implements TimeSensitiveTask {
     public static final String TYPE = "E";
