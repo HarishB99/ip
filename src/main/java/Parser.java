@@ -67,12 +67,6 @@ public class Parser {
 
             while (tokenizer.hasMoreTokens()) {
                 String token = tokenizer.nextToken();
-                if (commandString.equals(Parser.COMMAND_TODO)
-                        && tokenizer.hasMoreTokens()) {
-                    taskDescription.append(token);
-                    taskDescription.append(' ');
-                    continue;
-                }
 
                 if (commandString.equals(Parser.COMMAND_DEADLINE)
                         && token.equals(Parser.DEADLINE_OPT_BY)) {
@@ -89,12 +83,11 @@ public class Parser {
                 taskDescription.append(token);
                 taskDescription.append(' ');
             }
+            taskDescription.deleteCharAt(taskDescription.length() - 1);
 
             if (commandString.equals(Parser.COMMAND_TODO)) {
                 return new TodoCommand(taskDescription.toString());
             }
-
-            taskDescription.deleteCharAt(taskDescription.length() - 1);
 
             if (commandString.equals(Parser.COMMAND_DEADLINE)
                     && !(deadlineExists && tokenizer.hasMoreTokens())) {
