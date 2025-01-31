@@ -11,7 +11,7 @@ public class Bhaymax {
 
     public Bhaymax(String filePath) {
         this.ui = new Ui();
-        this.storage = new Storage(filePath);
+        this.storage = new Storage();
         try {
             this.tasks = storage.loadTasks();
         } catch (InvalidFileFormatException e) {

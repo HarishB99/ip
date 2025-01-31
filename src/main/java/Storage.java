@@ -1,13 +1,20 @@
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
 public class Storage {
+    public static final String DATA_DIRECTORY = "data";
+    public static final String DATA_FILE = "tasks.txt";
     private final String filePath;
 
-    public Storage(String filePath) {
-        this.filePath = filePath;
+    public Storage() {
+        this.filePath = String.format(
+                "%s/%s", Storage.DATA_DIRECTORY, Storage.DATA_FILE);
     }
 
     public TaskList loadTasks()
@@ -89,7 +96,13 @@ public class Storage {
     }
 
     public void saveTasks(TaskList taskList) throws IOException {
-        // TODO: Make directory if it doesn't exist
+        File directory = new File(Storage.DATA_DIRECTORY);
+        if (!directory.exists()) {
+            if (!directory.mkdirs()) {
+                throw new IOException(
+                        "Unable to create directory '" + Storage.DATA_DIRECTORY + "'");
+            }
+        }
         File file = new File(this.filePath);
         FileOutputStream fileOutputStream = new FileOutputStream(file, false);
         PrintWriter writer = new PrintWriter(fileOutputStream);
