@@ -38,9 +38,9 @@ public class Ui {
     }
 
     public void showError(DateTimeParseException ignored) {
-        this.printWithIndent("[-] Format of task file is incorrect:", true);
+        this.printWithIndent("[-] Task format is incorrect:", true);
         this.printWithIndent("    Wrong date/time format", true);
-        this.printWithIndent("[-] Please check your task file and try again", true);
+        this.printWithIndent("[-] Try again.", true);
     }
 
     public void showError(String message) {
