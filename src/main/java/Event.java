@@ -31,7 +31,7 @@ public class Event extends Task implements TimeSensitiveTask {
     }
 
     private String getStartDateInOutputFormat() {
-        return this.end.format(
+        return this.start.format(
                 DateTimeFormatter.ofPattern(Parser.DATETIME_OUTPUT_FORMAT));
     }
 
