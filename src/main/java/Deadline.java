@@ -11,7 +11,7 @@ public class Deadline extends Task implements TimeSensitiveTask {
             throws DateTimeParseException {
         super(Deadline.TYPE, description);
         this.deadline = LocalDateTime.parse(
-                deadline, DateTimeFormatter.ofPattern(Bhaymax.DATETIME_INPUT_FORMAT));
+                deadline, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
     }
 
     @Override
@@ -22,18 +22,18 @@ public class Deadline extends Task implements TimeSensitiveTask {
 
     private String getDeadlineInInputFormat() {
         return this.deadline.format(
-                DateTimeFormatter.ofPattern(Bhaymax.DATETIME_INPUT_FORMAT));
+                DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
     }
 
     private String getDeadlineInOutputFormat() {
         return this.deadline.format(
-                DateTimeFormatter.ofPattern(Bhaymax.DATETIME_OUTPUT_FORMAT));
+                DateTimeFormatter.ofPattern(Parser.DATETIME_OUTPUT_FORMAT));
     }
 
     @Override
     public boolean isBeforeDate(String date)
             throws DateTimeParseException {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Bhaymax.DATE_FORMAT);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
         LocalDate thresholdDate = LocalDate.parse(date, dateFormatter);
         LocalDate deadlineDate = LocalDate.parse(this.deadline.format(dateFormatter), dateFormatter);
         return deadlineDate.isBefore(thresholdDate);
@@ -43,14 +43,14 @@ public class Deadline extends Task implements TimeSensitiveTask {
     public boolean isBeforeDateTime(String date)
             throws DateTimeParseException {
         LocalDateTime thresholdTime = LocalDateTime.parse(
-                date, DateTimeFormatter.ofPattern(Bhaymax.DATETIME_INPUT_FORMAT));
+                date, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
         return this.deadline.isBefore(thresholdTime);
     }
 
     @Override
     public boolean isAfterDate(String date)
             throws DateTimeParseException {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Bhaymax.DATE_FORMAT);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
         LocalDate thresholdDate = LocalDate.parse(date, dateFormatter);
         LocalDate deadlineDate = LocalDate.parse(this.deadline.format(dateFormatter), dateFormatter);
         return deadlineDate.isAfter(thresholdDate);
@@ -60,14 +60,14 @@ public class Deadline extends Task implements TimeSensitiveTask {
     public boolean isAfterDateTime(String date)
             throws DateTimeParseException {
         LocalDateTime thresholdTime = LocalDateTime.parse(
-                date, DateTimeFormatter.ofPattern(Bhaymax.DATETIME_INPUT_FORMAT));
+                date, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
         return this.deadline.isAfter(thresholdTime);
     }
 
     @Override
     public boolean isOnDate(String date)
             throws DateTimeParseException {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Bhaymax.DATE_FORMAT);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
         LocalDate thresholdDate = LocalDate.parse(date, dateFormatter);
         LocalDate deadlineDate = LocalDate.parse(this.deadline.format(dateFormatter), dateFormatter);
         return deadlineDate.isEqual(thresholdDate);
@@ -77,7 +77,7 @@ public class Deadline extends Task implements TimeSensitiveTask {
     public boolean isOnDateTime(String date)
             throws DateTimeParseException {
         LocalDateTime thresholdTime = LocalDateTime.parse(
-                date, DateTimeFormatter.ofPattern(Bhaymax.DATETIME_INPUT_FORMAT));
+                date, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
         return this.deadline.isEqual(thresholdTime);
     }
 
