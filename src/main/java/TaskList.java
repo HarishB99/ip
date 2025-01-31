@@ -16,7 +16,6 @@ public class TaskList {
         return this.taskList.size();
     }
 
-    // TODO: Empty list
     public Task markTaskAsDone(int index) {
         Task taskToBeMarked = this.taskList.get(index);
         taskToBeMarked.markAsDone();
@@ -24,7 +23,6 @@ public class TaskList {
         return taskToBeMarked;
     }
 
-    // TODO: Empty list
     public Task markTaskAsUndone(int index) {
         Task taskToBeMarked = this.taskList.get(index);
         taskToBeMarked.markAsUndone();
@@ -32,7 +30,6 @@ public class TaskList {
         return taskToBeMarked;
     }
 
-    // TODO: Empty list
     public Pair<Task, Integer> removeTask(int index) {
         Task taskToBeRemoved = this.taskList.get(index);
         this.taskList.remove(taskToBeRemoved);

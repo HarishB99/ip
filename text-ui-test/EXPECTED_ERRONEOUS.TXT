@@ -5,6 +5,24 @@
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
+         Provided task number could not be found
+     [-] Try again.
+    ____________________________________________________________
+
+    ____________________________________________________________
+     [-] Invalid command syntax provided:
+         Provided task number could not be found
+     [-] Try again.
+    ____________________________________________________________
+
+    ____________________________________________________________
+     [-] Invalid command syntax provided:
+         Provided task number could not be found
+     [-] Try again.
+    ____________________________________________________________
+
+    ____________________________________________________________
+     [-] Invalid command syntax provided:
          Missing task description
      [-] Try again.
     ____________________________________________________________

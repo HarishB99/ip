@@ -1,3 +1,6 @@
+mark 1
+unmark 2
+delete 3
 todo
 todo 
 todo a
