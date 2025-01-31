@@ -20,4 +20,4 @@ bin/
 /text-ui-test/EXPECTED_BLANK-UNIX.TXT
 /text-ui-test/EXPECTED_ERRONEOUS-UNIX.TXT
 
-/data/*
+**/data/*

@@ -5,13 +5,13 @@
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         Not enough arguments
+         Missing task description
      [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         Not enough arguments
+         Missing task description
      [-] Try again.
     ____________________________________________________________
 
@@ -29,13 +29,13 @@
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         Not enough arguments
+         Missing task description
      [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         Not enough arguments
+         Missing task description
      [-] Try again.
     ____________________________________________________________
 
@@ -65,73 +65,73 @@
 
     ____________________________________________________________
      Got it. I've added this task:
-       [D][ ] return book (by: June 6th)
+       [D][ ] return book (by: 06 Jun 2025, Fri @ 12:00)
      Now you have 3 tasks in the list.
     ____________________________________________________________
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         Not enough arguments
+         Missing task description
      [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         Not enough arguments
+         Missing task description
      [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         No start date/time provided for event
+         No start date and time provided for event
      [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         No start date/time provided for event
+         No start date and time provided for event
      [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         No start date/time provided for event
+         No start date and time provided for event
      [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         No start date/time provided for event
+         No start date and time provided for event
      [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         No end date/time provided for event
+         No end date and time provided for event
      [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         No end date/time provided for event
+         No end date and time provided for event
      [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         No end date/time provided for event
+         No end date and time provided for event
      [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
-     [-] Invalid command syntax provided:
-         No end date/time provided for event
+     [-] Task format is incorrect:
+         Wrong date/time format
      [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
      Got it. I've added this task:
-       [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+       [E][ ] project meeting (from: 06 Aug 2025, Wed @ 14:00 to: 06 Aug 2025, Wed @ 16:00)
      Now you have 4 tasks in the list.
     ____________________________________________________________
 
@@ -143,13 +143,13 @@
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         Not enough arguments
+         Missing task number
      [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         Not enough arguments
+         Missing task number
      [-] Try again.
     ____________________________________________________________
 
@@ -161,13 +161,13 @@
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         Not enough arguments
+         Missing task number
      [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         Not enough arguments
+         Missing task number
      [-] Try again.
     ____________________________________________________________
 
@@ -183,7 +183,7 @@
 
     ____________________________________________________________
      Nice! I've marked this task as done:
-       [D][X] return book (by: June 6th)
+       [D][X] return book (by: 06 Jun 2025, Fri @ 12:00)
     ____________________________________________________________
 
     ____________________________________________________________
@@ -192,26 +192,28 @@
     ____________________________________________________________
 
     ____________________________________________________________
-     [-] I don't recognise the command you entered. Please try again.
+     [-] Invalid command syntax provided:
+         Unrecognised command
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
      Here are the tasks in your list:
      1.[T][X] a
      2.[T][ ] finish up week 2 tasks
-     3.[D][X] return book (by: June 6th)
-     4.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+     3.[D][X] return book (by: 06 Jun 2025, Fri @ 12:00)
+     4.[E][ ] project meeting (from: 06 Aug 2025, Wed @ 14:00 to: 06 Aug 2025, Wed @ 16:00)
     ____________________________________________________________
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         Not enough arguments
+         Missing task number
      [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
      [-] Invalid command syntax provided:
-         Not enough arguments
+         Missing task number
      [-] Try again.
     ____________________________________________________________
 
@@ -223,7 +225,7 @@
 
     ____________________________________________________________
      Noted. I've removed this task:
-       [D][X] return book (by: June 6th)
+       [D][X] return book (by: 06 Jun 2025, Fri @ 12:00)
      Now you have 3 tasks in the list.
     ____________________________________________________________
 
@@ -231,11 +233,13 @@
      Here are the tasks in your list:
      1.[T][X] a
      2.[T][ ] finish up week 2 tasks
-     3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+     3.[E][ ] project meeting (from: 06 Aug 2025, Wed @ 14:00 to: 06 Aug 2025, Wed @ 16:00)
     ____________________________________________________________
 
     ____________________________________________________________
-     [-] I don't recognise the command you entered. Please try again.
+     [-] Invalid command syntax provided:
+         Unrecognised command
+     [-] Try again.
     ____________________________________________________________
 
     ____________________________________________________________
