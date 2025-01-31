@@ -2,14 +2,13 @@ import java.io.IOException;
 import java.time.format.DateTimeParseException;
 
 public class Bhaymax {
-    public static final String NAME             = "Bhaymax";
-    public static final String TASKS_FILE_PATH  = "data/tasks.txt";
+    public static final String NAME = "Bhaymax";
 
     private final Storage storage;
     private final Ui ui;
     private TaskList tasks;
 
-    public Bhaymax(String filePath) {
+    public Bhaymax() {
         this.ui = new Ui();
         this.storage = new Storage();
         try {
@@ -54,6 +53,6 @@ public class Bhaymax {
     }
 
     public static void main(String[] args) {
-        new Bhaymax(Bhaymax.TASKS_FILE_PATH).run();
+        new Bhaymax().run();
     }
 }
