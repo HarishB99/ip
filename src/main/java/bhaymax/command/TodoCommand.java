@@ -1,17 +1,22 @@
+package bhaymax.command;
+
 import java.io.IOException;
+import bhaymax.storage.Storage;
+import bhaymax.ui.Ui;
+import bhaymax.task.Task;
+import bhaymax.task.Todo;
+import bhaymax.task.TaskList;
 
-public class DeadlineCommand extends Command {
+public class TodoCommand extends Command {
     private final String taskDescription;
-    private final String deadline;
 
-    public DeadlineCommand(String taskDescription, String deadline) {
+    public TodoCommand(String taskDescription) {
         this.taskDescription = taskDescription;
-        this.deadline = deadline;
     }
 
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws IOException {
-        Task task = new Deadline(this.taskDescription, this.deadline);
+        Task task = new Todo(this.taskDescription);
         int taskListCount = taskList.addTask(task);
         storage.saveTasks(taskList);
         ui.printWithIndent("Got it. I've added this task:", true);
