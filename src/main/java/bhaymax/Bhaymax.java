@@ -11,7 +11,7 @@ import bhaymax.exception.InvalidFileFormatException;
 import bhaymax.exception.InvalidCommandFormatException;
 
 public class Bhaymax {
-    public static final String NAME = "Bhaymax";
+    public static final String APP_NAME = "Bhaymax";
 
     private final Storage storage;
     private final Ui ui;
@@ -34,7 +34,7 @@ public class Bhaymax {
 
     public void run() {
         this.ui.showLine();
-        this.ui.showWelcome(Bhaymax.NAME);
+        this.ui.showWelcome(Bhaymax.APP_NAME);
         this.ui.showLine();
         boolean isExit = false;
         while (!isExit) {
