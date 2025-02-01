@@ -29,7 +29,7 @@ test {
 }
 
 application {
-    mainClass.set("Bhaymax")
+    mainClass.set("bhaymax.Bhaymax")
 }
 
 shadowJar {

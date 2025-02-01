@@ -1,3 +1,5 @@
+package bhaymax;
+
 import java.io.IOException;
 import java.time.format.DateTimeParseException;
 import bhaymax.ui.Ui;
