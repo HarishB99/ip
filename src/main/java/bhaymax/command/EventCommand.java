@@ -1,11 +1,12 @@
 package bhaymax.command;
 
 import java.io.IOException;
+
 import bhaymax.storage.Storage;
-import bhaymax.ui.Ui;
 import bhaymax.task.Task;
 import bhaymax.task.TaskList;
 import bhaymax.task.timesensitive.Event;
+import bhaymax.ui.Ui;
 
 public class EventCommand extends Command {
     private final String taskDescription;

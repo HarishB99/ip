@@ -1,8 +1,8 @@
 package bhaymax.command;
 
-import bhaymax.ui.Ui;
-import bhaymax.task.TaskList;
 import bhaymax.storage.Storage;
+import bhaymax.task.TaskList;
+import bhaymax.ui.Ui;
 
 public class ListCommand extends Command {
     @Override
