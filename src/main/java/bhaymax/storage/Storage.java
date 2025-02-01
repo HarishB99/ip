@@ -1,19 +1,20 @@
 package bhaymax.storage;
 
 import java.io.File;
-import java.io.PrintWriter;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.StringTokenizer;
-import java.time.format.DateTimeParseException;
-import bhaymax.task.Task;
-import bhaymax.task.Todo;
-import bhaymax.task.TaskList;
-import bhaymax.task.timesensitive.Event;
-import bhaymax.task.timesensitive.Deadline;
+
 import bhaymax.exception.InvalidFileFormatException;
+import bhaymax.task.Task;
+import bhaymax.task.TaskList;
+import bhaymax.task.Todo;
+import bhaymax.task.timesensitive.Deadline;
+import bhaymax.task.timesensitive.Event;
 
 public class Storage {
     public static final String DATA_DIRECTORY = "data";
@@ -57,41 +58,41 @@ public class Storage {
                 String taskDescription = tokenizer.nextToken().strip();
                 Task task;
                 switch (taskType) {
-                    case Todo.TYPE:
-                        task = new Todo(taskDescription);
-                        if (taskWasDone) {
-                            task.markAsDone();
-                        }
-                        break;
-                    case Deadline.TYPE:
-                        if (!tokenizer.hasMoreTokens()) {
-                            throw new InvalidFileFormatException(
-                                    "Line " + lineNumber + ": Deadline Task doesn't have a deadline");
-                        }
-                        String deadline = tokenizer.nextToken().strip();
-                        task = new Deadline(taskDescription, deadline);
-                        if (taskWasDone) {
-                            task.markAsDone();
-                        }
-                        break;
-                    case Event.TYPE:
-                        if (!tokenizer.hasMoreTokens()) {
-                            throw new InvalidFileFormatException(
-                                    "Line " + lineNumber + ": Event doesn't have a start date/time");
-                        }
-                        String start = tokenizer.nextToken().strip();
-                        if (!tokenizer.hasMoreTokens()) {
-                            throw new InvalidFileFormatException(
-                                    "Line " + lineNumber + ": Event doesn't have an end date/time");
-                        }
-                        String end = tokenizer.nextToken().strip();
-                        task = new Event(taskDescription, start, end);
-                        if (taskWasDone) {
-                            task.markAsDone();
-                        }
-                        break;
-                    default:
-                        throw new InvalidFileFormatException("Line " + lineNumber + ": Unrecognised task type");
+                case Todo.TYPE:
+                    task = new Todo(taskDescription);
+                    if (taskWasDone) {
+                        task.markAsDone();
+                    }
+                    break;
+                case Deadline.TYPE:
+                    if (!tokenizer.hasMoreTokens()) {
+                        throw new InvalidFileFormatException(
+                                "Line " + lineNumber + ": Deadline Task doesn't have a deadline");
+                    }
+                    String deadline = tokenizer.nextToken().strip();
+                    task = new Deadline(taskDescription, deadline);
+                    if (taskWasDone) {
+                        task.markAsDone();
+                    }
+                    break;
+                case Event.TYPE:
+                    if (!tokenizer.hasMoreTokens()) {
+                        throw new InvalidFileFormatException(
+                                "Line " + lineNumber + ": Event doesn't have a start date/time");
+                    }
+                    String start = tokenizer.nextToken().strip();
+                    if (!tokenizer.hasMoreTokens()) {
+                        throw new InvalidFileFormatException(
+                                "Line " + lineNumber + ": Event doesn't have an end date/time");
+                    }
+                    String end = tokenizer.nextToken().strip();
+                    task = new Event(taskDescription, start, end);
+                    if (taskWasDone) {
+                        task.markAsDone();
+                    }
+                    break;
+                default:
+                    throw new InvalidFileFormatException("Line " + lineNumber + ": Unrecognised task type");
                 }
                 taskList.addTask(task);
                 lineNumber++;
