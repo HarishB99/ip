@@ -1,10 +1,11 @@
 package bhaymax.ui;
 
-import java.util.Scanner;
 import java.io.IOException;
 import java.time.format.DateTimeParseException;
-import bhaymax.exception.InvalidFileFormatException;
+import java.util.Scanner;
+
 import bhaymax.exception.InvalidCommandFormatException;
+import bhaymax.exception.InvalidFileFormatException;
 
 public class Ui {
     private final Scanner scanner;
