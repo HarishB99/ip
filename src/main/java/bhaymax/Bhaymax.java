@@ -10,6 +10,9 @@ import bhaymax.command.Command;
 import bhaymax.exception.InvalidFileFormatException;
 import bhaymax.exception.InvalidCommandFormatException;
 
+/**
+ * The main entry point for Bhaymax Chatbot app
+ */
 public class Bhaymax {
     public static final String APP_NAME = "Bhaymax";
 
@@ -17,6 +20,10 @@ public class Bhaymax {
     private final Ui ui;
     private TaskList tasks;
 
+    /**
+     * Sets up the UI and loads the task
+     * from a file, if it exists
+     */
     public Bhaymax() {
         this.ui = new Ui();
         this.storage = new Storage();
@@ -32,6 +39,9 @@ public class Bhaymax {
         }
     }
 
+    /**
+     * Executes the chatbot app
+     */
     public void run() {
         this.ui.showLine();
         this.ui.showWelcome(Bhaymax.APP_NAME);
