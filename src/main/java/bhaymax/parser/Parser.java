@@ -11,6 +11,7 @@ import bhaymax.command.FilterCommand;
 import bhaymax.command.FilterOpt;
 import bhaymax.command.ListCommand;
 import bhaymax.command.MarkCommand;
+import bhaymax.command.SearchCommand;
 import bhaymax.command.TodoCommand;
 import bhaymax.command.UnmarkCommand;
 import bhaymax.exception.InvalidCommandFormatException;
@@ -26,6 +27,7 @@ public class Parser {
     public static final String COMMAND_UNMARK = "unmark";
     public static final String COMMAND_TODO = "todo";
     public static final String COMMAND_DEADLINE = "deadline";
+    public static final String COMMAND_SEARCH = "search";
     public static final String COMMAND_FILTER = "filter";
     public static final String COMMAND_EVENT = "event";
     public static final String COMMAND_DELETE = "delete";
@@ -167,6 +169,20 @@ public class Parser {
 
             return new EventCommand(
                     taskDescription.toString(), start.toString(), end.toString());
+        case Parser.COMMAND_SEARCH:
+            if (!tokenizer.hasMoreTokens()) {
+                throw new InvalidCommandFormatException("Missing search term");
+            }
+
+            StringBuilder searchTerm = new StringBuilder();
+            while (tokenizer.hasMoreTokens()) {
+                searchTerm.append(tokenizer.nextToken());
+                if (tokenizer.hasMoreTokens()) {
+                    searchTerm.append(' ');
+                }
+            }
+
+            return new SearchCommand(searchTerm.toString());
         case Parser.COMMAND_FILTER:
             if (!tokenizer.hasMoreTokens()) {
                 throw new InvalidCommandFormatException("Missing date and/or time option");
