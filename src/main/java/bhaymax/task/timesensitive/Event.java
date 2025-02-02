@@ -7,11 +7,25 @@ import java.time.format.DateTimeFormatter;
 import bhaymax.task.Task;
 import bhaymax.parser.Parser;
 
+/**
+ * Represents a task pertaining to an event
+ */
 public class Event extends Task implements TimeSensitiveTask {
     public static final String TYPE = "E";
     protected LocalDateTime start;
     protected LocalDateTime end;
 
+    /**
+     * Sets up the description of the event, as well as
+     * the dates and times at which the event will start
+     * and end
+     *
+     * @param description the description of the event
+     * @param start the date and time when the event will start, as a {@code String}
+     * @param end the date and time when the event will end, as a {@code String}
+     * @throws DateTimeParseException if the start date or end date provided is not of the expected format
+     * @see Parser#DATETIME_INPUT_FORMAT
+     */
     public Event(String description, String start, String end)
             throws DateTimeParseException {
         super(Event.TYPE, description);

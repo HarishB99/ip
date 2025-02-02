@@ -7,9 +7,17 @@ import bhaymax.task.Task;
 import bhaymax.task.Todo;
 import bhaymax.task.TaskList;
 
+/**
+ * Represents a {@code todo} command
+ */
 public class TodoCommand extends Command {
     private final String taskDescription;
 
+    /**
+     * Sets up the task of the To-Do task
+     *
+     * @param taskDescription the description of the to-do task
+     */
     public TodoCommand(String taskDescription) {
         this.taskDescription = taskDescription;
     }

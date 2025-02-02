@@ -7,10 +7,22 @@ import java.time.format.DateTimeFormatter;
 import bhaymax.task.Task;
 import bhaymax.parser.Parser;
 
+/**
+ * Represents a task with a deadline
+ */
 public class Deadline extends Task implements TimeSensitiveTask {
     public static final String TYPE = "D";
     protected LocalDateTime deadline;
 
+    /**
+     * Sets up the description and the
+     * due date of the deadline
+     *
+     * @param description the description of the task
+     * @param deadline the date and time the task is due, as a {@code String}
+     * @throws DateTimeParseException if the deadline provided is not of the expected format
+     * @see Parser#DATETIME_INPUT_FORMAT
+     */
     public Deadline(String description, String deadline)
             throws DateTimeParseException {
         super(Deadline.TYPE, description);

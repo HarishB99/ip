@@ -15,16 +15,34 @@ import bhaymax.task.timesensitive.Event;
 import bhaymax.task.timesensitive.Deadline;
 import bhaymax.exception.InvalidFileFormatException;
 
+/**
+ * Provides methods to load (read) and save (write)
+ * tasks from/to file respectively
+ */
 public class Storage {
     public static final String DATA_DIRECTORY = "data";
     public static final String DATA_FILE = "tasks.txt";
     private final String filePath;
 
+    /**
+     * Sets up the path to the tasks file, which is a
+     * concatenation of {@link Storage#DATA_DIRECTORY} and
+     * {@link Storage#DATA_FILE}
+     */
     public Storage() {
         this.filePath = String.format(
                 "%s/%s", Storage.DATA_DIRECTORY, Storage.DATA_FILE);
     }
 
+    /**
+     * Loads tasks from the tasks file and returns
+     * a {@link TaskList} object containing said loaded tasks
+     *
+     * @return a {@link TaskList} object containing the loaded tasks
+     * @throws InvalidFileFormatException If the data in the file is not of valid format
+     * @throws DateTimeParseException If the dates provided in the file are not of recognised format
+     * @see bhaymax.parser.Parser#DATETIME_INPUT_FORMAT
+     */
     public TaskList loadTasks()
             throws InvalidFileFormatException, DateTimeParseException {
         TaskList taskList = new TaskList();
@@ -103,6 +121,12 @@ public class Storage {
         }
     }
 
+    /**
+     * Saves tasks to the tasks file
+     *
+     * @param taskList The {@link TaskList} object containing the list of tasks to be saved
+     * @throws IOException If any error occurs when saving the tasks to the file
+     */
     public void saveTasks(TaskList taskList) throws IOException {
         File directory = new File(Storage.DATA_DIRECTORY);
         if (!directory.exists()) {

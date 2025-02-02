@@ -16,6 +16,10 @@ import bhaymax.command.TodoCommand;
 import bhaymax.command.UnmarkCommand;
 import bhaymax.exception.InvalidCommandFormatException;
 
+/**
+ * Provides methods to parse a command string
+ * to a {@link Command} object
+ */
 public class Parser {
     public static final String COMMAND_LIST             = "list";
     public static final String COMMAND_MARK             = "mark";
@@ -39,6 +43,15 @@ public class Parser {
     public static final String FILTER_OPT_AFTER_TIME    = "/after_time";
     public static final String FILTER_OPT_ON_TIME       = "/on_time";
 
+    /**
+     * Processes the command string entered by a user
+     * and returns a {@link Command} object
+     *
+     * @param fullCommandString the command string entered by the user
+     * @param taskList the {@link TaskList} object containing a list of tasks
+     * @return a {@link Command} object representing the command entered by the user
+     * @throws InvalidCommandFormatException If the format of the command entered by the user is incorrect
+     */
     public static Command parse(String fullCommandString, TaskList taskList) throws InvalidCommandFormatException {
         StringTokenizer tokenizer = new StringTokenizer(fullCommandString);
         if (!tokenizer.hasMoreTokens()) {
