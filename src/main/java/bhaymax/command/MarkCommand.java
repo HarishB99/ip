@@ -1,10 +1,11 @@
 package bhaymax.command;
 
 import java.io.IOException;
-import bhaymax.ui.Ui;
+
+import bhaymax.storage.Storage;
 import bhaymax.task.Task;
 import bhaymax.task.TaskList;
-import bhaymax.storage.Storage;
+import bhaymax.ui.Ui;
 
 /**
  * Represents a {@code mark} command
@@ -22,7 +23,7 @@ public class MarkCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) throws IOException  {
+    public void execute(TaskList taskList, Ui ui, Storage storage) throws IOException {
         Task markedTask = taskList.markTaskAsDone(this.taskNumber);
         storage.saveTasks(taskList);
         ui.printWithIndent(

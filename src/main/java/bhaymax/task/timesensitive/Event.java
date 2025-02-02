@@ -2,10 +2,11 @@ package bhaymax.task.timesensitive;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 import java.time.format.DateTimeFormatter;
-import bhaymax.task.Task;
+import java.time.format.DateTimeParseException;
+
 import bhaymax.parser.Parser;
+import bhaymax.task.Task;
 
 /**
  * Represents a task pertaining to an event

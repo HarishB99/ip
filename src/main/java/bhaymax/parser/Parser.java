@@ -2,7 +2,6 @@ package bhaymax.parser;
 
 import java.util.StringTokenizer;
 
-import bhaymax.task.TaskList;
 import bhaymax.command.Command;
 import bhaymax.command.DeadlineCommand;
 import bhaymax.command.DeleteCommand;
@@ -15,33 +14,34 @@ import bhaymax.command.MarkCommand;
 import bhaymax.command.TodoCommand;
 import bhaymax.command.UnmarkCommand;
 import bhaymax.exception.InvalidCommandFormatException;
+import bhaymax.task.TaskList;
 
 /**
  * Provides methods to parse a command string
  * to a {@link Command} object
  */
 public class Parser {
-    public static final String COMMAND_LIST             = "list";
-    public static final String COMMAND_MARK             = "mark";
-    public static final String COMMAND_UNMARK           = "unmark";
-    public static final String COMMAND_TODO             = "todo";
-    public static final String COMMAND_DEADLINE         = "deadline";
-    public static final String COMMAND_FILTER           = "filter";
-    public static final String COMMAND_EVENT            = "event";
-    public static final String COMMAND_DELETE           = "delete";
-    public static final String COMMAND_EXIT             = "bye";
-    public static final String DATETIME_INPUT_FORMAT    = "dd-MM-yyyy HH:mm";
-    public static final String DATE_FORMAT              = "dd-MM-yyyy";
-    public static final String DATETIME_OUTPUT_FORMAT   = "dd MMM yyyy, EEE @ HH:mm";
-    public static final String DEADLINE_OPT_BY          = "/by";
-    public static final String EVENT_OPT_START          = "/from";
-    public static final String EVENT_OPT_END            = "/to";
-    public static final String FILTER_OPT_BEFORE        = "/before";
-    public static final String FILTER_OPT_AFTER         = "/after";
-    public static final String FILTER_OPT_ON            = "/on";
-    public static final String FILTER_OPT_BEFORE_TIME   = "/before_time";
-    public static final String FILTER_OPT_AFTER_TIME    = "/after_time";
-    public static final String FILTER_OPT_ON_TIME       = "/on_time";
+    public static final String COMMAND_LIST = "list";
+    public static final String COMMAND_MARK = "mark";
+    public static final String COMMAND_UNMARK = "unmark";
+    public static final String COMMAND_TODO = "todo";
+    public static final String COMMAND_DEADLINE = "deadline";
+    public static final String COMMAND_FILTER = "filter";
+    public static final String COMMAND_EVENT = "event";
+    public static final String COMMAND_DELETE = "delete";
+    public static final String COMMAND_EXIT = "bye";
+    public static final String DATETIME_INPUT_FORMAT = "dd-MM-yyyy HH:mm";
+    public static final String DATE_FORMAT = "dd-MM-yyyy";
+    public static final String DATETIME_OUTPUT_FORMAT = "dd MMM yyyy, EEE @ HH:mm";
+    public static final String DEADLINE_OPT_BY = "/by";
+    public static final String EVENT_OPT_START = "/from";
+    public static final String EVENT_OPT_END = "/to";
+    public static final String FILTER_OPT_BEFORE = "/before";
+    public static final String FILTER_OPT_AFTER = "/after";
+    public static final String FILTER_OPT_ON = "/on";
+    public static final String FILTER_OPT_BEFORE_TIME = "/before_time";
+    public static final String FILTER_OPT_AFTER_TIME = "/after_time";
+    public static final String FILTER_OPT_ON_TIME = "/on_time";
 
     /**
      * Processes the command string entered by a user

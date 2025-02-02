@@ -1,11 +1,12 @@
 package bhaymax.command;
 
 import java.io.IOException;
+
 import bhaymax.storage.Storage;
-import bhaymax.ui.Ui;
-import bhaymax.util.Pair;
 import bhaymax.task.Task;
 import bhaymax.task.TaskList;
+import bhaymax.ui.Ui;
+import bhaymax.util.Pair;
 
 /**
  * Represents a {@code delete} command

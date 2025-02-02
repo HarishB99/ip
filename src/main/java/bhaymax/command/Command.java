@@ -1,9 +1,10 @@
 package bhaymax.command;
 
 import java.io.IOException;
-import bhaymax.ui.Ui;
-import bhaymax.task.TaskList;
+
 import bhaymax.storage.Storage;
+import bhaymax.task.TaskList;
+import bhaymax.ui.Ui;
 
 /**
  * Represents a command supported by {@link bhaymax.Bhaymax} Chatbot app

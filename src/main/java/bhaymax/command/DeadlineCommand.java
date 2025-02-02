@@ -1,11 +1,12 @@
 package bhaymax.command;
 
 import java.io.IOException;
+
 import bhaymax.storage.Storage;
-import bhaymax.ui.Ui;
 import bhaymax.task.Task;
 import bhaymax.task.TaskList;
 import bhaymax.task.timesensitive.Deadline;
+import bhaymax.ui.Ui;
 
 /**
  * Represents a {@code deadline} command
