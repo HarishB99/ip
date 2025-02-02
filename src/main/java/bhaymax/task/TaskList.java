@@ -84,6 +84,14 @@ public class TaskList {
         return new Pair<Task, Integer>(taskToBeRemoved, this.taskList.size());
     }
 
+    /**
+     * Prints the tasks in the list
+     * that contain the provided
+     * search term
+     *
+     * @param searchTerm the search term to search for
+     * @param ui the {@link Ui} object - will be used for printing the tasks to the CLI-UI
+     */
     public void printTasksContainingSearchTerm(String searchTerm, Ui ui) {
         List<Task> filteredTasks = this.taskList.stream()
                 .filter(task -> task.hasSearchTerm(searchTerm))
