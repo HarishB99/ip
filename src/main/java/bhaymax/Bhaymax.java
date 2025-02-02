@@ -11,7 +11,7 @@ import bhaymax.exception.InvalidFileFormatException;
 import bhaymax.exception.InvalidCommandFormatException;
 
 /**
- * The main entry point for Bhaymax Chatbot app
+ * The main entry point for {@link Bhaymax} Chatbot app
  */
 public class Bhaymax {
     public static final String APP_NAME = "Bhaymax";

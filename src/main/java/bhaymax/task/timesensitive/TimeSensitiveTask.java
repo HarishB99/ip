@@ -2,6 +2,9 @@ package bhaymax.task.timesensitive;
 
 import java.time.format.DateTimeParseException;
 
+/**
+ * An interface for task types that need to track time
+ */
 public interface TimeSensitiveTask {
     boolean isBeforeDate(String date)
             throws DateTimeParseException;

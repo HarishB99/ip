@@ -7,9 +7,17 @@ import bhaymax.util.Pair;
 import bhaymax.task.Task;
 import bhaymax.task.TaskList;
 
+/**
+ * Represents a {@code delete} command
+ */
 public class DeleteCommand extends Command {
     private final int taskNumber;
 
+    /**
+     * Sets up the task number of the task to be deleted
+     *
+     * @param taskNumber the index number of the task to be deleted
+     */
     public DeleteCommand(int taskNumber) {
         this.taskNumber = taskNumber;
     }

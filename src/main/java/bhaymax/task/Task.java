@@ -1,12 +1,21 @@
 package bhaymax.task;
 
+/**
+ * Represents a generic task
+ */
 public class Task {
     public static final String DELIMITER = "|";
     protected String description;
     protected String type;
     protected boolean isDone;
 
-    public Task(String type, String description) {
+    /**
+     * Sets up the type and description of the task
+     *
+     * @param type the type of the task
+     * @param description the description of the task
+     */
+    protected Task(String type, String description) {
         this.type = type;
         this.description = description;
         this.isDone = false;
@@ -24,6 +33,14 @@ public class Task {
         this.isDone = false;
     }
 
+    /**
+     * Returns a {@code String} representation
+     * of the {@code Task} object suitable for saving to
+     * a file
+     *
+     * @return the {@code String} representation of this object,
+     *         suitable for saving to a file
+     */
     public String serialise() {
         return this.type + " " + Task.DELIMITER + " "
                 + (this.isDone ? "1" : "0")
