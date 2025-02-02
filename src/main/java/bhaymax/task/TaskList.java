@@ -2,7 +2,6 @@ package bhaymax.task;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import bhaymax.command.FilterOpt;
 import bhaymax.task.timesensitive.TimeSensitiveTask;
