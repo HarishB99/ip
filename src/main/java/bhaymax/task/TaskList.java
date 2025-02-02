@@ -95,8 +95,8 @@ public class TaskList {
         }
 
         for (Task task : filteredTasks) {
-            ui.printWithIndent(
-                    this.taskList.indexOf(task) + "." + task,
+            ui.printWithIndent((this.taskList.indexOf(task) + 1)
+                            + "." + task,
                     true);
         }
     }
@@ -158,8 +158,8 @@ public class TaskList {
             default:
                 continue;
             }
-            ui.printWithIndent(
-                    this.taskList.indexOf(timeSensitiveTask) + "." + timeSensitiveTask,
+            ui.printWithIndent((this.taskList.indexOf(timeSensitiveTask) + 1)
+                            + "." + timeSensitiveTask,
                     true);
         }
     }
