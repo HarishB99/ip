@@ -1,6 +1,8 @@
 package bhaymax.task;
 
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import bhaymax.ui.Ui;
 import bhaymax.util.Pair;
@@ -41,6 +43,23 @@ public class TaskList {
         Task taskToBeRemoved = this.taskList.get(index);
         this.taskList.remove(taskToBeRemoved);
         return new Pair<Task, Integer>(taskToBeRemoved, this.taskList.size());
+    }
+
+    public void printTasksContainingSearchTerm(String searchTerm, Ui ui) {
+        List<Task> filteredTasks = this.taskList.stream()
+                .filter(task -> task.hasSearchTerm(searchTerm))
+                .toList();
+
+        if (filteredTasks.isEmpty()) {
+            ui.printWithIndent("No tasks match the given search term", true);
+            return;
+        }
+
+        for (Task task : filteredTasks) {
+            ui.printWithIndent(
+                    this.taskList.indexOf(task) + "." + task,
+                    true);
+        }
     }
 
     public void printTasksWithDateFilter(String dateTime, FilterOpt filterOpt, Ui ui) {

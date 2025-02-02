@@ -31,6 +31,10 @@ public class Task {
                 + this.description;
     }
 
+    public boolean hasSearchTerm(String searchTerm) {
+        return this.description.contains(searchTerm);
+    }
+
     @Override
     public String toString() {
         return "[" + this.getStatusIcon() + "] "
