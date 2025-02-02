@@ -31,7 +31,8 @@ public class Parser {
     public static final String COMMAND_FILTER = "filter";
     public static final String COMMAND_EVENT = "event";
     public static final String COMMAND_DELETE = "delete";
-    public static final String COMMAND_EXIT = "bye";
+    public static final String COMMAND_BYE = "bye";
+    public static final String COMMAND_EXIT = "exit";
     public static final String DATETIME_INPUT_FORMAT = "dd-MM-yyyy HH:mm";
     public static final String DATE_FORMAT = "dd-MM-yyyy";
     public static final String DATETIME_OUTPUT_FORMAT = "dd MMM yyyy, EEE @ HH:mm";
@@ -214,6 +215,8 @@ public class Parser {
                     dateTime.toString(), FilterOpt.TIME_AFTER);
             default -> throw new InvalidCommandFormatException("Unknown filter option");
             };
+        case Parser.COMMAND_BYE:
+            // Fallthrough
         case Parser.COMMAND_EXIT:
             return new ExitCommand();
         default:
