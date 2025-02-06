@@ -2,6 +2,7 @@ package bhaymax.command;
 
 import java.io.IOException;
 
+import bhaymax.controller.MainWindow;
 import bhaymax.storage.Storage;
 import bhaymax.task.Task;
 import bhaymax.task.TaskList;
@@ -30,6 +31,15 @@ public class UnmarkCommand extends Command {
                 "OK, I've marked this task as not done yet:", true);
         ui.printWithIndent(
                 "  " + markedTask, true);
+    }
+
+    @Override
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
+        Task markedTask = taskList.markTaskAsUndone(this.taskNumber);
+        storage.saveTasks(taskList);
+        String response = "OK, I've marked this task as not done yet:" + System.lineSeparator()
+                + "  " + markedTask;
+        mainWindowController.showResponse(response);
     }
 
     @Override
