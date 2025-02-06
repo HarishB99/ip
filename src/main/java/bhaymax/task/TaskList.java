@@ -94,19 +94,13 @@ public class TaskList {
      *                             list
      */
     public void showTasksContainingSearchTerm(String searchTerm, MainWindow mainWindowController) {
-        List<Task> filteredTasks = this.taskList.stream()
+        String response = this.taskList.stream()
                 .filter(task -> task.hasSearchTerm(searchTerm))
-                .toList();
-
-        if (filteredTasks.isEmpty()) {
-            mainWindowController.showResponse("No tasks match the given search term");
-            return;
-        }
-
-        for (Task task : filteredTasks) {
-            mainWindowController.showResponse((this.taskList.indexOf(task) + 1)
-                            + "." + task);
-        }
+                .map(task -> (this.taskList.indexOf(task) + 1) + ". " + task)
+                .reduce((previousTask, nextTask)
+                        -> previousTask + System.lineSeparator() + nextTask)
+                .orElse("No tasks match the given search term");
+        mainWindowController.showResponse(response);
     }
 
     /**
@@ -218,6 +212,8 @@ public class TaskList {
             return;
         }
 
+        StringBuilder response = new StringBuilder();
+
         for (Task task : this.taskList) {
             if (!(task instanceof TimeSensitiveTask timeSensitiveTask)) {
                 continue;
@@ -256,9 +252,12 @@ public class TaskList {
             default:
                 continue;
             }
-            mainWindowController.showResponse((this.taskList.indexOf(timeSensitiveTask) + 1)
-                            + "." + timeSensitiveTask);
+            response.append((this.taskList.indexOf(timeSensitiveTask) + 1))
+                    .append(".").append(timeSensitiveTask)
+                    .append(System.lineSeparator());
         }
+
+        mainWindowController.showResponse(response.toString());
     }
 
     /**
@@ -302,14 +301,10 @@ public class TaskList {
      *                             display dialog boxes with the tasks in this list
      */
     public void showTasks(MainWindow mainWindowController) {
-        if (this.taskList.isEmpty()) {
-            mainWindowController.showResponse(
-                    "You're all caught up! You have no pending tasks!");
-        } else {
-            mainWindowController.showResponse("Here are the tasks in your list:");
-        }
-        for (int i = 0; i < this.taskList.size(); i++) {
-            mainWindowController.showResponse((i + 1) + "." + taskList.get(i));
-        }
+        String response = this.taskList.stream()
+                .map(task -> (taskList.indexOf(task) + 1) + "." + task)
+                .reduce((previousTask, nextTask) -> previousTask + System.lineSeparator() + nextTask)
+                .orElse("You're all caught up! You have no pending tasks!");
+        mainWindowController.showResponse(response);
     }
 }

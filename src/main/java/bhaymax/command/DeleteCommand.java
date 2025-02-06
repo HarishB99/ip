@@ -45,9 +45,10 @@ public class DeleteCommand extends Command {
         Task deletedTask = pair.t();
         int numberOfRemainingTasks = pair.u();
         storage.saveTasks(taskList);
-        mainWindowController.showResponse("Noted. I've removed this task:");
-        mainWindowController.showResponse("  " + deletedTask);
-        mainWindowController.showResponse("Now you have " + numberOfRemainingTasks + " tasks in the list.");
+        String response = "Noted. I've removed this task:" + System.lineSeparator()
+                + "  " + deletedTask + System.lineSeparator()
+                + "Now you have " + numberOfRemainingTasks + " tasks in the list.";
+        mainWindowController.showResponse(response);
     }
 
     @Override

@@ -50,9 +50,10 @@ public class EventCommand extends Command {
         Task task = new Event(this.taskDescription, this.start, this.end);
         int taskListCount = taskList.addTask(task);
         storage.saveTasks(taskList);
-        mainWindowController.showResponse("Got it. I've added this task:");
-        mainWindowController.showResponse("  " + task);
-        mainWindowController.showResponse("Now you have " + taskListCount + " tasks in the list.");
+        String response = "Got it. I've added this task:" + System.lineSeparator()
+                + "  " + task + System.lineSeparator()
+                + "Now you have " + taskListCount + " tasks in the list.";
+        mainWindowController.showResponse(response);
     }
 
     @Override
