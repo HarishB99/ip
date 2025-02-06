@@ -3,6 +3,7 @@ package bhaymax.parser;
 import java.util.StringTokenizer;
 
 import bhaymax.command.Command;
+import bhaymax.command.CommandString;
 import bhaymax.command.DeadlineCommand;
 import bhaymax.command.DeleteCommand;
 import bhaymax.command.EventCommand;
@@ -14,6 +15,7 @@ import bhaymax.command.MarkCommand;
 import bhaymax.command.SearchCommand;
 import bhaymax.command.TodoCommand;
 import bhaymax.command.UnmarkCommand;
+import bhaymax.exception.InvalidCommandException;
 import bhaymax.exception.InvalidCommandFormatException;
 import bhaymax.task.TaskList;
 
@@ -22,17 +24,6 @@ import bhaymax.task.TaskList;
  * to a {@link Command} object
  */
 public class Parser {
-    public static final String COMMAND_LIST = "list";
-    public static final String COMMAND_MARK = "mark";
-    public static final String COMMAND_UNMARK = "unmark";
-    public static final String COMMAND_TODO = "todo";
-    public static final String COMMAND_DEADLINE = "deadline";
-    public static final String COMMAND_SEARCH = "search";
-    public static final String COMMAND_FILTER = "filter";
-    public static final String COMMAND_EVENT = "event";
-    public static final String COMMAND_DELETE = "delete";
-    public static final String COMMAND_BYE = "bye";
-    public static final String COMMAND_EXIT = "exit";
     public static final String DATETIME_INPUT_FORMAT = "dd-MM-yyyy HH:mm";
     public static final String DATE_FORMAT = "dd-MM-yyyy";
     public static final String DATETIME_OUTPUT_FORMAT = "dd MMM yyyy, EEE @ HH:mm";
@@ -55,20 +46,27 @@ public class Parser {
      * @return a {@link Command} object representing the command entered by the user
      * @throws InvalidCommandFormatException If the format of the command entered by the user is incorrect
      */
-    public static Command parse(String fullCommandString, TaskList taskList) throws InvalidCommandFormatException {
+    public static Command parse(String fullCommandString, TaskList taskList)
+            throws InvalidCommandFormatException, InvalidCommandException {
         StringTokenizer tokenizer = new StringTokenizer(fullCommandString);
         if (!tokenizer.hasMoreTokens()) {
             throw new InvalidCommandFormatException("Command is empty");
         }
         String commandString = tokenizer.nextToken();
-        switch (commandString) {
-        case Parser.COMMAND_LIST:
+        if (!CommandString.isValidCommandString(commandString)) {
+            throw new InvalidCommandFormatException("Unrecognised command");
+        }
+
+        CommandString validCommandString = CommandString.valueOfCommandString(commandString);
+
+        switch (validCommandString) {
+        case LIST:
             return new ListCommand();
-        case Parser.COMMAND_DELETE:
+        case DELETE:
             // Fallthrough
-        case Parser.COMMAND_MARK:
+        case MARK:
             // Fallthrough
-        case Parser.COMMAND_UNMARK:
+        case UNMARK:
             if (!tokenizer.hasMoreTokens()) {
                 throw new InvalidCommandFormatException("Missing task number");
             }
@@ -76,18 +74,18 @@ public class Parser {
             if (!taskList.isValidIndex(indexOfAffectedTask)) {
                 throw new InvalidCommandFormatException("Provided task number could not be found");
             }
-            if (commandString.equals(COMMAND_MARK)) {
+            if (validCommandString.equals(CommandString.MARK)) {
                 return new MarkCommand(indexOfAffectedTask);
-            } else if (commandString.equals(COMMAND_UNMARK)) {
+            } else if (validCommandString.equals(CommandString.UNMARK)) {
                 return new UnmarkCommand(indexOfAffectedTask);
             } else {
                 return new DeleteCommand(indexOfAffectedTask);
             }
-        case Parser.COMMAND_TODO:
+        case TODO:
             // Fallthrough
-        case Parser.COMMAND_DEADLINE:
+        case DEADLINE:
             // Fallthrough
-        case Parser.COMMAND_EVENT:
+        case EVENT:
             if (!tokenizer.hasMoreTokens()) {
                 throw new InvalidCommandFormatException("Missing task description");
             }
@@ -100,13 +98,13 @@ public class Parser {
             while (tokenizer.hasMoreTokens()) {
                 String token = tokenizer.nextToken();
 
-                if (commandString.equals(Parser.COMMAND_DEADLINE)
+                if (validCommandString.equals(CommandString.DEADLINE)
                         && token.equals(Parser.DEADLINE_OPT_BY)) {
                     deadlineExists = true;
                     break;
                 }
 
-                if (commandString.equals(Parser.COMMAND_EVENT)
+                if (validCommandString.equals(CommandString.EVENT)
                         && token.equals(Parser.EVENT_OPT_START)) {
                     startExists = true;
                     break;
@@ -117,19 +115,19 @@ public class Parser {
             }
             taskDescription.deleteCharAt(taskDescription.length() - 1);
 
-            if (commandString.equals(Parser.COMMAND_TODO)) {
+            if (validCommandString.equals(CommandString.TODO)) {
                 return new TodoCommand(taskDescription.toString());
             }
 
-            if (commandString.equals(Parser.COMMAND_DEADLINE)
+            if (validCommandString.equals(CommandString.DEADLINE)
                     && !(deadlineExists && tokenizer.hasMoreTokens())) {
                 throw new InvalidCommandFormatException("No deadline provided");
-            } else if (commandString.equals(Parser.COMMAND_EVENT)
+            } else if (validCommandString.equals(CommandString.EVENT)
                     && !(startExists && tokenizer.hasMoreTokens())) {
                 throw new InvalidCommandFormatException("No start date and time provided for event");
             }
 
-            if (commandString.equals(Parser.COMMAND_DEADLINE)) {
+            if (validCommandString.equals(CommandString.DEADLINE)) {
                 StringBuilder deadline = new StringBuilder();
                 while (tokenizer.hasMoreTokens()) {
                     String token = tokenizer.nextToken();
@@ -170,7 +168,7 @@ public class Parser {
 
             return new EventCommand(
                     taskDescription.toString(), start.toString(), end.toString());
-        case Parser.COMMAND_SEARCH:
+        case SEARCH:
             if (!tokenizer.hasMoreTokens()) {
                 throw new InvalidCommandFormatException("Missing search term");
             }
@@ -184,7 +182,7 @@ public class Parser {
             }
 
             return new SearchCommand(searchTerm.toString());
-        case Parser.COMMAND_FILTER:
+        case FILTER:
             if (!tokenizer.hasMoreTokens()) {
                 throw new InvalidCommandFormatException("Missing date and/or time option");
             }
@@ -215,9 +213,9 @@ public class Parser {
                     dateTime.toString(), FilterOpt.TIME_AFTER);
             default -> throw new InvalidCommandFormatException("Unknown filter option");
             };
-        case Parser.COMMAND_BYE:
+        case BYE:
             // Fallthrough
-        case Parser.COMMAND_EXIT:
+        case EXIT:
             return new ExitCommand();
         default:
             throw new InvalidCommandFormatException("Unrecognised command");
