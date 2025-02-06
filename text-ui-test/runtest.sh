@@ -25,18 +25,18 @@ then
 fi
 
 # compile the code into the bin folder, terminates if error occurred
-if ! javac -cp ../src/main/java -Xlint:none -d ../bin ../src/main/java/bhaymax/Bhaymax.java
+if ! javac -cp ../src/main/java -Xlint:none -d ../bin ../src/main/java/bhaymax/main/Bhaymax.java
 then
     echo "********** BUILD FAILURE **********"
     exit 1
 fi
 
 # run the program, feed commands from input.txt file and redirect the output to the ACTUAL.TXT
-java -classpath ../bin bhaymax.Bhaymax < input.txt > ACTUAL.TXT
+java -classpath ../bin bhaymax.main.Bhaymax < input.txt > ACTUAL.TXT
 rm -rf data
-java -classpath ../bin bhaymax.Bhaymax < input_blank.txt > ACTUAL_BLANK.TXT
+java -classpath ../bin bhaymax.main.Bhaymax < input_blank.txt > ACTUAL_BLANK.TXT
 rm -rf data
-java -classpath ../bin bhaymax.Bhaymax < input_erroneous.txt > ACTUAL_ERRONEOUS.TXT
+java -classpath ../bin bhaymax.main.Bhaymax < input_erroneous.txt > ACTUAL_ERRONEOUS.TXT
 
 # convert to UNIX format
 cp EXPECTED.TXT EXPECTED-UNIX.TXT

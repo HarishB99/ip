@@ -1,4 +1,4 @@
-package bhaymax;
+package bhaymax.main;
 
 import java.io.IOException;
 import java.time.format.DateTimeParseException;

@@ -2,12 +2,13 @@ package bhaymax.command;
 
 import java.io.IOException;
 
+import bhaymax.main.Bhaymax;
 import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
 import bhaymax.ui.Ui;
 
 /**
- * Represents a command supported by {@link bhaymax.Bhaymax} Chatbot app
+ * Represents a command supported by {@link Bhaymax} Chatbot app
  */
 public abstract class Command {
     /**
