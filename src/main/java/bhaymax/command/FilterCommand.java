@@ -2,6 +2,7 @@ package bhaymax.command;
 
 import java.io.IOException;
 
+import bhaymax.controller.MainWindow;
 import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
 import bhaymax.ui.Ui;
@@ -34,6 +35,11 @@ public class FilterCommand extends Command {
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) throws IOException {
         taskList.printTasksWithDateFilter(this.dateTime, this.filterOpt, ui);
+    }
+
+    @Override
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
+        taskList.showTasksWithDateFilter(this.dateTime, this.filterOpt, mainWindowController);
     }
 
     @Override

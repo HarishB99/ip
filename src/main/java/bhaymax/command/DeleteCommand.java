@@ -2,6 +2,7 @@ package bhaymax.command;
 
 import java.io.IOException;
 
+import bhaymax.controller.MainWindow;
 import bhaymax.storage.Storage;
 import bhaymax.task.Task;
 import bhaymax.task.TaskList;
@@ -36,6 +37,17 @@ public class DeleteCommand extends Command {
                 "  " + deletedTask, true);
         ui.printWithIndent(
                 "Now you have " + numberOfRemainingTasks + " tasks in the list.", true);
+    }
+
+    @Override
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
+        Pair<Task, Integer> pair = taskList.removeTask(this.taskNumber);
+        Task deletedTask = pair.t();
+        int numberOfRemainingTasks = pair.u();
+        storage.saveTasks(taskList);
+        mainWindowController.showResponse("Noted. I've removed this task:");
+        mainWindowController.showResponse("  " + deletedTask);
+        mainWindowController.showResponse("Now you have " + numberOfRemainingTasks + " tasks in the list.");
     }
 
     @Override

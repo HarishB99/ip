@@ -2,6 +2,7 @@ package bhaymax.command;
 
 import java.io.IOException;
 
+import bhaymax.controller.MainWindow;
 import bhaymax.storage.Storage;
 import bhaymax.task.Task;
 import bhaymax.task.TaskList;
@@ -42,6 +43,16 @@ public class EventCommand extends Command {
         ui.printWithIndent("  " + task, true);
         ui.printWithIndent(
                 "Now you have " + taskListCount + " tasks in the list.", true);
+    }
+
+    @Override
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
+        Task task = new Event(this.taskDescription, this.start, this.end);
+        int taskListCount = taskList.addTask(task);
+        storage.saveTasks(taskList);
+        mainWindowController.showResponse("Got it. I've added this task:");
+        mainWindowController.showResponse("  " + task);
+        mainWindowController.showResponse("Now you have " + taskListCount + " tasks in the list.");
     }
 
     @Override

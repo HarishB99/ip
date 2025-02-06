@@ -2,6 +2,7 @@ package bhaymax.command;
 
 import java.io.IOException;
 
+import bhaymax.controller.MainWindow;
 import bhaymax.storage.Storage;
 import bhaymax.task.Task;
 import bhaymax.task.TaskList;
@@ -30,6 +31,14 @@ public class MarkCommand extends Command {
                 "Nice! I've marked this task as done:", true);
         ui.printWithIndent(
                 "  " + markedTask, true);
+    }
+
+    @Override
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
+        Task markedTask = taskList.markTaskAsDone(this.taskNumber);
+        storage.saveTasks(taskList);
+        mainWindowController.showResponse("Nice! I've marked this task as done:");
+        mainWindowController.showResponse("  " + markedTask);
     }
 
     @Override
