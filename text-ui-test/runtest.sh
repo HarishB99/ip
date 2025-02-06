@@ -32,11 +32,11 @@ then
 fi
 
 # run the program, feed commands from input.txt file and redirect the output to the ACTUAL.TXT
-java -classpath ../bin Bhaymax < input.txt > ACTUAL.TXT
+java -classpath ../bin bhaymax.Bhaymax < input.txt > ACTUAL.TXT
 rm -rf data
-java -classpath ../bin Bhaymax < input_blank.txt > ACTUAL_BLANK.TXT
+java -classpath ../bin bhaymax.Bhaymax < input_blank.txt > ACTUAL_BLANK.TXT
 rm -rf data
-java -classpath ../bin Bhaymax < input_erroneous.txt > ACTUAL_ERRONEOUS.TXT
+java -classpath ../bin bhaymax.Bhaymax < input_erroneous.txt > ACTUAL_ERRONEOUS.TXT
 
 # convert to UNIX format
 cp EXPECTED.TXT EXPECTED-UNIX.TXT
