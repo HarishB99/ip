@@ -43,13 +43,14 @@ public class Main extends Application {
             AnchorPane ap = fxmlLoader.load();
             Scene scene = new Scene(ap);
             stage.setScene(scene);
-            // Inject the Duke instance
-            // fxmlLoader.<MainWindow>getController().setDuke(this.duke);
+
+            // Set up properties for MainWindow controller
             MainWindow mainWindowController = fxmlLoader.<MainWindow>getController();
             mainWindowController.setAppName(Main.APP_NAME);
             mainWindowController.setTasks(this.tasks);
             mainWindowController.setStorage(this.storage);
             mainWindowController.showWelcomeDialogBox();
+
             stage.show();
         } catch (IOException e) {
             throw new RuntimeException(e);
