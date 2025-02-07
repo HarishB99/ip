@@ -253,7 +253,7 @@ public class TaskList {
                 continue;
             }
             response.append((this.taskList.indexOf(timeSensitiveTask) + 1))
-                    .append(".").append(timeSensitiveTask)
+                    .append(". ").append(timeSensitiveTask)
                     .append(System.lineSeparator());
         }
 
@@ -302,7 +302,7 @@ public class TaskList {
      */
     public void showTasks(MainWindow mainWindowController) {
         String response = this.taskList.stream()
-                .map(task -> (taskList.indexOf(task) + 1) + "." + task)
+                .map(task -> (taskList.indexOf(task) + 1) + ". " + task)
                 .reduce((previousTask, nextTask) -> previousTask + System.lineSeparator() + nextTask)
                 .orElse("You're all caught up! You have no pending tasks!");
         mainWindowController.showResponse(response);
