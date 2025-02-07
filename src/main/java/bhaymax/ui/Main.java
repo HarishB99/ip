@@ -1,4 +1,4 @@
-package bhaymax.main;
+package bhaymax.ui;
 
 import java.io.IOException;
 
