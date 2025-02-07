@@ -19,7 +19,7 @@ public class Main extends Application {
     public static final String APP_NAME = "Bhaymax";
 
     private final Storage storage;
-    private TaskList tasks;
+    private final TaskList tasks;
 
     /**
      * Sets up the UI and loads the task
