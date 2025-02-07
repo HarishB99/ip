@@ -1,10 +1,8 @@
 package bhaymax.main;
 
 import java.io.IOException;
-import java.time.format.DateTimeParseException;
 
 import bhaymax.controller.MainWindow;
-import bhaymax.exception.InvalidFileFormatException;
 import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
 import javafx.application.Application;
@@ -31,10 +29,6 @@ public class Main extends Application {
         this.storage = new Storage();
         try {
             this.tasks = this.storage.loadTasks();
-        } catch (InvalidFileFormatException e) {
-            throw new RuntimeException(e);
-        } catch (DateTimeParseException e) {
-            throw new RuntimeException(e);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
