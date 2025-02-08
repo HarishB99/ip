@@ -51,6 +51,10 @@ public class Bhaymax extends Application {
             mainWindowController.setStorage(this.storage);
             mainWindowController.showWelcomeDialogBox();
 
+            stage.setMinHeight(640);
+            stage.setMinWidth(400);
+            stage.setMaxHeight(640);
+            stage.setMaxWidth(400);
             stage.show();
         } catch (IOException e) {
             throw new RuntimeException(e);
