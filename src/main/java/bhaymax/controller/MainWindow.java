@@ -260,7 +260,7 @@ public class MainWindow {
 
     /**
      * Creates two dialog boxes, one echoing user input and
-     * the other containing Duke's reply and then appends
+     * the other containing Bhaymax's reply and then appends
      * them to the dialog container. Clears the user input
      * after processing
      */
