@@ -46,6 +46,14 @@ public class MainWindow {
             Objects.requireNonNull(
                     this.getClass().getResourceAsStream(
                             "/images/bhaymax_chatbot_error.png")));
+    private final Image chatbotWelcomeImage = new Image(
+            Objects.requireNonNull(
+                    this.getClass().getResourceAsStream(
+                            "/images/bhaymax_chatbot_welcome.png")));
+    private final Image chatbotFarewellImage = new Image(
+            Objects.requireNonNull(
+                    this.getClass().getResourceAsStream(
+                            "/images/bhaymax_chatbot_farewell.png")));
     private TaskList tasks;
     private Storage storage;
     private String appName;
@@ -205,7 +213,7 @@ public class MainWindow {
      */
     public void showWelcomeDialogBox() {
         this.dialogContainer.getChildren().addAll(
-                this.getChatbotDialog("Hello! I'm " + this.appName
+                this.getChatbotWelcomeDialog("Hello! I'm " + this.appName
                         + ", your personal chatbot and task list manager!"),
                 this.getChatbotDialog("What can I do for you?")
         );
@@ -217,7 +225,7 @@ public class MainWindow {
      */
     public void showFarewellDialogBox() {
         this.dialogContainer.getChildren().addAll(
-                this.getChatbotDialog("Bye. Hope to see you again soon!"));
+                this.getChatbotFarewellDialog("Bye. Hope to see you again soon!"));
     }
 
     /**
@@ -240,6 +248,14 @@ public class MainWindow {
 
     private DialogBox getChatbotErrorDialog(String input) {
         return DialogBox.getChatbotDialog(input, this.chatbotErrorImage);
+    }
+
+    private DialogBox getChatbotWelcomeDialog(String input) {
+        return DialogBox.getChatbotDialog(input, this.chatbotWelcomeImage);
+    }
+
+    private DialogBox getChatbotFarewellDialog(String input) {
+        return DialogBox.getChatbotDialog(input, this.chatbotFarewellImage);
     }
 
     /**
