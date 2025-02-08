@@ -19,6 +19,7 @@ public enum CommandString {
     FILTER("filter"),
     EVENT("event"),
     DELETE("delete"),
+    CLEAR("clear"),
     BYE("bye"),
     EXIT("exit");
 

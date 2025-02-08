@@ -100,14 +100,6 @@ public class MainWindow {
         this.storage = storage;
     }
 
-    private void displayErrorResponses(LinkedList<String> responses) {
-        String finalResponse = responses.stream()
-                .reduce((previousResponse, nextResponse)
-                        -> previousResponse + System.lineSeparator() + nextResponse)
-                .orElse("");
-        this.dialogContainer.getChildren().addAll(this.getChatbotAnnoyedDialog(finalResponse));
-    }
-
     /**
      * Shows an error message when {@code InvalidCommandException} occurs
      *
@@ -199,6 +191,38 @@ public class MainWindow {
         return responses;
     }
 
+    private void displayErrorResponses(LinkedList<String> responses) {
+        String finalResponse = responses.stream()
+                .reduce((previousResponse, nextResponse)
+                        -> previousResponse + System.lineSeparator() + nextResponse)
+                .orElse("");
+        this.dialogContainer.getChildren().addAll(this.getChatbotAnnoyedDialog(finalResponse));
+    }
+
+    private DialogBox getUserDialog(String input) {
+        return DialogBox.getUserDialog(input, this.userImage);
+    }
+
+    private DialogBox getChatbotNormalDialog(String input) {
+        return DialogBox.getChatbotDialog(input, this.chatbotNormalImage);
+    }
+
+    private DialogBox getChatbotAnnoyedDialog(String input) {
+        return DialogBox.getChatbotDialog(input, this.chatbotAnnoyedImage);
+    }
+
+    private DialogBox getChatbotExcitedDialog(String input) {
+        return DialogBox.getChatbotDialog(input, this.chatbotExcitedImage);
+    }
+
+    private DialogBox getChatbotHappyDialog(String input) {
+        return DialogBox.getChatbotDialog(input, this.chatbotHappyImage);
+    }
+
+    private DialogBox getChatbotSadDialog(String input) {
+        return DialogBox.getChatbotDialog(input, this.chatbotSadImage);
+    }
+
     /**
      * Shows a dialog box that is meant to be shown to the user at the start of the app
      */
@@ -248,28 +272,14 @@ public class MainWindow {
         this.dialogContainer.getChildren().addAll(this.getChatbotSadDialog(response));
     }
 
-    private DialogBox getUserDialog(String input) {
-        return DialogBox.getUserDialog(input, this.userImage);
-    }
-
-    private DialogBox getChatbotNormalDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotNormalImage);
-    }
-
-    private DialogBox getChatbotAnnoyedDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotAnnoyedImage);
-    }
-
-    private DialogBox getChatbotExcitedDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotExcitedImage);
-    }
-
-    private DialogBox getChatbotHappyDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotHappyImage);
-    }
-
-    private DialogBox getChatbotSadDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotSadImage);
+    /**
+     * Removes all previous messages from the chat area
+     */
+    public void clearChat() {
+        this.dialogContainer.getChildren().clear();
+        this.dialogContainer.getChildren().addAll(
+                this.getChatbotNormalDialog(
+                        "I have cleared the chat. Is there anything else you want me to do?"));
     }
 
     /**

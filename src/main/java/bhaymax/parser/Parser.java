@@ -2,6 +2,7 @@ package bhaymax.parser;
 
 import java.util.StringTokenizer;
 
+import bhaymax.command.ClearCommand;
 import bhaymax.command.Command;
 import bhaymax.command.CommandString;
 import bhaymax.command.DeadlineCommand;
@@ -213,6 +214,8 @@ public class Parser {
                     dateTime.toString(), FilterOpt.TIME_AFTER);
             default -> throw new InvalidCommandFormatException("Unknown filter option");
             };
+        case CLEAR:
+            return new ClearCommand();
         case BYE:
             // Fallthrough
         case EXIT:
