@@ -7,7 +7,6 @@ import bhaymax.storage.Storage;
 import bhaymax.task.Task;
 import bhaymax.task.TaskList;
 import bhaymax.task.Todo;
-import bhaymax.ui.Ui;
 
 /**
  * Represents a {@code todo} command
@@ -22,17 +21,6 @@ public class TodoCommand extends Command {
      */
     public TodoCommand(String taskDescription) {
         this.taskDescription = taskDescription;
-    }
-
-    @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) throws IOException {
-        Task task = new Todo(this.taskDescription);
-        int taskListCount = taskList.addTask(task);
-        storage.saveTasks(taskList);
-        ui.printWithIndent("Got it. I've added this task:", true);
-        ui.printWithIndent("  " + task, true);
-        ui.printWithIndent(
-                "Now you have " + taskListCount + " tasks in the list.", true);
     }
 
     @Override

@@ -1,12 +1,10 @@
 package bhaymax.task;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import bhaymax.command.FilterOpt;
 import bhaymax.controller.MainWindow;
 import bhaymax.task.timesensitive.TimeSensitiveTask;
-import bhaymax.ui.Ui;
 import bhaymax.util.Pair;
 
 /**
@@ -104,94 +102,6 @@ public class TaskList {
     }
 
     /**
-     * Prints the tasks in the list
-     * that contain the provided
-     * search term
-     *
-     * @param searchTerm the search term to search for
-     * @param ui the {@link Ui} object - will be used for printing the tasks to the CLI-UI
-     */
-    public void printTasksContainingSearchTerm(String searchTerm, Ui ui) {
-        List<Task> filteredTasks = this.taskList.stream()
-                .filter(task -> task.hasSearchTerm(searchTerm))
-                .toList();
-
-        if (filteredTasks.isEmpty()) {
-            ui.printWithIndent("No tasks match the given search term", true);
-            return;
-        }
-
-        for (Task task : filteredTasks) {
-            ui.printWithIndent((this.taskList.indexOf(task) + 1)
-                            + "." + task,
-                    true);
-        }
-    }
-
-    /**
-     * Prints the tasks in the list
-     * that match the provided date
-     * filter
-     *
-     * @param dateTime the date and/or time to filter the list by
-     * @param filterOpt the nature of the filter (i.e., show tasks
-     *                  before the date, after the date, exactly on the date,
-     *                  with/without time)
-     * @param ui the {@link Ui} object - will be used for printing the tasks to the CLI-UI
-     * @see bhaymax.parser.Parser#DATE_FORMAT
-     * @see bhaymax.parser.Parser#DATETIME_INPUT_FORMAT
-     */
-    public void printTasksWithDateFilter(String dateTime, FilterOpt filterOpt, Ui ui) {
-        if (this.taskList.isEmpty()) {
-            ui.printWithIndent("There are no tasks to filter.", true);
-            return;
-        }
-
-        for (Task task : this.taskList) {
-            if (!(task instanceof TimeSensitiveTask timeSensitiveTask)) {
-                continue;
-            }
-            switch (filterOpt) {
-            case DATE_ON:
-                if (!timeSensitiveTask.isOnDate(dateTime)) {
-                    continue;
-                }
-                break;
-            case DATE_BEFORE:
-                if (!timeSensitiveTask.isBeforeDate(dateTime)) {
-                    continue;
-                }
-                break;
-            case DATE_AFTER:
-                if (!timeSensitiveTask.isAfterDate(dateTime)) {
-                    continue;
-                }
-                break;
-            case TIME_ON:
-                if (!timeSensitiveTask.isOnDateTime(dateTime)) {
-                    continue;
-                }
-                break;
-            case TIME_BEFORE:
-                if (!timeSensitiveTask.isBeforeDateTime(dateTime)) {
-                    continue;
-                }
-                break;
-            case TIME_AFTER:
-                if (!timeSensitiveTask.isAfterDateTime(dateTime)) {
-                    continue;
-                }
-                break;
-            default:
-                continue;
-            }
-            ui.printWithIndent((this.taskList.indexOf(timeSensitiveTask) + 1)
-                            + "." + timeSensitiveTask,
-                    true);
-        }
-    }
-
-    /**
      * Displays the tasks in the list (in dialog boxes)
      * that match the provided date filter
      *
@@ -274,23 +184,6 @@ public class TaskList {
                 .map(Task::serialise)
                 .reduce((task1, task2) -> task1 + System.lineSeparator() + task2)
                 .orElse("");
-    }
-
-    /**
-     * Prints the tasks in the list
-     *
-     * @param ui the {@link Ui} object - will be used for printing the tasks to the CLI-UI
-     */
-    public void printTasks(Ui ui) {
-        if (this.taskList.isEmpty()) {
-            ui.printWithIndent(
-                    "You're all caught up! You have no pending tasks!", true);
-        } else {
-            ui.printWithIndent("Here are the tasks in your list:", true);
-        }
-        for (int i = 0; i < this.taskList.size(); i++) {
-            ui.printWithIndent((i + 1) + "." + taskList.get(i), true);
-        }
     }
 
     /**

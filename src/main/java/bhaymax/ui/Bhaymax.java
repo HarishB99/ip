@@ -15,7 +15,7 @@ import javafx.stage.Stage;
  * Main class for JavaFX version of
  * the Chatbot app
  */
-public class Main extends Application {
+public class Bhaymax extends Application {
     public static final String APP_NAME = "Bhaymax";
 
     private final Storage storage;
@@ -25,7 +25,7 @@ public class Main extends Application {
      * Sets up the UI and loads the task
      * from a file, if it exists
      */
-    public Main() {
+    public Bhaymax() {
         this.storage = new Storage();
         try {
             this.tasks = this.storage.loadTasks();
@@ -38,7 +38,7 @@ public class Main extends Application {
     public void start(Stage stage) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                    Main.class.getResource(
+                    Bhaymax.class.getResource(
                             "/view/MainWindow.fxml"));
             AnchorPane ap = fxmlLoader.load();
             Scene scene = new Scene(ap);
@@ -46,7 +46,7 @@ public class Main extends Application {
 
             // Set up properties for MainWindow controller
             MainWindow mainWindowController = fxmlLoader.<MainWindow>getController();
-            mainWindowController.setAppName(Main.APP_NAME);
+            mainWindowController.setAppName(Bhaymax.APP_NAME);
             mainWindowController.setTasks(this.tasks);
             mainWindowController.setStorage(this.storage);
             mainWindowController.showWelcomeDialogBox();
