@@ -143,11 +143,11 @@ public class MainWindow {
      * @param exception An {@code InvalidFileFormatException} object
      */
     private LinkedList<String> getErrorResponses(InvalidFileFormatException exception) {
-        LinkedList<String> dialogBoxes = new LinkedList<String>();
-        dialogBoxes.add("[-] Format of task file is incorrect:");
-        dialogBoxes.add("[-]   " + exception.getMessage());
-        dialogBoxes.add("[-] Please check your task file and try again");
-        return dialogBoxes;
+        LinkedList<String> responses = new LinkedList<String>();
+        responses.add("[-] Format of task file is incorrect:");
+        responses.add("[-]   " + exception.getMessage());
+        responses.add("[-] Please check your task file and try again");
+        return responses;
     }
 
     /**
@@ -157,11 +157,11 @@ public class MainWindow {
      * @param ignored An {@code NumberFormatException} object
      */
     private LinkedList<String> getErrorResponses(NumberFormatException ignored) {
-        LinkedList<String> dialogBoxes = new LinkedList<String>();
-        dialogBoxes.add("[-] Invalid command syntax provided:");
-        dialogBoxes.add("[-]   Task number should be numerical");
-        dialogBoxes.add("[-] Try again.");
-        return dialogBoxes;
+        LinkedList<String> responses = new LinkedList<String>();
+        responses.add("[-] Invalid command syntax provided:");
+        responses.add("[-]   Task number should be numerical");
+        responses.add("[-] Try again.");
+        return responses;
     }
 
     /**
@@ -171,10 +171,10 @@ public class MainWindow {
      * @param exception An {@code IOException} object
      */
     private LinkedList<String> getErrorResponses(IOException exception) {
-        LinkedList<String> dialogBoxes = new LinkedList<String>();
-        dialogBoxes.add("[-] Unable to save task to file:");
-        dialogBoxes.add("[-]   " + exception.getMessage());
-        return dialogBoxes;
+        LinkedList<String> responses = new LinkedList<String>();
+        responses.add("[-] Unable to save task to file:");
+        responses.add("[-]   " + exception.getMessage());
+        return responses;
     }
 
     /**
@@ -184,11 +184,11 @@ public class MainWindow {
      * @param ignored An {@code DateTimeParseException} object
      */
     private LinkedList<String> getErrorResponses(DateTimeParseException ignored) {
-        LinkedList<String> dialogBoxes = new LinkedList<String>();
-        dialogBoxes.add("[-] Task format is incorrect:");
-        dialogBoxes.add("[-]   Wrong date/time format");
-        dialogBoxes.add("[-] Try again.");
-        return dialogBoxes;
+        LinkedList<String> responses = new LinkedList<String>();
+        responses.add("[-] Task format is incorrect:");
+        responses.add("[-]   Wrong date/time format");
+        responses.add("[-] Try again.");
+        return responses;
     }
 
     /**
@@ -198,12 +198,12 @@ public class MainWindow {
      * @param message The error message to be printed
      */
     private LinkedList<String> getErrorResponses(String message) {
-        LinkedList<String> dialogBoxes = new LinkedList<String>();
-        dialogBoxes.add("[-] An unknown error occurred:");
-        dialogBoxes.add("[-]   " + message);
-        dialogBoxes.add("[-] Please try again later");
-        dialogBoxes.add("[-] Alternatively, you can try restarting the app");
-        return dialogBoxes;
+        LinkedList<String> responses = new LinkedList<String>();
+        responses.add("[-] An unknown error occurred:");
+        responses.add("[-]   " + message);
+        responses.add("[-] Please try again later");
+        responses.add("[-] Alternatively, you can try restarting the app");
+        return responses;
     }
 
     /**
