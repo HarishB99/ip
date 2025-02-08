@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import bhaymax.controller.MainWindow;
 import bhaymax.storage.Storage;
-import bhaymax.task.Task;
 import bhaymax.task.TaskList;
 import bhaymax.task.Todo;
 
@@ -25,12 +24,13 @@ public class TodoCommand extends Command {
 
     @Override
     public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
-        Task task = new Todo(this.taskDescription);
-        int taskListCount = taskList.addTask(task);
+        Todo newTodoTask = new Todo(this.taskDescription);
+        int taskListCount = taskList.addTask(newTodoTask);
         storage.saveTasks(taskList);
-        String response = "Got it. I've added this task:" + System.lineSeparator()
-                + "  " + task + System.lineSeparator()
-                + "Now you have " + taskListCount + " tasks in the list.";
+        String response = "Noted. Adding: " + System.lineSeparator()
+                + "  " + newTodoTask + System.lineSeparator()
+                + "to your to-do list." + System.lineSeparator()
+                + "You now have " + taskListCount + " task" + (taskListCount == 1 ? "" : "s") + " to complete.";
         mainWindowController.showResponse(response);
     }
 

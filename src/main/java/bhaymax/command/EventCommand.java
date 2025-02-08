@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import bhaymax.controller.MainWindow;
 import bhaymax.storage.Storage;
-import bhaymax.task.Task;
 import bhaymax.task.TaskList;
 import bhaymax.task.timesensitive.Event;
 
@@ -17,10 +16,7 @@ public class EventCommand extends Command {
     private final String end;
 
     /**
-     * Sets up the description,
-     * the start date with time
-     * and the end date with time
-     * of the event task to be created
+     * Sets up the description, the start date with time and the end date with time of the event task to be created
      *
      * @param taskDescription the description of the event task
      * @param start the date and time at which the event will start, as a {@code String}
@@ -35,12 +31,13 @@ public class EventCommand extends Command {
 
     @Override
     public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
-        Task task = new Event(this.taskDescription, this.start, this.end);
-        int taskListCount = taskList.addTask(task);
+        Event newEvent = new Event(this.taskDescription, this.start, this.end);
+        int taskListCount = taskList.addTask(newEvent);
         storage.saveTasks(taskList);
-        String response = "Got it. I've added this task:" + System.lineSeparator()
-                + "  " + task + System.lineSeparator()
-                + "Now you have " + taskListCount + " tasks in the list.";
+        String response = "Noted. Adding: " + System.lineSeparator()
+                + "  " + newEvent + System.lineSeparator()
+                + "to your list of events." + System.lineSeparator()
+                + "You now have " + taskListCount + " task" + (taskListCount == 1 ? "" : "s") + " to complete.";
         mainWindowController.showResponse(response);
     }
 

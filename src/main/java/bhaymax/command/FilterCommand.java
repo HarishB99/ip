@@ -14,10 +14,9 @@ public class FilterCommand extends Command {
     private final FilterOpt filterOpt;
 
     /**
-     * Sets up the date with which the available tasks
-     * will be filtered, along with the nature of the filter
-     * (i.e., filter for tasks before the date, after the date,
-     * exactly on the date)
+     * Sets up the timeframe that will be used to filter available tasks,
+     * along with the nature of the filter (i.e., filter for tasks before the date,
+     * after the date, exactly on the date)
      *
      * @param dateTime the date and/or time to filter by, as a {@code String}
      * @param filterOpt a {@link FilterOpt} enum value indicating the type of
@@ -33,7 +32,7 @@ public class FilterCommand extends Command {
 
     @Override
     public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
-        taskList.showTasksWithDateFilter(this.dateTime, this.filterOpt, mainWindowController);
+        taskList.showTasksFilteredByDate(this.dateTime, this.filterOpt, mainWindowController);
     }
 
     @Override

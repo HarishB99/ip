@@ -26,8 +26,9 @@ public class UnmarkCommand extends Command {
     public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
         Task markedTask = taskList.markTaskAsUndone(this.taskNumber);
         storage.saveTasks(taskList);
-        String response = "OK, I've marked this task as not done yet:" + System.lineSeparator()
-                + "  " + markedTask;
+        String response = "Noted. Marking:" + System.lineSeparator()
+                + "  " + markedTask + System.lineSeparator()
+                + "as incomplete.";
         mainWindowController.showResponse(response);
     }
 

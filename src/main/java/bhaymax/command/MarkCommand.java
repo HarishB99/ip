@@ -26,9 +26,10 @@ public class MarkCommand extends Command {
     public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
         Task markedTask = taskList.markTaskAsDone(this.taskNumber);
         storage.saveTasks(taskList);
-        String response = "Nice! I've marked this task as done:" + System.lineSeparator()
-                + "  " + markedTask;
-        mainWindowController.showResponse(response);
+        String response = "Congratulations on completing the task:" + System.lineSeparator()
+                + "  " + markedTask + System.lineSeparator()
+                + "I have marked it as complete.";
+        mainWindowController.showExcitedResponse(response);
     }
 
     @Override

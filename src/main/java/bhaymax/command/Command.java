@@ -7,7 +7,7 @@ import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
 
 /**
- * Represents a command supported by {@link Bhaymax} Chatbot app
+ * Represents a command supported by {@code Bhaymax} Chatbot app
  */
 public abstract class Command {
     /**
@@ -25,8 +25,7 @@ public abstract class Command {
             throws IOException;
 
     /**
-     * Returns a boolean value indicating
-     * if this command is an exit command
+     * Returns a boolean value indicating if this command is an exit command
      *
      * @return a boolean value indicating
      *         if this command is an exit command

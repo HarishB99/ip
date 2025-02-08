@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import bhaymax.controller.MainWindow;
 import bhaymax.storage.Storage;
-import bhaymax.task.Task;
 import bhaymax.task.TaskList;
 import bhaymax.task.timesensitive.Deadline;
 
@@ -16,8 +15,7 @@ public class DeadlineCommand extends Command {
     private final String deadline;
 
     /**
-     * Sets up the description and date
-     * of the deadline task to be created
+     * Sets up the description and date of the deadline task to be created
      *
      * @param taskDescription the description of the deadline (task)
      * @param deadline the date and time the task will be due, as a {@code String}
@@ -30,12 +28,13 @@ public class DeadlineCommand extends Command {
 
     @Override
     public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
-        Task task = new Deadline(this.taskDescription, this.deadline);
-        int taskListCount = taskList.addTask(task);
+        Deadline newDeadline = new Deadline(this.taskDescription, this.deadline);
+        int taskListCount = taskList.addTask(newDeadline);
         storage.saveTasks(taskList);
-        String response = "Got it. I've added this task:" + System.lineSeparator()
-                + "  " + task + System.lineSeparator()
-                + "Now you have " + taskListCount + " tasks in the list.";
+        String response = "Noted. Adding: " + System.lineSeparator()
+                + "  " + newDeadline + System.lineSeparator()
+                + "to your list of deadlines." + System.lineSeparator()
+                + "You now have " + taskListCount + " task" + (taskListCount == 1 ? "" : "s") + " to complete.";
         mainWindowController.showResponse(response);
     }
 

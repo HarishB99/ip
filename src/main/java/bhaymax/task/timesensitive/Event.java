@@ -11,7 +11,7 @@ import bhaymax.task.Task;
 /**
  * Represents a task pertaining to an event
  */
-public class Event extends Task implements TimeSensitiveTask {
+public class Event extends TimeSensitiveTask {
     public static final String TYPE = "E";
     protected LocalDateTime start;
     protected LocalDateTime end;
@@ -65,63 +65,49 @@ public class Event extends Task implements TimeSensitiveTask {
     }
 
     @Override
-    public boolean isBeforeDate(String date)
-            throws DateTimeParseException {
+    boolean isBeforeDate(LocalDate date) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
-        LocalDate thresholdDate = LocalDate.parse(date, dateFormatter);
         LocalDate startDate = LocalDate.parse(this.start.format(dateFormatter), dateFormatter);
         LocalDate endDate = LocalDate.parse(this.end.format(dateFormatter), dateFormatter);
-        return endDate.isBefore(thresholdDate)
-                || (startDate.isBefore(thresholdDate) && endDate.isAfter(thresholdDate));
+        return endDate.isBefore(date)
+                || (startDate.isBefore(date) && endDate.isAfter(date));
     }
 
     @Override
-    public boolean isBeforeDateTime(String date)
-            throws DateTimeParseException {
-        LocalDateTime thresholdTime = LocalDateTime.parse(
-                date, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
-        return this.end.isBefore(thresholdTime)
-                || (this.start.isBefore(thresholdTime) && this.end.isAfter(thresholdTime));
+    boolean isBeforeDateTime(LocalDateTime dateTime) {
+        return this.end.isBefore(dateTime)
+                || (this.start.isBefore(dateTime) && this.end.isAfter(dateTime));
     }
 
     @Override
-    public boolean isAfterDate(String date)
-            throws DateTimeParseException {
+    boolean isAfterDate(LocalDate date) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
-        LocalDate thresholdDate = LocalDate.parse(date, dateFormatter);
         LocalDate startDate = LocalDate.parse(this.start.format(dateFormatter), dateFormatter);
         LocalDate endDate = LocalDate.parse(this.end.format(dateFormatter), dateFormatter);
-        return startDate.isAfter(thresholdDate)
-                || (endDate.isAfter(thresholdDate) && startDate.isBefore(thresholdDate));
+        return startDate.isAfter(date)
+                || (endDate.isAfter(date) && startDate.isBefore(date));
     }
 
     @Override
-    public boolean isAfterDateTime(String date)
-            throws DateTimeParseException {
-        LocalDateTime thresholdTime = LocalDateTime.parse(
-                date, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
-        return this.start.isAfter(thresholdTime)
-                || (this.end.isAfter(thresholdTime) && this.start.isBefore(thresholdTime));
+    boolean isAfterDateTime(LocalDateTime dateTime) {
+        return this.start.isAfter(dateTime)
+                || (this.end.isAfter(dateTime) && this.start.isBefore(dateTime));
     }
 
     @Override
-    public boolean isOnDate(String date)
-            throws DateTimeParseException {
+    boolean isOnDate(LocalDate date) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
-        LocalDate thresholdDate = LocalDate.parse(date, dateFormatter);
-        LocalDate startDate = LocalDate.parse(this.start.format(dateFormatter), dateFormatter);
-        LocalDate endDate = LocalDate.parse(this.end.format(dateFormatter), dateFormatter);
-        return startDate.isEqual(thresholdDate)
-                || endDate.isEqual(thresholdDate);
+        LocalDate startDate = LocalDate.parse(
+                this.start.format(dateFormatter), dateFormatter);
+        LocalDate endDate = LocalDate.parse(
+                this.end.format(dateFormatter), dateFormatter);
+        return startDate.isEqual(date) || endDate.isEqual(date);
     }
 
     @Override
-    public boolean isOnDateTime(String date)
-            throws DateTimeParseException {
-        LocalDateTime thresholdTime = LocalDateTime.parse(
-                date, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
-        return this.start.isEqual(thresholdTime)
-                || this.end.isEqual(thresholdTime);
+    boolean isOnDateTime(LocalDateTime dateTime) {
+        return this.start.isEqual(dateTime)
+                || this.end.isEqual(dateTime);
     }
 
     @Override

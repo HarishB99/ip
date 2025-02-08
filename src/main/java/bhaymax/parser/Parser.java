@@ -24,8 +24,8 @@ import bhaymax.task.TaskList;
  * to a {@link Command} object
  */
 public class Parser {
-    public static final String DATETIME_INPUT_FORMAT = "dd-MM-yyyy HH:mm";
     public static final String DATE_FORMAT = "dd-MM-yyyy";
+    public static final String DATETIME_INPUT_FORMAT = "dd-MM-yyyy HH:mm";
     public static final String DATETIME_OUTPUT_FORMAT = "dd MMM yyyy, EEE @ HH:mm";
     public static final String DEADLINE_OPT_BY = "/by";
     public static final String EVENT_OPT_START = "/from";

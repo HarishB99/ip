@@ -11,7 +11,7 @@ import bhaymax.task.Task;
 /**
  * Represents a task with a deadline
  */
-public class Deadline extends Task implements TimeSensitiveTask {
+public class Deadline extends TimeSensitiveTask {
     public static final String TYPE = "D";
     protected LocalDateTime deadline;
 
@@ -48,54 +48,39 @@ public class Deadline extends Task implements TimeSensitiveTask {
     }
 
     @Override
-    public boolean isBeforeDate(String date)
-            throws DateTimeParseException {
+    boolean isBeforeDate(LocalDate date) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
-        LocalDate thresholdDate = LocalDate.parse(date, dateFormatter);
         LocalDate deadlineDate = LocalDate.parse(this.deadline.format(dateFormatter), dateFormatter);
-        return deadlineDate.isBefore(thresholdDate);
+        return deadlineDate.isBefore(date);
     }
 
     @Override
-    public boolean isBeforeDateTime(String date)
-            throws DateTimeParseException {
-        LocalDateTime thresholdTime = LocalDateTime.parse(
-                date, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
-        return this.deadline.isBefore(thresholdTime);
+    boolean isBeforeDateTime(LocalDateTime dateTime) {
+        return this.deadline.isBefore(dateTime);
     }
 
     @Override
-    public boolean isAfterDate(String date)
-            throws DateTimeParseException {
+    boolean isAfterDate(LocalDate date) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
-        LocalDate thresholdDate = LocalDate.parse(date, dateFormatter);
         LocalDate deadlineDate = LocalDate.parse(this.deadline.format(dateFormatter), dateFormatter);
-        return deadlineDate.isAfter(thresholdDate);
+        return deadlineDate.isAfter(date);
     }
 
     @Override
-    public boolean isAfterDateTime(String date)
-            throws DateTimeParseException {
-        LocalDateTime thresholdTime = LocalDateTime.parse(
-                date, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
-        return this.deadline.isAfter(thresholdTime);
+    boolean isAfterDateTime(LocalDateTime dateTime) {
+        return this.deadline.isAfter(dateTime);
     }
 
     @Override
-    public boolean isOnDate(String date)
-            throws DateTimeParseException {
+    boolean isOnDate(LocalDate date) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
-        LocalDate thresholdDate = LocalDate.parse(date, dateFormatter);
         LocalDate deadlineDate = LocalDate.parse(this.deadline.format(dateFormatter), dateFormatter);
-        return deadlineDate.isEqual(thresholdDate);
+        return deadlineDate.isEqual(date);
     }
 
     @Override
-    public boolean isOnDateTime(String date)
-            throws DateTimeParseException {
-        LocalDateTime thresholdTime = LocalDateTime.parse(
-                date, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
-        return this.deadline.isEqual(thresholdTime);
+    boolean isOnDateTime(LocalDateTime dateTime) {
+        return this.deadline.isEqual(dateTime);
     }
 
     @Override

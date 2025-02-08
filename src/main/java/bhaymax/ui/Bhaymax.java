@@ -12,8 +12,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 /**
- * Main class for JavaFX version of
- * the Chatbot app
+ * Main class for JavaFX version of the Chatbot app
  */
 public class Bhaymax extends Application {
     public static final String APP_NAME = "Bhaymax";

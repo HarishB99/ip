@@ -29,9 +29,16 @@ public class DeleteCommand extends Command {
         Task deletedTask = pair.t();
         int numberOfRemainingTasks = pair.u();
         storage.saveTasks(taskList);
-        String response = "Noted. I've removed this task:" + System.lineSeparator()
+        String response = "Noted. Removing: " + System.lineSeparator()
                 + "  " + deletedTask + System.lineSeparator()
-                + "Now you have " + numberOfRemainingTasks + " tasks in the list.";
+                + "from your list of tasks." + System.lineSeparator();
+        if (numberOfRemainingTasks == 0) {
+            mainWindowController.showResponse(response);
+            mainWindowController.showExcitedResponse("Congratulations! You don't have any outstanding tasks!");
+            return;
+        }
+        response += "You now have " + numberOfRemainingTasks + " task"
+                + (numberOfRemainingTasks == 1 ? "" : "s") + " to complete.";
         mainWindowController.showResponse(response);
     }
 

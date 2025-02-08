@@ -34,6 +34,7 @@ public class MainWindow {
     private TextField userInput;
     @FXML
     private Button sendButton;
+
     private final Image userImage = new Image(
             Objects.requireNonNull(
                     this.getClass().getResourceAsStream(
@@ -42,26 +43,29 @@ public class MainWindow {
             Objects.requireNonNull(
                     this.getClass().getResourceAsStream(
                             "/images/bhaymax_chatbot_normal.png")));
-    private final Image chatbotErrorImage = new Image(
+    private final Image chatbotAnnoyedImage = new Image(
             Objects.requireNonNull(
                     this.getClass().getResourceAsStream(
-                            "/images/bhaymax_chatbot_error.png")));
-    private final Image chatbotWelcomeImage = new Image(
+                            "/images/bhaymax_chatbot_annoyed.png")));
+    private final Image chatbotExcitedImage = new Image(
             Objects.requireNonNull(
                     this.getClass().getResourceAsStream(
-                            "/images/bhaymax_chatbot_welcome.png")));
-    private final Image chatbotFarewellImage = new Image(
+                            "/images/bhaymax_chatbot_excited.png")));
+    private final Image chatbotHappyImage = new Image(
             Objects.requireNonNull(
                     this.getClass().getResourceAsStream(
-                            "/images/bhaymax_chatbot_farewell.png")));
+                            "/images/bhaymax_chatbot_happy.png")));
+    private final Image chatbotSadImage = new Image(
+            Objects.requireNonNull(
+                    this.getClass().getResourceAsStream(
+                            "/images/bhaymax_chatbot_sad.png")));
+
     private TaskList tasks;
     private Storage storage;
     private String appName;
 
     /**
-     * Binds the scroll pane's vertical
-     * value to the height of the dialog container
-     * it holds
+     * Binds the scroll pane's vertical value to the height of the dialog container it holds
      */
     @FXML
     public void initialize() {
@@ -101,12 +105,11 @@ public class MainWindow {
                 .reduce((previousResponse, nextResponse)
                         -> previousResponse + System.lineSeparator() + nextResponse)
                 .orElse("");
-        this.dialogContainer.getChildren().addAll(this.getChatbotErrorDialog(finalResponse));
+        this.dialogContainer.getChildren().addAll(this.getChatbotAnnoyedDialog(finalResponse));
     }
 
     /**
-     * Shows an error message when
-     * {@code InvalidCommandException} occurs
+     * Shows an error message when {@code InvalidCommandException} occurs
      *
      * @param exception An {@code InvalidCommandException} object
      */
@@ -119,8 +122,7 @@ public class MainWindow {
     }
 
     /**
-     * Shows an error message when
-     * {@code InvalidCommandFormatException} occurs
+     * Shows an error message when {@code InvalidCommandFormatException} occurs
      *
      * @param exception An {@code InvalidCommandFormatException} object
      */
@@ -133,8 +135,7 @@ public class MainWindow {
     }
 
     /**
-     * Shows an error message when
-     * {@code InvalidFileFormatException} occurs
+     * Shows an error message when {@code InvalidFileFormatException} occurs
      *
      * @param exception An {@code InvalidFileFormatException} object
      */
@@ -147,8 +148,7 @@ public class MainWindow {
     }
 
     /**
-     * Shows an error message when
-     * {@code NumberFormatException} occurs
+     * Shows an error message when {@code NumberFormatException} occurs
      *
      * @param ignored An {@code NumberFormatException} object
      */
@@ -161,8 +161,7 @@ public class MainWindow {
     }
 
     /**
-     * Shows an error message when
-     * {@code IOException} occurs
+     * Shows an error message when {@code IOException} occurs
      *
      * @param exception An {@code IOException} object
      */
@@ -174,8 +173,7 @@ public class MainWindow {
     }
 
     /**
-     * Shows an error message when
-     * {@code DateTimeParseException} occurs
+     * Shows an error message when {@code DateTimeParseException} occurs
      *
      * @param ignored An {@code DateTimeParseException} object
      */
@@ -188,8 +186,7 @@ public class MainWindow {
     }
 
     /**
-     * Prints the given message as an error message.
-     * (meant to be used when a generic {@code Exception} occurs)
+     * Prints the given message as an error message. (meant to be used when a generic {@code Exception} occurs)
      *
      * @param message The error message to be printed
      */
@@ -203,55 +200,76 @@ public class MainWindow {
     }
 
     /**
-     * Shows a dialog box that is meant to be
-     * shown to the user at the start of the
-     * app
+     * Shows a dialog box that is meant to be shown to the user at the start of the app
      */
     public void showWelcomeDialogBox() {
         this.dialogContainer.getChildren().addAll(
-                this.getChatbotWelcomeDialog("Hello! I'm " + this.appName
+                this.getChatbotNormalDialog("Hello! I'm " + this.appName
                         + ", your personal chatbot and task list manager!"),
-                this.getChatbotDialog("What can I do for you?")
+                this.getChatbotExcitedDialog("What can I do for you?")
         );
     }
 
     /**
-     * Shows a dialog box that is meant to be
-     * shown to the user before exiting the app
+     * Shows a dialog box that is meant to be shown to the user before exiting the app
      */
     public void showFarewellDialogBox() {
         this.dialogContainer.getChildren().addAll(
-                this.getChatbotFarewellDialog("Bye. Hope to see you again soon!"));
+                this.getChatbotHappyDialog("Bye. Hope to see you again soon!"));
     }
 
     /**
-     * Shows a dialog box with the given response
+     * Shows a dialog box with a normal face alongside the given response
      *
      * @param response A message to be shown to the user
      *                 using a dialog box from the chatbot
      */
     public void showResponse(String response) {
-        this.dialogContainer.getChildren().addAll(this.getChatbotDialog(response));
+        this.dialogContainer.getChildren().addAll(this.getChatbotNormalDialog(response));
+    }
+
+    /**
+     * Shows a dialog box with an excited face alongside the given response
+     *
+     * @param response A message to be shown to the user
+     *                 using a dialog box from the chatbot
+     */
+    public void showExcitedResponse(String response) {
+        this.dialogContainer.getChildren().addAll(this.getChatbotExcitedDialog(response));
+    }
+
+    /**
+     * Shows a dialog box with a sad face alongside the given response
+     *
+     * @param response A message to be shown to the user
+     *                 using a dialog box from the chatbot
+     */
+    public void showSadResponse(String response) {
+        this.dialogContainer.getChildren().addAll(this.getChatbotSadDialog(response));
     }
 
     private DialogBox getUserDialog(String input) {
         return DialogBox.getUserDialog(input, this.userImage);
     }
 
-    private DialogBox getChatbotDialog(String input) {
+    private DialogBox getChatbotNormalDialog(String input) {
         return DialogBox.getChatbotDialog(input, this.chatbotNormalImage);
     }
 
-    private DialogBox getChatbotErrorDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotErrorImage);
+    private DialogBox getChatbotAnnoyedDialog(String input) {
+        return DialogBox.getChatbotDialog(input, this.chatbotAnnoyedImage);
     }
 
-    private DialogBox getChatbotWelcomeDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotWelcomeImage);
+    private DialogBox getChatbotExcitedDialog(String input) {
+        return DialogBox.getChatbotDialog(input, this.chatbotExcitedImage);
     }
 
-    private DialogBox getChatbotFarewellDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotFarewellImage);
+    private DialogBox getChatbotHappyDialog(String input) {
+        return DialogBox.getChatbotDialog(input, this.chatbotHappyImage);
+    }
+
+    private DialogBox getChatbotSadDialog(String input) {
+        return DialogBox.getChatbotDialog(input, this.chatbotSadImage);
     }
 
     /**
