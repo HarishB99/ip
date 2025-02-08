@@ -96,10 +96,6 @@ public class MainWindow {
         this.storage = storage;
     }
 
-    private void displayDialogs(LinkedList<DialogBox> dialogBoxes) {
-        this.dialogContainer.getChildren().addAll(dialogBoxes);
-    }
-
     private void displayErrorResponses(LinkedList<String> responses) {
         String finalResponse = responses.stream()
                 .reduce((previousResponse, nextResponse)
