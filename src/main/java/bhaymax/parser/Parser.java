@@ -54,7 +54,7 @@ public class Parser {
         if (!tokenizer.hasMoreTokens()) {
             throw new InvalidCommandFormatException("Command is empty");
         }
-        String commandString = tokenizer.nextToken();
+        String commandString = tokenizer.nextToken().toLowerCase();
         if (!CommandString.isValidCommandString(commandString)) {
             throw new InvalidCommandFormatException("Unrecognised command");
         }
