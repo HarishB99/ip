@@ -11,6 +11,7 @@ import bhaymax.command.EventCommand;
 import bhaymax.command.ExitCommand;
 import bhaymax.command.FilterCommand;
 import bhaymax.command.FilterOpt;
+import bhaymax.command.HelloCommand;
 import bhaymax.command.ListCommand;
 import bhaymax.command.MarkCommand;
 import bhaymax.command.SearchCommand;
@@ -216,6 +217,10 @@ public class Parser {
             };
         case CLEAR:
             return new ClearCommand();
+        case HI:
+            // Fallthrough
+        case HELLO:
+            return new HelloCommand();
         case BYE:
             // Fallthrough
         case EXIT:

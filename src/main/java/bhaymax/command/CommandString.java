@@ -20,6 +20,8 @@ public enum CommandString {
     EVENT("event"),
     DELETE("delete"),
     CLEAR("clear"),
+    HELLO("hello"),
+    HI("hi"),
     BYE("bye"),
     EXIT("exit");
 

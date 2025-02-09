@@ -235,6 +235,15 @@ public class MainWindow {
     }
 
     /**
+     * Shows a dialog box to greet back to the user
+     */
+    public void showGreetingDialogBox() {
+        this.dialogContainer.getChildren().addAll(
+                this.getChatbotExcitedDialog("Hello! How can I help you today?")
+        );
+    }
+
+    /**
      * Shows a dialog box that is meant to be shown to the user before exiting the app
      */
     public void showFarewellDialogBox() {
