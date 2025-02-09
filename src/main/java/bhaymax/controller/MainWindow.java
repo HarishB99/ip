@@ -282,13 +282,42 @@ public class MainWindow {
     }
 
     /**
+     * Shows the appropriate response for when InvalidFileFormatException occurs
+     *
+     * @param exception an {@link InvalidFileFormatException} exception
+     */
+    public void showInvalidFileFormatDialogBox(InvalidFileFormatException exception) {
+        this.displayErrorResponses(this.getErrorResponses(exception));
+    }
+
+    /**
+     * Shows the appropriate response for when DateTimeParseException occurs
+     *
+     * @param exception an {@link DateTimeParseException} exception
+     */
+    public void showDateTimeParseExceptionDialogBox(DateTimeParseException exception) {
+        this.displayErrorResponses(this.getErrorResponses(exception));
+    }
+
+    /**
      * Removes all previous messages from the chat area
      */
-    public void clearChat() {
+    public void clearChat(boolean shouldIndicateChatbotCleared) {
         this.dialogContainer.getChildren().clear();
+        if (!shouldIndicateChatbotCleared) {
+            return;
+        }
         this.dialogContainer.getChildren().addAll(
                 this.getChatbotNormalDialog(
                         "I have cleared the chat. Is there anything else you want me to do?"));
+    }
+
+    /**
+     * Disables the textfield and button in the UI
+     */
+    public void disableInputs() {
+        this.userInput.setDisable(true);
+        this.sendButton.setDisable(true);
     }
 
     /**
@@ -305,10 +334,9 @@ public class MainWindow {
             Command command = Parser.parse(input, this.tasks);
             command.execute(this.tasks, this, this.storage);
             if (command.isExit()) {
+                this.disableInputs();
                 PauseTransition pauseTransition = new PauseTransition(Duration.millis(650));
-                pauseTransition.setOnFinished(event -> {
-                    Platform.exit();
-                });
+                pauseTransition.setOnFinished(event -> Platform.exit());
                 pauseTransition.play();
             }
         } catch (InvalidCommandFormatException e) {
