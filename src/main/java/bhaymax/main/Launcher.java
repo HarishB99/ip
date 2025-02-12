@@ -1,6 +1,5 @@
 package bhaymax.main;
 
-import bhaymax.ui.Bhaymax;
 import javafx.application.Application;
 
 /**
