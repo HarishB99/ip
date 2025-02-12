@@ -36,6 +36,7 @@ public class Bhaymax extends Application {
     @Override
     public void start(Stage stage) {
         try {
+            boolean canOpenFile = false;
             FXMLLoader fxmlLoader = new FXMLLoader(
                     Bhaymax.class.getResource(
                             "/view/MainWindow.fxml"));
@@ -46,15 +47,13 @@ public class Bhaymax extends Application {
             // Set up properties for MainWindow controller
             MainWindow mainWindowController = fxmlLoader.<MainWindow>getController();
             mainWindowController.setAppName(Bhaymax.APP_NAME);
-            mainWindowController.setTasks(this.tasks);
             mainWindowController.setStorage(this.storage);
-
-            mainWindowController.showWelcomeDialogBox();
 
             PauseTransition pauseTransition = new PauseTransition(Duration.millis(5000));
             pauseTransition.setOnFinished(event -> Platform.exit());
             try {
                 this.tasks = this.storage.loadTasks();
+                canOpenFile = true;
             } catch (InvalidFileFormatException e) {
                 mainWindowController.disableInputs();
                 mainWindowController.clearChat(false);
@@ -67,6 +66,11 @@ public class Bhaymax extends Application {
                 mainWindowController.showDateTimeParseExceptionDialogBox(e);
                 mainWindowController.showSadResponse("I will terminate in 5 seconds");
                 pauseTransition.play();
+            }
+
+            if (canOpenFile) {
+                mainWindowController.showWelcomeDialogBox();
+                mainWindowController.setTasks(this.tasks);
             }
 
             stage.setMinHeight(640);
