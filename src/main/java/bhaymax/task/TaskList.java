@@ -2,7 +2,7 @@ package bhaymax.task;
 
 import java.util.LinkedList;
 
-import bhaymax.command.FilterOpt;
+import bhaymax.command.FilterOption;
 import bhaymax.controller.MainWindow;
 import bhaymax.task.timesensitive.TimeSensitiveTask;
 import bhaymax.util.Pair;
@@ -100,7 +100,7 @@ public class TaskList {
      * Displays the tasks in the list (in dialog boxes) that match the provided date (and optionally time) frame
      *
      * @param dateTime the date and/or time to filter the list by
-     * @param filterOpt the nature of the filter (i.e., show tasks
+     * @param filterOption the nature of the filter (i.e., show tasks
      *                  before the date, after the date, exactly on the date,
      *                  with/without time)
      * @param mainWindowController the {@link MainWindow} controller object - used to
@@ -109,11 +109,11 @@ public class TaskList {
      * @see bhaymax.parser.Parser#DATETIME_INPUT_FORMAT
      */
     public void showTasksFilteredByDate(
-            String dateTime, FilterOpt filterOpt, MainWindow mainWindowController) {
+            String dateTime, FilterOption filterOption, MainWindow mainWindowController) {
         String response = this.tasks.stream()
                 .filter(task -> task instanceof TimeSensitiveTask)
                 .filter(timeSensitiveTask -> (
-                        (TimeSensitiveTask) timeSensitiveTask).hasDateMatchingFilter(dateTime, filterOpt))
+                        (TimeSensitiveTask) timeSensitiveTask).hasDateMatchingFilter(dateTime, filterOption))
                 .map(task -> (this.tasks.indexOf(task) + 1) + ". " + task)
                 .reduce((previousTask, nextTask)
                         -> previousTask + System.lineSeparator() + nextTask)

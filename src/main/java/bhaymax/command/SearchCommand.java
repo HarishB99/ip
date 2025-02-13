@@ -12,7 +12,7 @@ import bhaymax.task.TaskList;
 public class SearchCommand extends Command {
     private final String searchTerm;
     private final String dateTime;
-    private final FilterOpt filterOpt;
+    private final FilterOption filterOption;
 
     /**
      * Sets up the search term that will be used to filter a list of tasks
@@ -22,7 +22,7 @@ public class SearchCommand extends Command {
     public SearchCommand(String searchTerm) {
         this.searchTerm = searchTerm;
         this.dateTime = "";
-        this.filterOpt = FilterOpt.DATE_ON;
+        this.filterOption = FilterOption.DATE_ON;
     }
 
     /**
@@ -30,14 +30,14 @@ public class SearchCommand extends Command {
      *
      * @param searchTerm the search term as a {@code String}
      * @param dateTime the date and/or time to filter by, as a {@code String}
-     * @param filterOpt a {@link FilterOpt} enum value indicating the type of
+     * @param filterOption a {@link FilterOption} enum value indicating the type of
      *                  filter (i.e., before the date, after the date, exactly on
      *                  the date, include/exclude time)
      */
-    public SearchCommand(String searchTerm, String dateTime, FilterOpt filterOpt) {
+    public SearchCommand(String searchTerm, String dateTime, FilterOption filterOption) {
         this.searchTerm = searchTerm;
         this.dateTime = dateTime;
-        this.filterOpt = filterOpt;
+        this.filterOption = filterOption;
     }
 
     @Override

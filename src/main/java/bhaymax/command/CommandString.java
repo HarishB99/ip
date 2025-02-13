@@ -1,7 +1,5 @@
 package bhaymax.command;
 
-import java.util.HashMap;
-
 import bhaymax.exception.InvalidCommandException;
 
 /**
@@ -25,23 +23,10 @@ public enum CommandString {
     BYE("bye"),
     EXIT("exit");
 
-    private static final HashMap<String, CommandString> COMMAND_STRINGS = new HashMap<String, CommandString>();
-
-    static {
-        for (CommandString commandStringEnum : values()) {
-            COMMAND_STRINGS.put(
-                    commandStringEnum.command, commandStringEnum);
-        }
-    }
-
     private final String command;
 
     CommandString(String command) {
         this.command = command;
-    }
-
-    public static boolean isValidCommandString(String commandString) {
-        return COMMAND_STRINGS.containsKey(commandString);
     }
 
     /**
@@ -54,7 +39,7 @@ public enum CommandString {
      * @throws InvalidCommandException If the command string provided is not recognised
      */
     public static CommandString valueOfCommandString(String commandString) throws InvalidCommandException {
-        for (CommandString commandStringEnum : values()) {
+        for (CommandString commandStringEnum : CommandString.values()) {
             if (commandStringEnum.command.equals(commandString)) {
                 return commandStringEnum;
             }
