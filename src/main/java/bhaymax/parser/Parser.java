@@ -102,12 +102,18 @@ public class Parser {
 
                 if (validCommandString.equals(CommandString.DEADLINE)
                         && token.equals(Parser.DEADLINE_OPT_BY)) {
+                    if (taskDescription.isEmpty()) {
+                        throw new InvalidCommandFormatException("Missing task description");
+                    }
                     deadlineExists = true;
                     break;
                 }
 
                 if (validCommandString.equals(CommandString.EVENT)
                         && token.equals(Parser.EVENT_OPT_START)) {
+                    if (taskDescription.isEmpty()) {
+                        throw new InvalidCommandFormatException("Missing task description");
+                    }
                     startExists = true;
                     break;
                 }
@@ -147,6 +153,9 @@ public class Parser {
             while (tokenizer.hasMoreTokens()) {
                 String token = tokenizer.nextToken();
                 if (token.equals(Parser.EVENT_OPT_END)) {
+                    if (start.isEmpty()) {
+                        throw new InvalidCommandFormatException("No start date and time provided for event");
+                    }
                     endExists = true;
                     break;
                 }

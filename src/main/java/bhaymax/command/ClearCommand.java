@@ -12,7 +12,7 @@ import bhaymax.task.TaskList;
 public class ClearCommand extends Command {
     @Override
     public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
-        mainWindowController.clearChat();
+        mainWindowController.clearChat(true);
     }
 
     @Override
