@@ -191,12 +191,15 @@ public class MainWindow {
         return responses;
     }
 
-    private void displayErrorResponses(LinkedList<String> responses) {
+    private void displayErrorResponses(LinkedList<String> responses, boolean hasFaultInApp) {
         String finalResponse = responses.stream()
                 .reduce((previousResponse, nextResponse)
                         -> previousResponse + System.lineSeparator() + nextResponse)
                 .orElse("");
-        this.dialogContainer.getChildren().addAll(this.getChatbotAnnoyedDialog(finalResponse));
+        DialogBox dialogBox = hasFaultInApp
+                ? this.getChatbotSadDialog(finalResponse)
+                : this.getChatbotAnnoyedDialog(finalResponse);
+        this.dialogContainer.getChildren().addAll(dialogBox);
     }
 
     private DialogBox getUserDialog(String input) {
@@ -287,7 +290,7 @@ public class MainWindow {
      * @param exception an {@link InvalidFileFormatException} exception
      */
     public void showInvalidFileFormatDialogBox(InvalidFileFormatException exception) {
-        this.displayErrorResponses(this.getErrorResponses(exception));
+        this.displayErrorResponses(this.getErrorResponses(exception), false);
     }
 
     /**
@@ -296,7 +299,7 @@ public class MainWindow {
      * @param exception an {@link DateTimeParseException} exception
      */
     public void showDateTimeParseExceptionDialogBox(DateTimeParseException exception) {
-        this.displayErrorResponses(this.getErrorResponses(exception));
+        this.displayErrorResponses(this.getErrorResponses(exception), false);
     }
 
     /**
@@ -340,17 +343,17 @@ public class MainWindow {
                 pauseTransition.play();
             }
         } catch (InvalidCommandFormatException e) {
-            this.displayErrorResponses(this.getErrorResponses(e));
+            this.displayErrorResponses(this.getErrorResponses(e), false);
         } catch (InvalidCommandException e) {
-            this.displayErrorResponses(this.getErrorResponses(e));
+            this.displayErrorResponses(this.getErrorResponses(e), false);
         } catch (DateTimeParseException e) {
-            this.displayErrorResponses(this.getErrorResponses(e));
+            this.displayErrorResponses(this.getErrorResponses(e), false);
         } catch (NumberFormatException e) {
-            this.displayErrorResponses(this.getErrorResponses(e));
+            this.displayErrorResponses(this.getErrorResponses(e), false);
         } catch (IOException e) {
-            this.displayErrorResponses(this.getErrorResponses(e));
+            this.displayErrorResponses(this.getErrorResponses(e), false);
         } catch (Exception e) {
-            this.displayErrorResponses(this.getErrorResponses(e.getMessage()));
+            this.displayErrorResponses(this.getErrorResponses(e.getMessage()), true);
         } finally {
             this.userInput.clear();
         }
