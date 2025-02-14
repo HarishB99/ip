@@ -5,6 +5,7 @@ package bhaymax.task;
  */
 public class Task {
     public static final String DELIMITER = "|";
+    private static final String SERIAL_FORMAT = "%s " + Task.DELIMITER + " %d " + Task.DELIMITER + " %s";
     protected String description;
     protected String type;
     protected boolean isDone;
@@ -42,11 +43,17 @@ public class Task {
      *         suitable for saving to a file
      */
     public String serialise() {
-        return this.type + " " + Task.DELIMITER + " "
-                + (this.isDone ? "1" : "0")
-                + " " + Task.DELIMITER + " "
-                + this.description;
+        return String.format(Task.SERIAL_FORMAT, this.type, (this.isDone ? 1 : 0), this.description);
     }
+
+    //    /**
+    //     * Returns a {@code Task} object by parsing
+    //     * a given serialised task, as a {@code String}
+    //     *
+    //     * @param serialisedTask the serialised task, as a {@code String}
+    //     * @return a {@code Task} object
+    //     */
+    // public static abstract Task deserialise(String serialisedTask);
 
     public boolean hasSearchTerm(String searchTerm) {
         return this.description.contains(searchTerm);

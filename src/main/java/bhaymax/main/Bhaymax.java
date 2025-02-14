@@ -74,9 +74,9 @@ public class Bhaymax extends Application {
             }
 
             stage.setMinHeight(640);
-            stage.setMinWidth(400);
+            stage.setMinWidth(420);
             stage.setMaxHeight(640);
-            stage.setMaxWidth(400);
+            stage.setMaxWidth(420);
             stage.show();
         } catch (IOException e) {
             throw new RuntimeException(e);

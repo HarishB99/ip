@@ -97,8 +97,8 @@ public class TaskListTest {
         TaskStub taskStub = new TaskStub();
         assertEquals(1, taskList.addTask(taskStub));
         Pair<Task, Integer> pair = taskList.removeTask(0);
-        Task removedTask = pair.t();
-        Integer newTaskListSize = pair.u();
+        Task removedTask = pair.first();
+        Integer newTaskListSize = pair.second();
         assertEquals(taskStub, removedTask);
         assertEquals(0, newTaskListSize);
     }

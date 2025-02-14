@@ -22,7 +22,7 @@ public class ParserTest {
 
     @Test
     public void parse_unrecognisedCommand_throwsInvalidCommandFormatException() {
-        assertThrows(InvalidCommandFormatException.class, () -> Parser.parse(
+        assertThrows(InvalidCommandException.class, () -> Parser.parse(
                 "ads", new TaskListStub()));
     }
 
@@ -42,7 +42,7 @@ public class ParserTest {
             assertInstanceOf(ExitCommand.class, Parser.parse("Bye", new TaskListStub()));
             assertInstanceOf(ExitCommand.class, Parser.parse("bYe", new TaskListStub()));
             assertInstanceOf(ExitCommand.class, Parser.parse("byE", new TaskListStub()));
-            assertThrows(InvalidCommandFormatException.class, () -> Parser.parse(
+            assertThrows(InvalidCommandException.class, () -> Parser.parse(
                     "by E", new TaskListStub()));
         } catch (InvalidCommandFormatException | InvalidCommandException e) {
             fail();
@@ -66,7 +66,7 @@ public class ParserTest {
             assertInstanceOf(ExitCommand.class, Parser.parse("EXIt", new TaskListStub()));
             assertInstanceOf(ExitCommand.class, Parser.parse("ExIt", new TaskListStub()));
             assertInstanceOf(ExitCommand.class, Parser.parse("Exit", new TaskListStub()));
-            assertThrows(InvalidCommandFormatException.class, () -> Parser.parse(
+            assertThrows(InvalidCommandException.class, () -> Parser.parse(
                     "exi t", new TaskList()));
         } catch (InvalidCommandFormatException | InvalidCommandException e) {
             fail();
@@ -85,7 +85,7 @@ public class ParserTest {
             assertInstanceOf(HelloCommand.class, Parser.parse("hI ", new TaskListStub()));
             assertInstanceOf(HelloCommand.class, Parser.parse("HI   ", new TaskListStub()));
             assertInstanceOf(HelloCommand.class, Parser.parse("  hI   ", new TaskListStub()));
-            assertThrows(InvalidCommandFormatException.class, () -> Parser.parse(
+            assertThrows(InvalidCommandException.class, () -> Parser.parse(
                     "H i", new TaskList()));
         } catch (InvalidCommandFormatException | InvalidCommandException e) {
             fail();
@@ -104,7 +104,7 @@ public class ParserTest {
             assertInstanceOf(HelloCommand.class, Parser.parse("HELLO ", new TaskListStub()));
             assertInstanceOf(HelloCommand.class, Parser.parse("helLo  ", new TaskListStub()));
             assertInstanceOf(HelloCommand.class, Parser.parse("   Hello  ", new TaskListStub()));
-            assertThrows(InvalidCommandFormatException.class, () -> Parser.parse(
+            assertThrows(InvalidCommandException.class, () -> Parser.parse(
                     "H ello", new TaskList()));
         } catch (InvalidCommandFormatException | InvalidCommandException e) {
             fail();
@@ -119,7 +119,7 @@ public class ParserTest {
             assertInstanceOf(ClearCommand.class, Parser.parse(" cLear", new TaskListStub()));
             assertInstanceOf(ClearCommand.class, Parser.parse("clEAr ", new TaskListStub()));
             assertInstanceOf(ClearCommand.class, Parser.parse("CLEAR", new TaskListStub()));
-            assertThrows(InvalidCommandFormatException.class, () -> Parser.parse(
+            assertThrows(InvalidCommandException.class, () -> Parser.parse(
                     "cLe ar", new TaskListStub()));
         } catch (InvalidCommandFormatException | InvalidCommandException e) {
             fail();

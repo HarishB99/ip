@@ -4,7 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Scanner;
+import java.util.regex.MatchResult;
 
+import bhaymax.exception.InvalidTaskStringFormatException;
 import bhaymax.parser.Parser;
 import bhaymax.task.Task;
 
@@ -13,6 +16,14 @@ import bhaymax.task.Task;
  */
 public class Event extends TimeSensitiveTask {
     public static final String TYPE = "E";
+    private static final String SERIAL_FORMAT = "%s " + Task.DELIMITER + " %s " + Task.DELIMITER + " %s";
+    private static final String DESERIAL_FORMAT = "^E \\| ([0-1]) \\| ([A-Za-z0-9\\- ]+)"
+            + " \\| (\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2}) \\| (\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2})$";
+    private static final int DESERIAL_FORMAT_NUMBER_OF_ITEMS = 4;
+    private static final int EVENT_STATUS_GROUP = 1;
+    private static final int EVENT_DESCRIPTION_GROUP = 2;
+    private static final int EVENT_START_DATE_GROUP = 3;
+    private static final int EVENT_END_DATE_GROUP = 4;
     protected LocalDateTime start;
     protected LocalDateTime end;
 
@@ -38,10 +49,43 @@ public class Event extends TimeSensitiveTask {
 
     @Override
     public String serialise() {
-        return super.serialise() + " " + Task.DELIMITER + " "
-                + this.getStartDateInInputFormat()
-                + " " + Task.DELIMITER + " "
-                + this.getEndDateInInputFormat();
+        return String.format(Event.SERIAL_FORMAT,
+                super.serialise(), this.getStartDateInInputFormat(), this.getEndDateInInputFormat());
+    }
+
+    /**
+     * Returns a {@code Event} object by parsing
+     * a given serialised event, as a {@code String}
+     *
+     * @param serialisedEvent the serialised event, as a {@code String}
+     * @return a {@code Event} object
+     */
+    public static Event deserialise(String serialisedEvent) {
+        Scanner sc = new Scanner(serialisedEvent);
+        sc.findInLine(Event.DESERIAL_FORMAT);
+        MatchResult matchResult = sc.match();
+        sc.close();
+
+        if (matchResult.groupCount() != Event.DESERIAL_FORMAT_NUMBER_OF_ITEMS) {
+            throw new InvalidTaskStringFormatException(
+                    "Event in file should be of format"
+                            + " 'E | {0,1} | {description} | {start date and time} | {end date and time}'");
+        }
+
+        String eventStatus = matchResult.group(Event.EVENT_STATUS_GROUP);
+        String eventDescription = matchResult.group(Event.EVENT_DESCRIPTION_GROUP);
+        String eventStart = matchResult.group(Event.EVENT_START_DATE_GROUP);
+        String eventEnd = matchResult.group(Event.EVENT_END_DATE_GROUP);
+
+        Event event = new Event(eventDescription, eventStart, eventEnd);
+        if (eventStatus.equals("1")) {
+            event.markAsDone();
+        } else if (eventStatus.equals("0")) {
+            event.markAsUndone();
+        } else {
+            throw new InvalidTaskStringFormatException("Invalid value encountered for task status.");
+        }
+        return event;
     }
 
     private String getStartDateInInputFormat() {

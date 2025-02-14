@@ -26,8 +26,8 @@ public class DeleteCommand extends Command {
     @Override
     public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
         Pair<Task, Integer> pair = taskList.removeTask(this.taskNumber);
-        Task deletedTask = pair.t();
-        int numberOfRemainingTasks = pair.u();
+        Task deletedTask = pair.first();
+        int numberOfRemainingTasks = pair.second();
         storage.saveTasks(taskList);
         String response = "Noted. Removing: " + System.lineSeparator()
                 + "  " + deletedTask + System.lineSeparator()
