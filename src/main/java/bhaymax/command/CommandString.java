@@ -44,6 +44,6 @@ public enum CommandString {
                 return commandStringEnum;
             }
         }
-        throw new InvalidCommandException();
+        throw new InvalidCommandException(commandString);
     }
 }

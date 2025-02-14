@@ -57,7 +57,7 @@ public class Parser {
             throws InvalidCommandException, InvalidCommandFormatException {
         String trimmedInput = userInput.trim();
         if (trimmedInput.isEmpty()) {
-            throw new InvalidCommandFormatException(ERROR_MESSAGE_EMPTY_COMMAND);
+            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_EMPTY_COMMAND);
         }
         String[] tokens = trimmedInput.split(COMMAND_DELIMITER, STRING_SPLIT_LIMIT);
         String commandString = tokens[0].trim().toLowerCase();
@@ -72,12 +72,12 @@ public class Parser {
             throws InvalidCommandFormatException, NumberFormatException {
         String trimmedArguments = arguments.trim();
         if (trimmedArguments.isEmpty()) {
-            throw new InvalidCommandFormatException(ERROR_MESSAGE_MISSING_TASK_NUMBER);
+            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_TASK_NUMBER);
         }
 
         int index = Integer.parseInt(trimmedArguments) - 1;
         if (!taskList.isValidIndex(index)) {
-            throw new InvalidCommandFormatException(ERROR_MESSAGE_INVALID_TASK_NUMBER);
+            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_INVALID_TASK_NUMBER);
         }
 
         return index;
@@ -86,7 +86,7 @@ public class Parser {
     private static String getTaskDescription(String arguments)
             throws InvalidCommandFormatException {
         if (arguments.isEmpty()) {
-            throw new InvalidCommandFormatException(ERROR_MESSAGE_MISSING_TASK_DESCRIPTION);
+            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_TASK_DESCRIPTION);
         }
         return arguments;
     }
@@ -97,7 +97,7 @@ public class Parser {
         String[] tokens = arguments.split(option, STRING_SPLIT_LIMIT);
         String taskDescription = tokens[0].trim();
         if (taskDescription.isEmpty()) {
-            throw new InvalidCommandFormatException(ERROR_MESSAGE_MISSING_TASK_DESCRIPTION);
+            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_TASK_DESCRIPTION);
         }
         if (tokens.length < 2) {
             throw new InvalidCommandFormatException(errorMessageForMissingOption);
@@ -114,21 +114,21 @@ public class Parser {
         String[] tokens = arguments.split(EVENT_OPT_END, STRING_SPLIT_LIMIT);
         String startDate = tokens[0].trim();
         if (startDate.isEmpty()) {
-            throw new InvalidCommandFormatException(ERROR_MESSAGE_MISSING_START_TIME);
+            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_START_TIME);
         }
         if (tokens.length < 2) {
-            throw new InvalidCommandFormatException(ERROR_MESSAGE_MISSING_END_TIME);
+            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_END_TIME);
         }
         String endDate = tokens[1].trim();
         if (endDate.isEmpty()) {
-            throw new InvalidCommandFormatException(ERROR_MESSAGE_MISSING_END_TIME);
+            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_END_TIME);
         }
         return new Pair<String, String>(startDate, endDate);
     }
 
     private static String getSearchTerm(String arguments) throws InvalidCommandFormatException {
         if (arguments.isEmpty()) {
-            throw new InvalidCommandFormatException(ERROR_MESSAGE_MISSING_SEARCH_TERM);
+            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_SEARCH_TERM);
         }
         return arguments;
     }
@@ -138,14 +138,14 @@ public class Parser {
         String[] tokens = arguments.split(COMMAND_DELIMITER, STRING_SPLIT_LIMIT);
         String filterOption = tokens[0].trim();
         if (filterOption.isEmpty()) {
-            throw new InvalidCommandFormatException(ERROR_MESSAGE_MISSING_FILTER_OPTION);
+            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_FILTER_OPTION);
         }
         if (tokens.length < 2) {
-            throw new InvalidCommandFormatException(ERROR_MESSAGE_MISSING_FILTER_DATE);
+            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_FILTER_DATE);
         }
         String dateTime = tokens[1].trim();
         if (dateTime.isEmpty()) {
-            throw new InvalidCommandFormatException(ERROR_MESSAGE_MISSING_FILTER_DATE);
+            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_FILTER_DATE);
         }
         return new Pair<FilterOption, String>(
                 FilterOption.valueOfFilterOptionString(filterOption),
@@ -210,7 +210,7 @@ public class Parser {
         case EXIT:
             return new ExitCommand();
         default:
-            throw new InvalidCommandException();
+            throw new InvalidCommandException(userInput.split(Parser.COMMAND_DELIMITER)[0]);
         }
     }
 }

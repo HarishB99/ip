@@ -44,7 +44,7 @@ public class ParserTest {
             assertInstanceOf(ExitCommand.class, Parser.parse("byE", new TaskListStub()));
             assertThrows(InvalidCommandException.class, () -> Parser.parse(
                     "by E", new TaskListStub()));
-        } catch (InvalidCommandFormatException | InvalidCommandException e) {
+        } catch (InvalidCommandFormatException e) {
             fail();
         }
     }
@@ -68,7 +68,7 @@ public class ParserTest {
             assertInstanceOf(ExitCommand.class, Parser.parse("Exit", new TaskListStub()));
             assertThrows(InvalidCommandException.class, () -> Parser.parse(
                     "exi t", new TaskList()));
-        } catch (InvalidCommandFormatException | InvalidCommandException e) {
+        } catch (InvalidCommandFormatException e) {
             fail();
         }
     }
@@ -87,7 +87,7 @@ public class ParserTest {
             assertInstanceOf(HelloCommand.class, Parser.parse("  hI   ", new TaskListStub()));
             assertThrows(InvalidCommandException.class, () -> Parser.parse(
                     "H i", new TaskList()));
-        } catch (InvalidCommandFormatException | InvalidCommandException e) {
+        } catch (InvalidCommandFormatException e) {
             fail();
         }
     }
@@ -106,7 +106,7 @@ public class ParserTest {
             assertInstanceOf(HelloCommand.class, Parser.parse("   Hello  ", new TaskListStub()));
             assertThrows(InvalidCommandException.class, () -> Parser.parse(
                     "H ello", new TaskList()));
-        } catch (InvalidCommandFormatException | InvalidCommandException e) {
+        } catch (InvalidCommandFormatException e) {
             fail();
         }
     }
@@ -121,7 +121,7 @@ public class ParserTest {
             assertInstanceOf(ClearCommand.class, Parser.parse("CLEAR", new TaskListStub()));
             assertThrows(InvalidCommandException.class, () -> Parser.parse(
                     "cLe ar", new TaskListStub()));
-        } catch (InvalidCommandFormatException | InvalidCommandException e) {
+        } catch (InvalidCommandFormatException e) {
             fail();
         }
     }
