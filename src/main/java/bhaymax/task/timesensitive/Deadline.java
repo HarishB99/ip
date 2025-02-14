@@ -17,7 +17,7 @@ import bhaymax.task.Task;
 public class Deadline extends TimeSensitiveTask {
     public static final String TYPE = "D";
     private static final String SERIAL_FORMAT = "%s " + Task.DELIMITER + " %s";
-    private static final String DESERIAL_FORMAT = "^D \\| ([0-1]) \\| ([A-Za-z0-9\\- ]+)"
+    private static final String DESERIAL_FORMAT = "^D \\| ([0-1]) \\| (.+)"
             + " \\| (\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2})";
     private static final int DESERIAL_FORMAT_NUMBER_OF_ITEMS = 3;
     private static final int DEADLINE_STATUS_GROUP = 1;

@@ -11,7 +11,7 @@ import bhaymax.exception.InvalidTaskStringFormatException;
 public class Todo extends Task {
     public static final String TYPE = "T";
 
-    private static final String DESERIAL_FORMAT = "^T \\| ([0-1]) \\| ([A-Za-z0-9-:| ]+)$";
+    private static final String DESERIAL_FORMAT = "^T \\| ([0-1]) \\| (.+)$";
     private static final int DESERIAL_FORMAT_NUMBER_OF_ITEMS = 2;
     private static final int TODO_STATUS_GROUP = 1;
     private static final int TODO_DESCRIPTION_GROUP = 2;

@@ -17,7 +17,7 @@ import bhaymax.task.Task;
 public class Event extends TimeSensitiveTask {
     public static final String TYPE = "E";
     private static final String SERIAL_FORMAT = "%s " + Task.DELIMITER + " %s " + Task.DELIMITER + " %s";
-    private static final String DESERIAL_FORMAT = "^E \\| ([0-1]) \\| ([A-Za-z0-9\\- ]+)"
+    private static final String DESERIAL_FORMAT = "^E \\| ([0-1]) \\| (.+)"
             + " \\| (\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2}) \\| (\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2})$";
     private static final int DESERIAL_FORMAT_NUMBER_OF_ITEMS = 4;
     private static final int EVENT_STATUS_GROUP = 1;
