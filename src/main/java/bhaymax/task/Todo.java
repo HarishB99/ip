@@ -13,8 +13,16 @@ public class Todo extends Task {
 
     private static final String DESERIAL_FORMAT = "^T \\| ([0-1]) \\| (.+)$";
     private static final int DESERIAL_FORMAT_NUMBER_OF_ITEMS = 2;
+
     private static final int TODO_STATUS_GROUP = 1;
     private static final int TODO_DESCRIPTION_GROUP = 2;
+
+    private static final String ERROR_MESSAGE_INVALID_FORMAT = "Todo Item in file should be of format"
+            + " 'T | {0,1} | {description}'";
+    private static final String ERROR_MESSAGE_INVALID_TASK_STATUS = "Invalid value encountered for task status.";
+
+    private static final String TODO_DONE = "1";
+    private static final String TODO_NOT_DONE = "0";
 
     /**
      * Sets up the description of the To-Do task
@@ -39,20 +47,18 @@ public class Todo extends Task {
         sc.close();
 
         if (matchResult.groupCount() != Todo.DESERIAL_FORMAT_NUMBER_OF_ITEMS) {
-            throw new InvalidTaskStringFormatException(
-                    "Todo Item in file should be of format 'T | {0,1} | {description}'");
+            throw new InvalidTaskStringFormatException(Todo.ERROR_MESSAGE_INVALID_FORMAT);
         }
 
         String taskStatus = matchResult.group(TODO_STATUS_GROUP);
         String taskDescription = matchResult.group(TODO_DESCRIPTION_GROUP);
         Todo todo = new Todo(taskDescription);
-        int taskStatusNumber = Integer.parseInt(taskStatus);
-        if (taskStatusNumber == 1) {
+        if (taskStatus.equals(Todo.TODO_DONE)) {
             todo.markAsDone();
-        } else if (taskStatusNumber == 0) {
+        } else if (taskStatus.equals(Todo.TODO_NOT_DONE)) {
             todo.markAsUndone();
         } else {
-            throw new InvalidTaskStringFormatException("Invalid value encountered for task status.");
+            throw new InvalidTaskStringFormatException(Todo.ERROR_MESSAGE_INVALID_TASK_STATUS);
         }
         return todo;
     }

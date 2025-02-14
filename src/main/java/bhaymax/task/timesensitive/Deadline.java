@@ -16,13 +16,23 @@ import bhaymax.task.Task;
  */
 public class Deadline extends TimeSensitiveTask {
     public static final String TYPE = "D";
+
     private static final String SERIAL_FORMAT = "%s " + Task.DELIMITER + " %s";
     private static final String DESERIAL_FORMAT = "^D \\| ([0-1]) \\| (.+)"
             + " \\| (\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2})";
     private static final int DESERIAL_FORMAT_NUMBER_OF_ITEMS = 3;
+
     private static final int DEADLINE_STATUS_GROUP = 1;
     private static final int DEADLINE_DESCRIPTION_GROUP = 2;
     private static final int DEADLINE_DEADLINE_GROUP = 3;
+
+    private static final String ERROR_MESSAGE_INVALID_FORMAT = "Deadline in file should be of format"
+            + " 'D | {0,1} | {description} | {due-by date}'";
+    private static final String ERROR_MESSAGE_INVALID_TASK_STATUS = "Invalid value encountered for task status.";
+
+    private static final String DEADLINE_DONE = "1";
+    private static final String DEADLINE_NOT_DONE = "0";
+
     protected LocalDateTime dueDate;
 
     /**
@@ -60,9 +70,7 @@ public class Deadline extends TimeSensitiveTask {
         sc.close();
 
         if (matchResult.groupCount() != Deadline.DESERIAL_FORMAT_NUMBER_OF_ITEMS) {
-            throw new InvalidTaskStringFormatException(
-                    "Deadline in file should be of format"
-                            + " 'D | {0,1} | {description} | {due-by date}'");
+            throw new InvalidTaskStringFormatException(Deadline.ERROR_MESSAGE_INVALID_FORMAT);
         }
 
         String deadlineStatus = matchResult.group(Deadline.DEADLINE_STATUS_GROUP);
@@ -70,12 +78,12 @@ public class Deadline extends TimeSensitiveTask {
         String deadlineDueDate = matchResult.group(Deadline.DEADLINE_DEADLINE_GROUP);
 
         Deadline deadline = new Deadline(deadlineDescription, deadlineDueDate);
-        if (deadlineStatus.equals("1")) {
+        if (deadlineStatus.equals(Deadline.DEADLINE_DONE)) {
             deadline.markAsDone();
-        } else if (deadlineStatus.equals("0")) {
+        } else if (deadlineStatus.equals(Deadline.DEADLINE_NOT_DONE)) {
             deadline.markAsUndone();
         } else {
-            throw new InvalidTaskStringFormatException("Invalid value encountered for task status.");
+            throw new InvalidTaskStringFormatException(Deadline.ERROR_MESSAGE_INVALID_TASK_STATUS);
         }
         return deadline;
     }

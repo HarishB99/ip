@@ -46,15 +46,6 @@ public class Task {
         return String.format(Task.SERIAL_FORMAT, this.type, (this.isDone ? 1 : 0), this.description);
     }
 
-    //    /**
-    //     * Returns a {@code Task} object by parsing
-    //     * a given serialised task, as a {@code String}
-    //     *
-    //     * @param serialisedTask the serialised task, as a {@code String}
-    //     * @return a {@code Task} object
-    //     */
-    // public static abstract Task deserialise(String serialisedTask);
-
     public boolean hasSearchTerm(String searchTerm) {
         return this.description.contains(searchTerm);
     }

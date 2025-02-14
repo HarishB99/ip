@@ -56,8 +56,6 @@ public class MainWindow {
     private static final String ERROR_MESSAGE_TRY_AGAIN_LATER = "Please try again later";
     private static final String ERROR_MESSAGE_TRY_RESTARTING_APP = "Alternatively, you can try restarting the app";
 
-    private static final String EMPTY_STRING = "";
-
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -375,7 +373,7 @@ public class MainWindow {
         String finalResponse = responses.stream()
                 .reduce((previousResponse, nextResponse)
                         -> previousResponse + System.lineSeparator() + nextResponse)
-                .orElse(MainWindow.EMPTY_STRING);
+                .orElse("");
         DialogBox dialogBox = hasFaultInApp
                 ? this.getChatbotSadDialog(finalResponse)
                 : this.getChatbotAnnoyedDialog(finalResponse);

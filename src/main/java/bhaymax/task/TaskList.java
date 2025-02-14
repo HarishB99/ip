@@ -11,6 +11,12 @@ import bhaymax.util.Pair;
  * Represents a list of tasks
  */
 public class TaskList {
+    private static final String TASK_LIST_EMPTY = "Congratulations! You don't have any outstanding tasks!";
+    private static final String TASK_LIST_NO_FILTER_MATCH = "There are no tasks in your list for me to filter.";
+    private static final String TASK_LIST_NO_SEARCH_MATCH = "There are no tasks that match the "
+            + "search term you provided.";
+    private static final String TASK_LIST_BULLET_POINT_SEPARATOR = ". ";
+
     private final LinkedList<Task> tasks;
 
     public TaskList() {
@@ -93,7 +99,7 @@ public class TaskList {
                 .reduce((previousTask, nextTask)
                         -> previousTask + System.lineSeparator() + nextTask)
                 .ifPresentOrElse(mainWindowController::showResponse, () -> mainWindowController
-                        .showExcitedResponse("Congratulations! You don't have any outstanding tasks!"));
+                        .showExcitedResponse(TaskList.TASK_LIST_EMPTY));
     }
 
     /**
@@ -114,10 +120,10 @@ public class TaskList {
                 .filter(task -> task instanceof TimeSensitiveTask)
                 .filter(timeSensitiveTask -> (
                         (TimeSensitiveTask) timeSensitiveTask).hasDateMatchingFilter(dateTime, filterOption))
-                .map(task -> (this.tasks.indexOf(task) + 1) + ". " + task)
+                .map(task -> (this.tasks.indexOf(task) + 1) + TaskList.TASK_LIST_BULLET_POINT_SEPARATOR + task)
                 .reduce((previousTask, nextTask)
                         -> previousTask + System.lineSeparator() + nextTask)
-                .orElse("There are no tasks in your list for me to filter.");
+                .orElse(TaskList.TASK_LIST_NO_FILTER_MATCH);
         mainWindowController.showResponse(response);
     }
 
@@ -131,10 +137,10 @@ public class TaskList {
     public void showTasksContainingSearchTerm(String searchTerm, MainWindow mainWindowController) {
         String response = this.tasks.stream()
                 .filter(task -> task.hasSearchTerm(searchTerm))
-                .map(task -> (this.tasks.indexOf(task) + 1) + ". " + task)
+                .map(task -> (this.tasks.indexOf(task) + 1) + TaskList.TASK_LIST_BULLET_POINT_SEPARATOR + task)
                 .reduce((previousTask, nextTask)
                         -> previousTask + System.lineSeparator() + nextTask)
-                .orElse("There are no tasks that match the search term you provided.");
+                .orElse(TaskList.TASK_LIST_NO_SEARCH_MATCH);
         mainWindowController.showResponse(response);
     }
 

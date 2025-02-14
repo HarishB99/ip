@@ -21,7 +21,6 @@ import bhaymax.exception.InvalidFilterOptionException;
 import bhaymax.task.TaskList;
 import bhaymax.util.Pair;
 
-// TODO: Invalid input handling
 /**
  * Parses a provided string from the user,
  * that is expected to contain a full command,
@@ -35,7 +34,6 @@ public class Parser {
     private static final int STRING_SPLIT_LIMIT = 2;
 
     private static final String COMMAND_DELIMITER = " ";
-    private static final String EMPTY_STRING = "";
 
     private static final String DEADLINE_OPT_BY = "/by";
 
@@ -54,14 +52,14 @@ public class Parser {
     private static final String ERROR_MESSAGE_MISSING_FILTER_DATE = "Date and/or time is required for filtering tasks";
 
     private static Pair<CommandString, String> getCommandAndArgs(String userInput)
-            throws InvalidCommandException, InvalidCommandFormatException {
+            throws InvalidCommandFormatException {
         String trimmedInput = userInput.trim();
         if (trimmedInput.isEmpty()) {
             throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_EMPTY_COMMAND);
         }
         String[] tokens = trimmedInput.split(Parser.COMMAND_DELIMITER, Parser.STRING_SPLIT_LIMIT);
         String commandString = tokens[0].trim().toLowerCase();
-        String arguments = tokens.length > 1 ? tokens[1].trim() : Parser.EMPTY_STRING;
+        String arguments = tokens.length > 1 ? tokens[1].trim() : "";
         return new Pair<CommandString, String>(
                 CommandString.valueOfCommandString(commandString),
                 arguments
@@ -161,7 +159,7 @@ public class Parser {
      * @throws InvalidCommandFormatException If the format of the command entered by the user is incorrect
      */
     public static Command parse(String userInput, TaskList taskList)
-            throws InvalidCommandFormatException, InvalidCommandException, InvalidFilterOptionException {
+            throws InvalidCommandFormatException, InvalidFilterOptionException {
         Pair<CommandString, String> commandAndArgs = Parser.getCommandAndArgs(userInput);
         CommandString commandString = commandAndArgs.first();
         String arguments = commandAndArgs.second();
@@ -170,32 +168,32 @@ public class Parser {
         case LIST:
             return new ListCommand();
         case DELETE:
-            return new DeleteCommand(getTaskIndex(arguments, taskList));
+            return new DeleteCommand(Parser.getTaskIndex(arguments, taskList));
         case MARK:
-            return new MarkCommand(getTaskIndex(arguments, taskList));
+            return new MarkCommand(Parser.getTaskIndex(arguments, taskList));
         case UNMARK:
-            return new UnmarkCommand(getTaskIndex(arguments, taskList));
+            return new UnmarkCommand(Parser.getTaskIndex(arguments, taskList));
         case TODO:
-            return new TodoCommand(getTaskDescription(arguments));
+            return new TodoCommand(Parser.getTaskDescription(arguments));
         case DEADLINE:
-            Pair<String, String> descriptionAndDeadline = getTaskDescriptionAndArgs(
+            Pair<String, String> descriptionAndDeadline = Parser.getTaskDescriptionAndArgs(
                     arguments, Parser.DEADLINE_OPT_BY, Parser.ERROR_MESSAGE_MISSING_DEADLINE);
             String deadlineDescription = descriptionAndDeadline.first();
             String deadline = descriptionAndDeadline.second();
             return new DeadlineCommand(deadlineDescription, deadline);
         case EVENT:
-            Pair<String, String> descriptionAndArgs = getTaskDescriptionAndArgs(
+            Pair<String, String> descriptionAndArgs = Parser.getTaskDescriptionAndArgs(
                     arguments, Parser.EVENT_OPT_START, Parser.ERROR_MESSAGE_MISSING_START_TIME);
             String eventDescription = descriptionAndArgs.first();
             String eventArguments = descriptionAndArgs.second();
-            Pair<String, String> eventStartAndEnd = getEventStartAndEndDates(eventArguments);
+            Pair<String, String> eventStartAndEnd = Parser.getEventStartAndEndDates(eventArguments);
             String eventStart = eventStartAndEnd.first();
             String eventEnd = eventStartAndEnd.second();
             return new EventCommand(eventDescription, eventStart, eventEnd);
         case SEARCH:
-            return new SearchCommand(getSearchTerm(arguments));
+            return new SearchCommand(Parser.getSearchTerm(arguments));
         case FILTER:
-            Pair<FilterOption, String> filterOptionAndDate = getFilterOptionAndDate(arguments);
+            Pair<FilterOption, String> filterOptionAndDate = Parser.getFilterOptionAndDate(arguments);
             FilterOption filterOption = filterOptionAndDate.first();
             String dateTime = filterOptionAndDate.second();
             return new FilterCommand(dateTime, filterOption);
@@ -210,7 +208,7 @@ public class Parser {
         case EXIT:
             return new ExitCommand();
         default:
-            throw new InvalidCommandException(userInput.split(Parser.COMMAND_DELIMITER)[0]);
+            throw new InvalidCommandException(commandString.name().toLowerCase());
         }
     }
 }
