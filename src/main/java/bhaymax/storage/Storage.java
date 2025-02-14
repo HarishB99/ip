@@ -90,7 +90,7 @@ public class Storage {
             sc.close();
             return taskList;
         } catch (InvalidTaskStringFormatException e) {
-            throw new InvalidTaskStringFormatException(
+            throw new InvalidFileFormatException(
                     String.format(ERROR_MESSAGE_FORMAT, lineNumber, e.getMessage()));
         } catch (FileNotFoundException e) {
             return taskList;

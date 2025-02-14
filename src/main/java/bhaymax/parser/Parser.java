@@ -59,9 +59,9 @@ public class Parser {
         if (trimmedInput.isEmpty()) {
             throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_EMPTY_COMMAND);
         }
-        String[] tokens = trimmedInput.split(COMMAND_DELIMITER, STRING_SPLIT_LIMIT);
+        String[] tokens = trimmedInput.split(Parser.COMMAND_DELIMITER, Parser.STRING_SPLIT_LIMIT);
         String commandString = tokens[0].trim().toLowerCase();
-        String arguments = tokens.length > 1 ? tokens[1].trim() : EMPTY_STRING;
+        String arguments = tokens.length > 1 ? tokens[1].trim() : Parser.EMPTY_STRING;
         return new Pair<CommandString, String>(
                 CommandString.valueOfCommandString(commandString),
                 arguments
@@ -94,7 +94,7 @@ public class Parser {
     private static Pair<String, String> getTaskDescriptionAndArgs(
             String arguments, String option, String errorMessageForMissingOption)
             throws InvalidCommandFormatException {
-        String[] tokens = arguments.split(option, STRING_SPLIT_LIMIT);
+        String[] tokens = arguments.split(option, Parser.STRING_SPLIT_LIMIT);
         String taskDescription = tokens[0].trim();
         if (taskDescription.isEmpty()) {
             throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_TASK_DESCRIPTION);
@@ -111,7 +111,7 @@ public class Parser {
 
     private static Pair<String, String> getEventStartAndEndDates(String arguments)
             throws InvalidCommandFormatException {
-        String[] tokens = arguments.split(EVENT_OPT_END, STRING_SPLIT_LIMIT);
+        String[] tokens = arguments.split(Parser.EVENT_OPT_END, Parser.STRING_SPLIT_LIMIT);
         String startDate = tokens[0].trim();
         if (startDate.isEmpty()) {
             throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_START_TIME);
@@ -135,7 +135,7 @@ public class Parser {
 
     private static Pair<FilterOption, String> getFilterOptionAndDate(String arguments)
             throws InvalidCommandFormatException, InvalidFilterOptionException {
-        String[] tokens = arguments.split(COMMAND_DELIMITER, STRING_SPLIT_LIMIT);
+        String[] tokens = arguments.split(Parser.COMMAND_DELIMITER, Parser.STRING_SPLIT_LIMIT);
         String filterOption = tokens[0].trim();
         if (filterOption.isEmpty()) {
             throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_FILTER_OPTION);
@@ -179,13 +179,13 @@ public class Parser {
             return new TodoCommand(getTaskDescription(arguments));
         case DEADLINE:
             Pair<String, String> descriptionAndDeadline = getTaskDescriptionAndArgs(
-                    arguments, DEADLINE_OPT_BY, ERROR_MESSAGE_MISSING_DEADLINE);
+                    arguments, Parser.DEADLINE_OPT_BY, Parser.ERROR_MESSAGE_MISSING_DEADLINE);
             String deadlineDescription = descriptionAndDeadline.first();
             String deadline = descriptionAndDeadline.second();
             return new DeadlineCommand(deadlineDescription, deadline);
         case EVENT:
             Pair<String, String> descriptionAndArgs = getTaskDescriptionAndArgs(
-                    arguments, EVENT_OPT_START, ERROR_MESSAGE_MISSING_START_TIME);
+                    arguments, Parser.EVENT_OPT_START, Parser.ERROR_MESSAGE_MISSING_START_TIME);
             String eventDescription = descriptionAndArgs.first();
             String eventArguments = descriptionAndArgs.second();
             Pair<String, String> eventStartAndEnd = getEventStartAndEndDates(eventArguments);

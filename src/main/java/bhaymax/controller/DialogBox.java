@@ -17,6 +17,8 @@ import javafx.scene.layout.HBox;
  * Controller for DialogBox
  */
 public class DialogBox extends HBox {
+    private static final String FXML_DIALOG_BOX_PATH = "/view/DialogBox.fxml";
+
     @FXML
     private Label dialog;
     @FXML
@@ -25,8 +27,7 @@ public class DialogBox extends HBox {
     private DialogBox(String text, Image img) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                    MainWindow.class.getResource(
-                            "/view/DialogBox.fxml"));
+                    MainWindow.class.getResource(DialogBox.FXML_DIALOG_BOX_PATH));
             fxmlLoader.setController(this);
             fxmlLoader.setRoot(this);
             fxmlLoader.load();
@@ -39,12 +40,10 @@ public class DialogBox extends HBox {
     }
 
     /**
-     * Flips the dialog box such that the
-     * ImageView is on the left and text is on the right
+     * Flips the dialog box such that the ImageView is on the left and text is on the right
      */
     private void flip() {
-        ObservableList<Node> nodes = FXCollections.observableArrayList(
-                this.getChildren());
+        ObservableList<Node> nodes = FXCollections.observableArrayList(this.getChildren());
         FXCollections.reverse(nodes);
         this.getChildren().setAll(nodes);
         this.setAlignment(Pos.TOP_LEFT);
