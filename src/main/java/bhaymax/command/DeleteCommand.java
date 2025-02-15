@@ -1,8 +1,7 @@
 package bhaymax.command;
 
-import java.io.IOException;
-
 import bhaymax.controller.MainWindow;
+import bhaymax.exception.file.FileWriteException;
 import bhaymax.storage.Storage;
 import bhaymax.task.Task;
 import bhaymax.task.TaskList;
@@ -15,7 +14,6 @@ public class DeleteCommand extends Command {
     private static final String RESPONSE_FORMAT = "Noted. Removing: " + System.lineSeparator()
                 + "  %s" + System.lineSeparator()
                 + "from your list of tasks." + System.lineSeparator();
-    private static final String RESPONSE_EMPTY_TASK_LIST = "Congratulations! You don't have any outstanding tasks!";
     private static final String RESPONSE_FORMAT_NONEMPTY_TASK_LIST = "You now have %d task%s to complete.";
 
     private final int taskNumber;
@@ -30,7 +28,7 @@ public class DeleteCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws FileWriteException {
         Pair<Task, Integer> pair = taskList.removeTask(this.taskNumber);
         Task deletedTask = pair.first();
         int numberOfRemainingTasks = pair.second();
@@ -38,7 +36,7 @@ public class DeleteCommand extends Command {
         String response = String.format(RESPONSE_FORMAT, deletedTask);
         if (numberOfRemainingTasks == 0) {
             mainWindowController.showResponse(response);
-            mainWindowController.showExcitedResponse(RESPONSE_EMPTY_TASK_LIST);
+            mainWindowController.showExcitedResponse(TaskList.TASK_LIST_EMPTY);
             return;
         }
         response += String.format(

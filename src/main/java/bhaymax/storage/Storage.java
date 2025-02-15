@@ -9,8 +9,9 @@ import java.time.format.DateTimeParseException;
 import java.util.Optional;
 import java.util.Scanner;
 
-import bhaymax.exception.InvalidFileFormatException;
-import bhaymax.exception.InvalidTaskStringFormatException;
+import bhaymax.exception.file.FileWriteException;
+import bhaymax.exception.file.InvalidFileFormatException;
+import bhaymax.exception.file.UnrecognisedTaskTypeException;
 import bhaymax.task.Task;
 import bhaymax.task.TaskList;
 import bhaymax.task.Todo;
@@ -25,7 +26,6 @@ public class Storage {
     public static final String DATA_DIRECTORY = "data";
     public static final String DATA_FILE = "tasks.txt";
 
-    private static final String ERROR_MESSAGE_FORMAT = "Line %d: %s";
     private static final String ERROR_MESSAGE_UNRECOGNISED_TASK_TYPE = "Unrecognised task type";
 
     private final String filePath;
@@ -49,7 +49,8 @@ public class Storage {
         this.filePath = filePath;
     }
 
-    private Optional<Task> parseLineFromFile(String line) throws InvalidFileFormatException {
+    private Optional<Task> parseLineFromFile(int lineNumber, String line)
+            throws InvalidFileFormatException {
         String trimmedLine = line.trim();
         if (trimmedLine.isEmpty()) {
             return Optional.<Task>empty();
@@ -58,10 +59,10 @@ public class Storage {
         String taskType = trimmedLine.substring(0, 1);
 
         return switch (taskType) {
-        case Todo.TYPE -> Optional.<Task>of(Todo.deserialise(trimmedLine));
-        case Deadline.TYPE -> Optional.<Task>of(Deadline.deserialise(trimmedLine));
-        case Event.TYPE -> Optional.<Task>of(Event.deserialise(trimmedLine));
-        default -> throw new InvalidFileFormatException(ERROR_MESSAGE_UNRECOGNISED_TASK_TYPE);
+        case Todo.TYPE -> Optional.<Task>of(Todo.deSerialise(lineNumber, trimmedLine));
+        case Deadline.TYPE -> Optional.<Task>of(Deadline.deSerialise(lineNumber, trimmedLine));
+        case Event.TYPE -> Optional.<Task>of(Event.deSerialise(lineNumber, trimmedLine));
+        default -> throw new UnrecognisedTaskTypeException(lineNumber, ERROR_MESSAGE_UNRECOGNISED_TASK_TYPE);
         };
     }
 
@@ -75,7 +76,7 @@ public class Storage {
      * @see bhaymax.parser.Parser#DATETIME_INPUT_FORMAT
      */
     public TaskList loadTasks()
-            throws InvalidFileFormatException, DateTimeParseException {
+            throws InvalidFileFormatException {
         TaskList taskList = new TaskList();
         int lineNumber = 1;
         try {
@@ -83,15 +84,14 @@ public class Storage {
             Scanner sc = new Scanner(file);
             while (sc.hasNextLine()) {
                 String line = sc.nextLine().trim();
-                parseLineFromFile(line)
+                parseLineFromFile(lineNumber, line)
                         .ifPresent(taskList::addTask);
                 lineNumber++;
             }
             sc.close();
             return taskList;
-        } catch (InvalidTaskStringFormatException e) {
-            throw new InvalidFileFormatException(
-                    String.format(ERROR_MESSAGE_FORMAT, lineNumber, e.getMessage()));
+        } catch (DateTimeParseException e) {
+            throw new InvalidFileFormatException(lineNumber, "");
         } catch (FileNotFoundException e) {
             return taskList;
         }
@@ -101,15 +101,19 @@ public class Storage {
      * Saves tasks to the tasks file
      *
      * @param taskList The {@link TaskList} object containing the list of tasks to be saved
-     * @throws IOException If any error occurs when saving the tasks to the file
+     * @throws FileWriteException If any error occurs when saving the tasks to the file
      */
-    public void saveTasks(TaskList taskList) throws IOException {
-        boolean ignored = new File(Storage.DATA_DIRECTORY).mkdirs();
-        File file = new File(this.filePath);
-        FileOutputStream fileOutputStream = new FileOutputStream(file, false);
-        PrintWriter writer = new PrintWriter(fileOutputStream);
-        writer.write(taskList.serialise());
-        writer.close();
-        fileOutputStream.close();
+    public void saveTasks(TaskList taskList) throws FileWriteException {
+        try {
+            boolean ignored = new File(Storage.DATA_DIRECTORY).mkdirs();
+            File file = new File(this.filePath);
+            FileOutputStream fileOutputStream = new FileOutputStream(file, false);
+            PrintWriter writer = new PrintWriter(fileOutputStream);
+            writer.write(taskList.serialise());
+            writer.close();
+            fileOutputStream.close();
+        } catch (IOException e) {
+            throw new FileWriteException(e);
+        }
     }
 }

@@ -2,6 +2,7 @@ package bhaymax.controller;
 
 import java.io.IOException;
 
+import bhaymax.main.FxmlFilePath;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -17,8 +18,6 @@ import javafx.scene.layout.HBox;
  * Controller for DialogBox
  */
 public class DialogBox extends HBox {
-    private static final String FXML_DIALOG_BOX_PATH = "/view/DialogBox.fxml";
-
     @FXML
     private Label dialog;
     @FXML
@@ -27,7 +26,7 @@ public class DialogBox extends HBox {
     private DialogBox(String text, Image img) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                    MainWindow.class.getResource(DialogBox.FXML_DIALOG_BOX_PATH));
+                    MainWindow.class.getResource(FxmlFilePath.DIALOG_BOX.toString()));
             fxmlLoader.setController(this);
             fxmlLoader.setRoot(this);
             fxmlLoader.load();

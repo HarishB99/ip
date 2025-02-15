@@ -1,8 +1,7 @@
 package bhaymax.command;
 
-import java.io.IOException;
-
 import bhaymax.controller.MainWindow;
+import bhaymax.exception.file.FileWriteException;
 import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
 import bhaymax.task.Todo;
@@ -28,7 +27,7 @@ public class TodoCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws FileWriteException {
         Todo newTodoTask = new Todo(this.taskDescription);
         int taskListCount = taskList.addTask(newTodoTask);
         storage.saveTasks(taskList);

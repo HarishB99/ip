@@ -11,7 +11,8 @@ import bhaymax.util.Pair;
  * Represents a list of tasks
  */
 public class TaskList {
-    private static final String TASK_LIST_EMPTY = "Congratulations! You don't have any outstanding tasks!";
+    public static final String TASK_LIST_EMPTY = "Congratulations! You don't have any outstanding tasks!";
+
     private static final String TASK_LIST_NO_FILTER_MATCH = "There are no tasks in your list for me to filter.";
     private static final String TASK_LIST_NO_SEARCH_MATCH = "There are no tasks that match the "
             + "search term you provided.";
@@ -95,7 +96,7 @@ public class TaskList {
      */
     public void showTasks(MainWindow mainWindowController) {
         this.tasks.stream()
-                .map(task -> (tasks.indexOf(task) + 1) + ". " + task)
+                .map(task -> (tasks.indexOf(task) + 1) + TaskList.TASK_LIST_BULLET_POINT_SEPARATOR + task)
                 .reduce((previousTask, nextTask)
                         -> previousTask + System.lineSeparator() + nextTask)
                 .ifPresentOrElse(mainWindowController::showResponse, () -> mainWindowController

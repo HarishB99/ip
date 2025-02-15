@@ -15,9 +15,9 @@ import bhaymax.command.MarkCommand;
 import bhaymax.command.SearchCommand;
 import bhaymax.command.TodoCommand;
 import bhaymax.command.UnmarkCommand;
-import bhaymax.exception.InvalidCommandException;
-import bhaymax.exception.InvalidCommandFormatException;
-import bhaymax.exception.InvalidFilterOptionException;
+import bhaymax.exception.command.InvalidCommandFormatException;
+import bhaymax.exception.command.InvalidFilterOptionException;
+import bhaymax.exception.command.UnrecognisedCommandException;
 import bhaymax.task.TaskList;
 import bhaymax.util.Pair;
 
@@ -41,8 +41,9 @@ public class Parser {
     private static final String EVENT_OPT_END = "/to";
 
     private static final String ERROR_MESSAGE_EMPTY_COMMAND = "Command is empty";
-    private static final String ERROR_MESSAGE_MISSING_TASK_NUMBER = "Task number is required";
-    private static final String ERROR_MESSAGE_INVALID_TASK_NUMBER = "Provided task number could not be found";
+    private static final String ERROR_MESSAGE_TASK_NUMBER_MISSING = "Task number is required";
+    private static final String ERROR_MESSAGE_TASK_NUMBER_INVALID = "Provided task number could not be found";
+    private static final String ERROR_MESSAGE_TASK_NUMBER_IS_NON_NUMERIC = "Task number should be numerical";
     private static final String ERROR_MESSAGE_MISSING_TASK_DESCRIPTION = "Task description is required";
     private static final String ERROR_MESSAGE_MISSING_DEADLINE = "Due by date and time is required for deadline";
     private static final String ERROR_MESSAGE_MISSING_START_TIME = "Start date and time is required for event";
@@ -67,18 +68,21 @@ public class Parser {
     }
 
     private static int getTaskIndex(String arguments, TaskList taskList)
-            throws InvalidCommandFormatException, NumberFormatException {
+            throws InvalidCommandFormatException {
         String trimmedArguments = arguments.trim();
         if (trimmedArguments.isEmpty()) {
-            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_TASK_NUMBER);
+            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_TASK_NUMBER_MISSING);
         }
 
-        int index = Integer.parseInt(trimmedArguments) - 1;
-        if (!taskList.isValidIndex(index)) {
-            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_INVALID_TASK_NUMBER);
+        try {
+            int index = Integer.parseInt(trimmedArguments) - 1;
+            if (!taskList.isValidIndex(index)) {
+                throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_TASK_NUMBER_INVALID);
+            }
+            return index;
+        } catch (NumberFormatException exception) {
+            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_TASK_NUMBER_IS_NON_NUMERIC);
         }
-
-        return index;
     }
 
     private static String getTaskDescription(String arguments)
@@ -132,7 +136,7 @@ public class Parser {
     }
 
     private static Pair<FilterOption, String> getFilterOptionAndDate(String arguments)
-            throws InvalidCommandFormatException, InvalidFilterOptionException {
+            throws InvalidCommandFormatException {
         String[] tokens = arguments.split(Parser.COMMAND_DELIMITER, Parser.STRING_SPLIT_LIMIT);
         String filterOption = tokens[0].trim();
         if (filterOption.isEmpty()) {
@@ -208,7 +212,7 @@ public class Parser {
         case EXIT:
             return new ExitCommand();
         default:
-            throw new InvalidCommandException(commandString.name().toLowerCase());
+            throw new UnrecognisedCommandException(commandString.name().toLowerCase());
         }
     }
 }

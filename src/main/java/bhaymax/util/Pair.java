@@ -1,7 +1,7 @@
 package bhaymax.util;
 
 /**
- * Holds two values of (optionally) differing types
+ * Holds two values of differing (or the similar) types
  *
  * @param <T>    The type of the first value
  * @param <U>    The type of the second value

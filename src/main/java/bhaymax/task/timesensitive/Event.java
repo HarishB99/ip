@@ -7,7 +7,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.regex.MatchResult;
 
-import bhaymax.exception.InvalidTaskStringFormatException;
+import bhaymax.exception.file.TaskDeSerialisationException;
 import bhaymax.parser.Parser;
 import bhaymax.task.Task;
 
@@ -16,20 +16,22 @@ import bhaymax.task.Task;
  */
 public class Event extends TimeSensitiveTask {
     public static final String TYPE = "E";
+    public static final String ERROR_WRONG_TASK_FORMAT = Task.getErrorWrongTaskStatus(
+            "Event",
+            Event.TYPE,
+            " " + Task.DELIMITER
+                    + " {start date: dd-MM-yyyy HH:mm} " + Task.DELIMITER
+                    + " {end date: dd-MM-yyyy HH:mm}");
 
     private static final String SERIAL_FORMAT = "%s " + Task.DELIMITER + " %s " + Task.DELIMITER + " %s";
-    private static final String DESERIAL_FORMAT = "^E \\| ([0-1]) \\| (.+)"
+    private static final String DE_SERIAL_FORMAT = "^E \\| ([0-1]) \\| (.+)"
             + " \\| (\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2}) \\| (\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2})$";
-    private static final int DESERIAL_FORMAT_NUMBER_OF_ITEMS = 4;
+    private static final int DE_SERIAL_FORMAT_NUMBER_OF_ITEMS = 4;
 
     private static final int EVENT_STATUS_GROUP = 1;
     private static final int EVENT_DESCRIPTION_GROUP = 2;
     private static final int EVENT_START_DATE_GROUP = 3;
     private static final int EVENT_END_DATE_GROUP = 4;
-
-    private static final String ERROR_MESSAGE_INVALID_FORMAT = "Event in file should be of format"
-            + " 'E | {0,1} | {description} | {start date and time} | {end date and time}'";
-    private static final String ERROR_MESSAGE_INVALID_TASK_STATUS = "Invalid value encountered for task status.";
 
     private static final String EVENT_DONE = "1";
     private static final String EVENT_NOT_DONE = "0";
@@ -68,14 +70,14 @@ public class Event extends TimeSensitiveTask {
      * @param serialisedEvent the serialised event, as a {@code String}
      * @return a {@code Event} object
      */
-    public static Event deserialise(String serialisedEvent) {
+    public static Event deSerialise(int lineNumber, String serialisedEvent) throws TaskDeSerialisationException {
         Scanner sc = new Scanner(serialisedEvent);
-        sc.findInLine(Event.DESERIAL_FORMAT);
+        sc.findInLine(Event.DE_SERIAL_FORMAT);
         MatchResult matchResult = sc.match();
         sc.close();
 
-        if (matchResult.groupCount() != Event.DESERIAL_FORMAT_NUMBER_OF_ITEMS) {
-            throw new InvalidTaskStringFormatException(Event.ERROR_MESSAGE_INVALID_FORMAT);
+        if (matchResult.groupCount() != Event.DE_SERIAL_FORMAT_NUMBER_OF_ITEMS) {
+            throw new TaskDeSerialisationException(lineNumber, Event.ERROR_WRONG_TASK_FORMAT);
         }
 
         String eventStatus = matchResult.group(Event.EVENT_STATUS_GROUP);
@@ -83,14 +85,24 @@ public class Event extends TimeSensitiveTask {
         String eventStart = matchResult.group(Event.EVENT_START_DATE_GROUP);
         String eventEnd = matchResult.group(Event.EVENT_END_DATE_GROUP);
 
-        Event event = new Event(eventDescription, eventStart, eventEnd);
-        if (eventStatus.equals(Event.EVENT_DONE)) {
-            event.markAsDone();
-        } else if (eventStatus.equals(Event.EVENT_NOT_DONE)) {
-            event.markAsUndone();
-        } else {
-            throw new InvalidTaskStringFormatException(Event.ERROR_MESSAGE_INVALID_TASK_STATUS);
+        Event event;
+        try {
+            event = new Event(eventDescription, eventStart, eventEnd);
+        } catch (DateTimeParseException e) {
+            throw new TaskDeSerialisationException(lineNumber, Event.ERROR_WRONG_TASK_FORMAT);
         }
+
+        switch (eventStatus) {
+        case Event.EVENT_DONE:
+            event.markAsDone();
+            break;
+        case Event.EVENT_NOT_DONE:
+            event.markAsUndone();
+            break;
+        default:
+            throw new TaskDeSerialisationException(lineNumber, Event.ERROR_WRONG_TASK_STATUS);
+        }
+
         return event;
     }
 

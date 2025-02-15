@@ -4,8 +4,12 @@ package bhaymax.task;
  * Represents a generic task
  */
 public class Task {
+    public static final String ERROR_WRONG_TASK_STATUS = "Invalid value encountered for task status.";
     public static final String DELIMITER = "|";
-    private static final String SERIAL_FORMAT = "%s " + Task.DELIMITER + " %d " + Task.DELIMITER + " %s";
+    public static final String ERROR_WRONG_TASK_FORMAT_TEMPLATE = "%s in file should be of format "
+            + "'%s " + Task.DELIMITER + " {0, 1} " + Task.DELIMITER + " {description}%s'";
+    public static final String SERIAL_FORMAT = "%s " + Task.DELIMITER + " %d " + Task.DELIMITER + " %s";
+
     protected String description;
     protected String type;
     protected boolean isDone;
@@ -20,6 +24,11 @@ public class Task {
         this.type = type;
         this.description = description;
         this.isDone = false;
+    }
+
+    protected static String getErrorWrongTaskStatus(String taskName, String taskType, String additionalArgs) {
+        return String.format(
+                Task.ERROR_WRONG_TASK_FORMAT_TEMPLATE, taskName, taskType, additionalArgs);
     }
 
     public String getStatusIcon() {

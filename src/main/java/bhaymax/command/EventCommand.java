@@ -1,8 +1,7 @@
 package bhaymax.command;
 
-import java.io.IOException;
-
 import bhaymax.controller.MainWindow;
+import bhaymax.exception.file.FileWriteException;
 import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
 import bhaymax.task.timesensitive.Event;
@@ -35,7 +34,7 @@ public class EventCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws FileWriteException {
         Event newEvent = new Event(this.taskDescription, this.start, this.end);
         int taskListCount = taskList.addTask(newEvent);
         storage.saveTasks(taskList);

@@ -1,8 +1,7 @@
 package bhaymax.command;
 
-import java.io.IOException;
-
 import bhaymax.controller.MainWindow;
+import bhaymax.exception.command.InvalidCommandFormatException;
 import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
 
@@ -31,7 +30,8 @@ public class FilterCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage)
+            throws InvalidCommandFormatException {
         taskList.showTasksFilteredByDate(this.dateTime, this.filterOption, mainWindowController);
     }
 

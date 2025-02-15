@@ -1,6 +1,6 @@
 package bhaymax.command;
 
-import bhaymax.exception.InvalidFilterOptionException;
+import bhaymax.exception.command.InvalidFilterOptionException;
 
 /**
  * Provides enumeration values representing
@@ -37,6 +37,6 @@ public enum FilterOption {
                 return filterOption;
             }
         }
-        throw new InvalidFilterOptionException();
+        throw new InvalidFilterOptionException(filterOptionString);
     }
 }

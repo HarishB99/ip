@@ -7,7 +7,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.regex.MatchResult;
 
-import bhaymax.exception.InvalidTaskStringFormatException;
+import bhaymax.exception.file.TaskDeSerialisationException;
 import bhaymax.parser.Parser;
 import bhaymax.task.Task;
 
@@ -16,6 +16,11 @@ import bhaymax.task.Task;
  */
 public class Deadline extends TimeSensitiveTask {
     public static final String TYPE = "D";
+    public static final String ERROR_WRONG_TASK_FORMAT = Task.getErrorWrongTaskStatus(
+            "Deadline",
+            Deadline.TYPE,
+            " " + Task.DELIMITER + " {due-by date: dd-MM-yyyy HH:mm}");
+
 
     private static final String SERIAL_FORMAT = "%s " + Task.DELIMITER + " %s";
     private static final String DESERIAL_FORMAT = "^D \\| ([0-1]) \\| (.+)"
@@ -25,10 +30,6 @@ public class Deadline extends TimeSensitiveTask {
     private static final int DEADLINE_STATUS_GROUP = 1;
     private static final int DEADLINE_DESCRIPTION_GROUP = 2;
     private static final int DEADLINE_DEADLINE_GROUP = 3;
-
-    private static final String ERROR_MESSAGE_INVALID_FORMAT = "Deadline in file should be of format"
-            + " 'D | {0,1} | {description} | {due-by date}'";
-    private static final String ERROR_MESSAGE_INVALID_TASK_STATUS = "Invalid value encountered for task status.";
 
     private static final String DEADLINE_DONE = "1";
     private static final String DEADLINE_NOT_DONE = "0";
@@ -63,28 +64,38 @@ public class Deadline extends TimeSensitiveTask {
      * @param serialisedDeadline the serialised deadline, as a {@code String}
      * @return a {@code Deadline} object
      */
-    public static Deadline deserialise(String serialisedDeadline) {
+    public static Deadline deSerialise(int lineNumber, String serialisedDeadline) throws TaskDeSerialisationException {
         Scanner sc = new Scanner(serialisedDeadline);
         sc.findInLine(Deadline.DESERIAL_FORMAT);
         MatchResult matchResult = sc.match();
         sc.close();
 
         if (matchResult.groupCount() != Deadline.DESERIAL_FORMAT_NUMBER_OF_ITEMS) {
-            throw new InvalidTaskStringFormatException(Deadline.ERROR_MESSAGE_INVALID_FORMAT);
+            throw new TaskDeSerialisationException(lineNumber, Deadline.ERROR_WRONG_TASK_FORMAT);
         }
 
         String deadlineStatus = matchResult.group(Deadline.DEADLINE_STATUS_GROUP);
         String deadlineDescription = matchResult.group(Deadline.DEADLINE_DESCRIPTION_GROUP);
         String deadlineDueDate = matchResult.group(Deadline.DEADLINE_DEADLINE_GROUP);
 
-        Deadline deadline = new Deadline(deadlineDescription, deadlineDueDate);
-        if (deadlineStatus.equals(Deadline.DEADLINE_DONE)) {
-            deadline.markAsDone();
-        } else if (deadlineStatus.equals(Deadline.DEADLINE_NOT_DONE)) {
-            deadline.markAsUndone();
-        } else {
-            throw new InvalidTaskStringFormatException(Deadline.ERROR_MESSAGE_INVALID_TASK_STATUS);
+        Deadline deadline;
+        try {
+            deadline = new Deadline(deadlineDescription, deadlineDueDate);
+        } catch (DateTimeParseException e) {
+            throw new TaskDeSerialisationException(lineNumber, Deadline.ERROR_WRONG_TASK_FORMAT);
         }
+
+        switch (deadlineStatus) {
+        case Deadline.DEADLINE_DONE:
+            deadline.markAsDone();
+            break;
+        case Deadline.DEADLINE_NOT_DONE:
+            deadline.markAsUndone();
+            break;
+        default:
+            throw new TaskDeSerialisationException(lineNumber, Deadline.ERROR_WRONG_TASK_STATUS);
+        }
+
         return deadline;
     }
 

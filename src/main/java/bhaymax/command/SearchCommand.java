@@ -1,7 +1,5 @@
 package bhaymax.command;
 
-import java.io.IOException;
-
 import bhaymax.controller.MainWindow;
 import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
@@ -22,7 +20,7 @@ public class SearchCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) {
         taskList.showTasksContainingSearchTerm(this.searchTerm, mainWindowController);
     }
 

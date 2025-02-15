@@ -59,6 +59,7 @@ public abstract class TimeSensitiveTask extends Task {
         case DATE_AFTER:
             LocalDate date = LocalDate.parse(
                     dateTimeString, DateTimeFormatter.ofPattern(Parser.DATE_FORMAT));
+
             if (filterOption.equals(FilterOption.DATE_ON)) {
                 return this.isOnDate(date);
             }
@@ -73,6 +74,7 @@ public abstract class TimeSensitiveTask extends Task {
         case TIME_AFTER:
             LocalDateTime dateTime = LocalDateTime.parse(
                     dateTimeString, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
+
             if (filterOption.equals(FilterOption.TIME_ON)) {
                 return this.isOnDateTime(dateTime);
             }

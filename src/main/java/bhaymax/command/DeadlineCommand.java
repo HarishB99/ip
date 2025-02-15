@@ -1,8 +1,7 @@
 package bhaymax.command;
 
-import java.io.IOException;
-
 import bhaymax.controller.MainWindow;
+import bhaymax.exception.file.FileWriteException;
 import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
 import bhaymax.task.timesensitive.Deadline;
@@ -32,7 +31,7 @@ public class DeadlineCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws FileWriteException {
         Deadline newDeadline = new Deadline(this.taskDescription, this.deadline);
         int taskListCount = taskList.addTask(newDeadline);
         storage.saveTasks(taskList);

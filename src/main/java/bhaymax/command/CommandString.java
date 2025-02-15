@@ -1,6 +1,6 @@
 package bhaymax.command;
 
-import bhaymax.exception.InvalidCommandException;
+import bhaymax.exception.command.UnrecognisedCommandException;
 
 /**
  * Provides enumeration values representing
@@ -36,14 +36,14 @@ public enum CommandString {
      * @param commandString the command string entered by the user
      * @return a {@link CommandString} value corresponding to the
      *         given command string, if the command string is a recognised one
-     * @throws InvalidCommandException If the command string provided is not recognised
+     * @throws UnrecognisedCommandException If the command string provided is not recognised
      */
-    public static CommandString valueOfCommandString(String commandString) throws InvalidCommandException {
+    public static CommandString valueOfCommandString(String commandString) throws UnrecognisedCommandException {
         for (CommandString commandStringEnum : CommandString.values()) {
             if (commandStringEnum.command.equals(commandString)) {
                 return commandStringEnum;
             }
         }
-        throw new InvalidCommandException(commandString);
+        throw new UnrecognisedCommandException(commandString);
     }
 }
