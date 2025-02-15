@@ -11,6 +11,11 @@ import bhaymax.task.timesensitive.Event;
  * Represents a {@code event} command
  */
 public class EventCommand extends Command {
+    private static final String RESPONSE_FORMAT = "Noted. Adding: " + System.lineSeparator()
+            + "  %s" + System.lineSeparator()
+            + "to your list of events." + System.lineSeparator()
+            + "You now have %d task%s to complete.";
+
     private final String taskDescription;
     private final String start;
     private final String end;
@@ -34,10 +39,11 @@ public class EventCommand extends Command {
         Event newEvent = new Event(this.taskDescription, this.start, this.end);
         int taskListCount = taskList.addTask(newEvent);
         storage.saveTasks(taskList);
-        String response = "Noted. Adding: " + System.lineSeparator()
-                + "  " + newEvent + System.lineSeparator()
-                + "to your list of events." + System.lineSeparator()
-                + "You now have " + taskListCount + " task" + (taskListCount == 1 ? "" : "s") + " to complete.";
+        String response = String.format(
+                RESPONSE_FORMAT,
+                newEvent,
+                taskListCount,
+                taskListCount == 1 ? "" : "s");
         mainWindowController.showResponse(response);
     }
 

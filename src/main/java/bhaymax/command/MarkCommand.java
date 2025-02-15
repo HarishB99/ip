@@ -11,6 +11,10 @@ import bhaymax.task.TaskList;
  * Represents a {@code mark} command
  */
 public class MarkCommand extends Command {
+    private static final String RESPONSE_FORMAT = "Congratulations on completing the task:" + System.lineSeparator()
+                + "  %s" + System.lineSeparator()
+                + "I have marked it as complete.";
+
     private final int taskNumber;
 
     /**
@@ -26,9 +30,7 @@ public class MarkCommand extends Command {
     public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
         Task markedTask = taskList.markTaskAsDone(this.taskNumber);
         storage.saveTasks(taskList);
-        String response = "Congratulations on completing the task:" + System.lineSeparator()
-                + "  " + markedTask + System.lineSeparator()
-                + "I have marked it as complete.";
+        String response = String.format(RESPONSE_FORMAT, markedTask);
         mainWindowController.showExcitedResponse(response);
     }
 

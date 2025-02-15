@@ -12,6 +12,12 @@ import bhaymax.util.Pair;
  * Represents a {@code delete} command
  */
 public class DeleteCommand extends Command {
+    private static final String RESPONSE_FORMAT = "Noted. Removing: " + System.lineSeparator()
+                + "  %s" + System.lineSeparator()
+                + "from your list of tasks." + System.lineSeparator();
+    private static final String RESPONSE_EMPTY_TASK_LIST = "Congratulations! You don't have any outstanding tasks!";
+    private static final String RESPONSE_FORMAT_NONEMPTY_TASK_LIST = "You now have %d task%s to complete.";
+
     private final int taskNumber;
 
     /**
@@ -29,16 +35,16 @@ public class DeleteCommand extends Command {
         Task deletedTask = pair.first();
         int numberOfRemainingTasks = pair.second();
         storage.saveTasks(taskList);
-        String response = "Noted. Removing: " + System.lineSeparator()
-                + "  " + deletedTask + System.lineSeparator()
-                + "from your list of tasks." + System.lineSeparator();
+        String response = String.format(RESPONSE_FORMAT, deletedTask);
         if (numberOfRemainingTasks == 0) {
             mainWindowController.showResponse(response);
-            mainWindowController.showExcitedResponse("Congratulations! You don't have any outstanding tasks!");
+            mainWindowController.showExcitedResponse(RESPONSE_EMPTY_TASK_LIST);
             return;
         }
-        response += "You now have " + numberOfRemainingTasks + " task"
-                + (numberOfRemainingTasks == 1 ? "" : "s") + " to complete.";
+        response += String.format(
+                RESPONSE_FORMAT_NONEMPTY_TASK_LIST,
+                numberOfRemainingTasks,
+                numberOfRemainingTasks == 1 ? "" : "s");
         mainWindowController.showResponse(response);
     }
 

@@ -11,6 +11,11 @@ import bhaymax.task.Todo;
  * Represents a {@code todo} command
  */
 public class TodoCommand extends Command {
+    private static final String RESPONSE_FORMAT = "Noted. Adding: " + System.lineSeparator()
+            + "  %s" + System.lineSeparator()
+            + "to your to-do list." + System.lineSeparator()
+            + "You now have %d task%s to complete.";
+
     private final String taskDescription;
 
     /**
@@ -27,10 +32,11 @@ public class TodoCommand extends Command {
         Todo newTodoTask = new Todo(this.taskDescription);
         int taskListCount = taskList.addTask(newTodoTask);
         storage.saveTasks(taskList);
-        String response = "Noted. Adding: " + System.lineSeparator()
-                + "  " + newTodoTask + System.lineSeparator()
-                + "to your to-do list." + System.lineSeparator()
-                + "You now have " + taskListCount + " task" + (taskListCount == 1 ? "" : "s") + " to complete.";
+        String response = String.format(
+                RESPONSE_FORMAT,
+                newTodoTask,
+                taskListCount,
+                taskListCount == 1 ? "" : "s");
         mainWindowController.showResponse(response);
     }
 

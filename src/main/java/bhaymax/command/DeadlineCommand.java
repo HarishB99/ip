@@ -11,6 +11,11 @@ import bhaymax.task.timesensitive.Deadline;
  * Represents a {@code deadline} command
  */
 public class DeadlineCommand extends Command {
+    private static final String RESPONSE_FORMAT = "Noted. Adding: " + System.lineSeparator()
+            + "  %s" + System.lineSeparator()
+            + "to your list of deadlines." + System.lineSeparator()
+            + "You now have %d task%s to complete.";
+
     private final String taskDescription;
     private final String deadline;
 
@@ -31,10 +36,11 @@ public class DeadlineCommand extends Command {
         Deadline newDeadline = new Deadline(this.taskDescription, this.deadline);
         int taskListCount = taskList.addTask(newDeadline);
         storage.saveTasks(taskList);
-        String response = "Noted. Adding: " + System.lineSeparator()
-                + "  " + newDeadline + System.lineSeparator()
-                + "to your list of deadlines." + System.lineSeparator()
-                + "You now have " + taskListCount + " task" + (taskListCount == 1 ? "" : "s") + " to complete.";
+        String response = String.format(
+                DeadlineCommand.RESPONSE_FORMAT,
+                newDeadline,
+                taskListCount,
+                taskListCount == 1 ? "" : "s");
         mainWindowController.showResponse(response);
     }
 

@@ -11,6 +11,10 @@ import bhaymax.task.TaskList;
  * Represents a {@code unmark} command
  */
 public class UnmarkCommand extends Command {
+    private static final String RESPONSE_FORMAT = "Noted. Marking:" + System.lineSeparator()
+                + "  %s" + System.lineSeparator()
+                + "as incomplete.";
+
     private final int taskNumber;
 
     /**
@@ -26,9 +30,7 @@ public class UnmarkCommand extends Command {
     public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
         Task markedTask = taskList.markTaskAsUndone(this.taskNumber);
         storage.saveTasks(taskList);
-        String response = "Noted. Marking:" + System.lineSeparator()
-                + "  " + markedTask + System.lineSeparator()
-                + "as incomplete.";
+        String response = String.format(RESPONSE_FORMAT, markedTask);
         mainWindowController.showResponse(response);
     }
 
