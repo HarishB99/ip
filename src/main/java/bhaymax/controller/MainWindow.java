@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Objects;
 
 import bhaymax.command.Command;
-import bhaymax.exception.ErrorMessageLine;
+import bhaymax.exception.UnknownException;
 import bhaymax.exception.command.InvalidCommandFormatException;
+import bhaymax.exception.command.InvalidDateFormatException;
 import bhaymax.exception.file.FileWriteException;
 import bhaymax.exception.file.InvalidFileFormatException;
 import bhaymax.main.ImageFilePath;
@@ -215,8 +216,7 @@ public class MainWindow {
      */
     private LinkedList<String> getErrorResponses(DateTimeParseException ignored) {
         LinkedList<String> responses = new LinkedList<String>();
-        responses.add(new InvalidCommandFormatException("I don't recognise the date you provided.")
-                .getMessage());
+        responses.add(new InvalidDateFormatException().getMessage());
         return responses;
     }
 
@@ -227,11 +227,7 @@ public class MainWindow {
      */
     private LinkedList<String> getErrorResponses(String message) {
         LinkedList<String> responses = new LinkedList<String>();
-        responses.add(new ErrorMessageLine(
-                "Sorry. An unknown error occurred.", false).toString());
-        responses.add(new ErrorMessageLine(message, true).toString());
-        responses.add(new ErrorMessageLine(
-                "Maybe you could try restarting the app?", false).toString());
+        responses.add(new UnknownException(message).getMessage());
         return responses;
     }
 

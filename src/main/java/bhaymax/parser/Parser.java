@@ -15,8 +15,19 @@ import bhaymax.command.MarkCommand;
 import bhaymax.command.SearchCommand;
 import bhaymax.command.TodoCommand;
 import bhaymax.command.UnmarkCommand;
+import bhaymax.exception.command.EmptyCommandException;
 import bhaymax.exception.command.InvalidCommandFormatException;
 import bhaymax.exception.command.InvalidFilterOptionException;
+import bhaymax.exception.command.MissingDeadlineDueByDateException;
+import bhaymax.exception.command.MissingEventEndDateException;
+import bhaymax.exception.command.MissingEventStartDateException;
+import bhaymax.exception.command.MissingFilterDateException;
+import bhaymax.exception.command.MissingFilterOptionException;
+import bhaymax.exception.command.MissingSearchTermException;
+import bhaymax.exception.command.MissingTaskDescriptionException;
+import bhaymax.exception.command.MissingTaskNumberException;
+import bhaymax.exception.command.TaskIndexIsNotANumberException;
+import bhaymax.exception.command.TaskIndexOutOfBoundsException;
 import bhaymax.exception.command.UnrecognisedCommandException;
 import bhaymax.task.TaskList;
 import bhaymax.util.Pair;
@@ -40,23 +51,11 @@ public class Parser {
     private static final String EVENT_OPT_START = "/from";
     private static final String EVENT_OPT_END = "/to";
 
-    private static final String ERROR_MESSAGE_EMPTY_COMMAND = "Command is empty";
-    private static final String ERROR_MESSAGE_TASK_NUMBER_MISSING = "Task number is required";
-    private static final String ERROR_MESSAGE_TASK_NUMBER_INVALID = "Provided task number could not be found";
-    private static final String ERROR_MESSAGE_TASK_NUMBER_IS_NON_NUMERIC = "Task number should be numerical";
-    private static final String ERROR_MESSAGE_MISSING_TASK_DESCRIPTION = "Task description is required";
-    private static final String ERROR_MESSAGE_MISSING_DEADLINE = "Due by date and time is required for deadline";
-    private static final String ERROR_MESSAGE_MISSING_START_TIME = "Start date and time is required for event";
-    private static final String ERROR_MESSAGE_MISSING_END_TIME = "End date and time is required for event";
-    private static final String ERROR_MESSAGE_MISSING_SEARCH_TERM = "Search term is required";
-    private static final String ERROR_MESSAGE_MISSING_FILTER_OPTION = "Filter option is required";
-    private static final String ERROR_MESSAGE_MISSING_FILTER_DATE = "Date and/or time is required for filtering tasks";
-
     private static Pair<CommandString, String> getCommandAndArgs(String userInput)
             throws InvalidCommandFormatException {
         String trimmedInput = userInput.trim();
         if (trimmedInput.isEmpty()) {
-            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_EMPTY_COMMAND);
+            throw new EmptyCommandException();
         }
         String[] tokens = trimmedInput.split(Parser.COMMAND_DELIMITER, Parser.STRING_SPLIT_LIMIT);
         String commandString = tokens[0].trim().toLowerCase();
@@ -71,42 +70,42 @@ public class Parser {
             throws InvalidCommandFormatException {
         String trimmedArguments = arguments.trim();
         if (trimmedArguments.isEmpty()) {
-            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_TASK_NUMBER_MISSING);
+            throw new MissingTaskNumberException();
         }
 
         try {
             int index = Integer.parseInt(trimmedArguments) - 1;
             if (!taskList.isValidIndex(index)) {
-                throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_TASK_NUMBER_INVALID);
+                throw new TaskIndexOutOfBoundsException();
             }
             return index;
         } catch (NumberFormatException exception) {
-            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_TASK_NUMBER_IS_NON_NUMERIC);
+            throw new TaskIndexIsNotANumberException();
         }
     }
 
     private static String getTaskDescription(String arguments)
             throws InvalidCommandFormatException {
         if (arguments.isEmpty()) {
-            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_TASK_DESCRIPTION);
+            throw new MissingTaskDescriptionException();
         }
         return arguments;
     }
 
     private static Pair<String, String> getTaskDescriptionAndArgs(
-            String arguments, String option, String errorMessageForMissingOption)
+            String arguments, String option, InvalidCommandFormatException exceptionToThrow)
             throws InvalidCommandFormatException {
         String[] tokens = arguments.split(option, Parser.STRING_SPLIT_LIMIT);
         String taskDescription = tokens[0].trim();
         if (taskDescription.isEmpty()) {
-            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_TASK_DESCRIPTION);
+            throw new MissingTaskDescriptionException();
         }
         if (tokens.length < 2) {
-            throw new InvalidCommandFormatException(errorMessageForMissingOption);
+            throw exceptionToThrow;
         }
         String argumentForOption = tokens[1].trim();
         if (argumentForOption.isEmpty()) {
-            throw new InvalidCommandFormatException(errorMessageForMissingOption);
+            throw exceptionToThrow;
         }
         return new Pair<String, String>(taskDescription, argumentForOption);
     }
@@ -116,21 +115,21 @@ public class Parser {
         String[] tokens = arguments.split(Parser.EVENT_OPT_END, Parser.STRING_SPLIT_LIMIT);
         String startDate = tokens[0].trim();
         if (startDate.isEmpty()) {
-            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_START_TIME);
+            throw new MissingEventStartDateException();
         }
         if (tokens.length < 2) {
-            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_END_TIME);
+            throw new MissingEventEndDateException();
         }
         String endDate = tokens[1].trim();
         if (endDate.isEmpty()) {
-            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_END_TIME);
+            throw new MissingEventEndDateException();
         }
         return new Pair<String, String>(startDate, endDate);
     }
 
     private static String getSearchTerm(String arguments) throws InvalidCommandFormatException {
         if (arguments.isEmpty()) {
-            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_SEARCH_TERM);
+            throw new MissingSearchTermException();
         }
         return arguments;
     }
@@ -140,14 +139,14 @@ public class Parser {
         String[] tokens = arguments.split(Parser.COMMAND_DELIMITER, Parser.STRING_SPLIT_LIMIT);
         String filterOption = tokens[0].trim();
         if (filterOption.isEmpty()) {
-            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_FILTER_OPTION);
+            throw new MissingFilterOptionException();
         }
         if (tokens.length < 2) {
-            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_FILTER_DATE);
+            throw new MissingFilterDateException();
         }
         String dateTime = tokens[1].trim();
         if (dateTime.isEmpty()) {
-            throw new InvalidCommandFormatException(Parser.ERROR_MESSAGE_MISSING_FILTER_DATE);
+            throw new MissingFilterDateException();
         }
         return new Pair<FilterOption, String>(
                 FilterOption.valueOfFilterOptionString(filterOption),
@@ -181,13 +180,13 @@ public class Parser {
             return new TodoCommand(Parser.getTaskDescription(arguments));
         case DEADLINE:
             Pair<String, String> descriptionAndDeadline = Parser.getTaskDescriptionAndArgs(
-                    arguments, Parser.DEADLINE_OPT_BY, Parser.ERROR_MESSAGE_MISSING_DEADLINE);
+                    arguments, Parser.DEADLINE_OPT_BY, new MissingDeadlineDueByDateException());
             String deadlineDescription = descriptionAndDeadline.first();
             String deadline = descriptionAndDeadline.second();
             return new DeadlineCommand(deadlineDescription, deadline);
         case EVENT:
             Pair<String, String> descriptionAndArgs = Parser.getTaskDescriptionAndArgs(
-                    arguments, Parser.EVENT_OPT_START, Parser.ERROR_MESSAGE_MISSING_START_TIME);
+                    arguments, Parser.EVENT_OPT_START, new MissingEventStartDateException());
             String eventDescription = descriptionAndArgs.first();
             String eventArguments = descriptionAndArgs.second();
             Pair<String, String> eventStartAndEnd = Parser.getEventStartAndEndDates(eventArguments);
