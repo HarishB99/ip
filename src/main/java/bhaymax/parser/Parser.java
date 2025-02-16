@@ -17,7 +17,6 @@ import bhaymax.command.TodoCommand;
 import bhaymax.command.UnmarkCommand;
 import bhaymax.exception.command.EmptyCommandException;
 import bhaymax.exception.command.InvalidCommandFormatException;
-import bhaymax.exception.command.InvalidFilterOptionException;
 import bhaymax.exception.command.MissingDeadlineDueByDateException;
 import bhaymax.exception.command.MissingEventEndDateException;
 import bhaymax.exception.command.MissingEventStartDateException;
@@ -35,8 +34,7 @@ import bhaymax.task.timesensitive.Event;
 import bhaymax.util.Pair;
 
 /**
- * Parses a provided string from the user,
- * that is expected to contain a full command,
+ * Parses a provided string from the user, that is expected to contain a full command,
  * and returns a {@link Command} object
  */
 public class Parser {
@@ -44,9 +42,13 @@ public class Parser {
     public static final String DATETIME_INPUT_FORMAT = "dd-MM-yyyy HH:mm";
     public static final String DATETIME_OUTPUT_FORMAT = "dd MMM yyyy, EEE @ HH:mm";
 
-    private static final int STRING_SPLIT_LIMIT = 2;
+    public static final int TWO_TOKENS = 2;
 
-    private static final String COMMAND_DELIMITER = " ";
+    public static final String COMMAND_DELIMITER = " ";
+
+    public static final int FIRST_TOKEN = 0;
+    public static final int SECOND_TOKEN = 1;
+    public static final int INDEX_OFFSET = -1;
 
     private static Pair<CommandString, String> getCommandAndArgs(String userInput)
             throws InvalidCommandFormatException {
@@ -54,9 +56,13 @@ public class Parser {
         if (trimmedInput.isEmpty()) {
             throw new EmptyCommandException();
         }
-        String[] tokens = trimmedInput.split(Parser.COMMAND_DELIMITER, Parser.STRING_SPLIT_LIMIT);
-        String commandString = tokens[0].trim().toLowerCase();
-        String arguments = tokens.length > 1 ? tokens[1].trim() : "";
+
+        String[] tokens = trimmedInput.split(Parser.COMMAND_DELIMITER, Parser.TWO_TOKENS);
+        String commandString = tokens[Parser.FIRST_TOKEN].trim().toLowerCase();
+        String arguments = tokens.length == Parser.TWO_TOKENS
+                ? tokens[Parser.SECOND_TOKEN].trim()
+                : "";
+
         return new Pair<CommandString, String>(
                 CommandString.valueOfCommandString(commandString),
                 arguments
@@ -71,7 +77,7 @@ public class Parser {
         }
 
         try {
-            int index = Integer.parseInt(trimmedArguments) - 1;
+            int index = Integer.parseInt(trimmedArguments) + Parser.INDEX_OFFSET;
             if (!taskList.isValidIndex(index)) {
                 throw new TaskIndexOutOfBoundsException();
             }
@@ -92,15 +98,15 @@ public class Parser {
     private static Pair<String, String> getTaskDescriptionAndArgs(
             String arguments, String option, InvalidCommandFormatException exceptionToThrow)
             throws InvalidCommandFormatException {
-        String[] tokens = arguments.split(option, Parser.STRING_SPLIT_LIMIT);
-        String taskDescription = tokens[0].trim();
+        String[] tokens = arguments.split(option, Parser.TWO_TOKENS);
+        String taskDescription = tokens[Parser.FIRST_TOKEN].trim();
         if (taskDescription.isEmpty()) {
             throw new MissingTaskDescriptionException();
         }
-        if (tokens.length < 2) {
+        if (tokens.length < Parser.TWO_TOKENS) {
             throw exceptionToThrow;
         }
-        String argumentForOption = tokens[1].trim();
+        String argumentForOption = tokens[Parser.SECOND_TOKEN].trim();
         if (argumentForOption.isEmpty()) {
             throw exceptionToThrow;
         }
@@ -109,15 +115,15 @@ public class Parser {
 
     private static Pair<String, String> getEventStartAndEndDates(String arguments)
             throws InvalidCommandFormatException {
-        String[] tokens = arguments.split(Event.FLAG_END_DATE, Parser.STRING_SPLIT_LIMIT);
-        String startDate = tokens[0].trim();
+        String[] tokens = arguments.split(Event.FLAG_END_DATE, Parser.TWO_TOKENS);
+        String startDate = tokens[Parser.FIRST_TOKEN].trim();
         if (startDate.isEmpty()) {
             throw new MissingEventStartDateException();
         }
-        if (tokens.length < 2) {
+        if (tokens.length < Parser.TWO_TOKENS) {
             throw new MissingEventEndDateException();
         }
-        String endDate = tokens[1].trim();
+        String endDate = tokens[Parser.SECOND_TOKEN].trim();
         if (endDate.isEmpty()) {
             throw new MissingEventEndDateException();
         }
@@ -133,15 +139,15 @@ public class Parser {
 
     private static Pair<FilterOption, String> getFilterOptionAndDate(String arguments)
             throws InvalidCommandFormatException {
-        String[] tokens = arguments.split(Parser.COMMAND_DELIMITER, Parser.STRING_SPLIT_LIMIT);
-        String filterOption = tokens[0].trim();
+        String[] tokens = arguments.split(Parser.COMMAND_DELIMITER, Parser.TWO_TOKENS);
+        String filterOption = tokens[Parser.FIRST_TOKEN].trim();
         if (filterOption.isEmpty()) {
             throw new MissingFilterOptionException();
         }
-        if (tokens.length < 2) {
+        if (tokens.length < Parser.TWO_TOKENS) {
             throw new MissingFilterDateException();
         }
-        String dateTime = tokens[1].trim();
+        String dateTime = tokens[Parser.SECOND_TOKEN].trim();
         if (dateTime.isEmpty()) {
             throw new MissingFilterDateException();
         }
@@ -152,14 +158,13 @@ public class Parser {
     }
 
     /**
-     * Processes the command string entered by a user
-     * and returns a {@link Command} object
+     * Processes the command string entered by a user and returns a {@link Command} object
      *
      * @return a {@link Command} object representing the command entered by the user
      * @throws InvalidCommandFormatException If the format of the command entered by the user is incorrect
      */
     public static Command parse(String userInput, TaskList taskList)
-            throws InvalidCommandFormatException, InvalidFilterOptionException {
+            throws InvalidCommandFormatException {
         Pair<CommandString, String> commandAndArgs = Parser.getCommandAndArgs(userInput);
         CommandString commandString = commandAndArgs.first();
         String arguments = commandAndArgs.second();
