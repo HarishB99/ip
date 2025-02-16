@@ -27,8 +27,6 @@ public class Storage {
     public static final String DATA_DIRECTORY = "data";
     public static final String DATA_FILE = "tasks.txt";
 
-    private static final String ERROR_MESSAGE_UNRECOGNISED_TASK_TYPE = "Unrecognised task type";
-
     private final String filePath;
 
     /**
@@ -63,7 +61,7 @@ public class Storage {
         case Todo.TYPE -> Optional.<Task>of(Todo.deSerialise(lineNumber, trimmedLine));
         case Deadline.TYPE -> Optional.<Task>of(Deadline.deSerialise(lineNumber, trimmedLine));
         case Event.TYPE -> Optional.<Task>of(Event.deSerialise(lineNumber, trimmedLine));
-        default -> throw new UnrecognisedTaskTypeException(lineNumber, ERROR_MESSAGE_UNRECOGNISED_TASK_TYPE);
+        default -> throw new UnrecognisedTaskTypeException(lineNumber);
         };
     }
 
