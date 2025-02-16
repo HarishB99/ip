@@ -9,6 +9,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Optional;
 import java.util.Scanner;
 
+import bhaymax.exception.command.InvalidDateFormatInFileException;
 import bhaymax.exception.file.FileWriteException;
 import bhaymax.exception.file.InvalidFileFormatException;
 import bhaymax.exception.file.UnrecognisedTaskTypeException;
@@ -91,7 +92,7 @@ public class Storage {
             sc.close();
             return taskList;
         } catch (DateTimeParseException e) {
-            throw new InvalidFileFormatException(lineNumber, "");
+            throw new InvalidDateFormatInFileException(lineNumber);
         } catch (FileNotFoundException e) {
             return taskList;
         }

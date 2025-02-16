@@ -8,7 +8,7 @@ import java.util.Objects;
 import bhaymax.command.Command;
 import bhaymax.exception.UnknownException;
 import bhaymax.exception.command.InvalidCommandFormatException;
-import bhaymax.exception.command.InvalidDateFormatException;
+import bhaymax.exception.command.InvalidDateFormatInCommandException;
 import bhaymax.exception.file.FileWriteException;
 import bhaymax.exception.file.InvalidFileFormatException;
 import bhaymax.main.ImageFilePath;
@@ -216,7 +216,7 @@ public class MainWindow {
      */
     private LinkedList<String> getErrorResponses(DateTimeParseException ignored) {
         LinkedList<String> responses = new LinkedList<String>();
-        responses.add(new InvalidDateFormatException().getMessage());
+        responses.add(new InvalidDateFormatInCommandException().getMessage());
         return responses;
     }
 
