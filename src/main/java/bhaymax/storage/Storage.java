@@ -20,23 +20,26 @@ import bhaymax.task.timesensitive.Deadline;
 import bhaymax.task.timesensitive.Event;
 
 /**
- * Provides methods to load (read) and save (write)
- * tasks from/to file respectively
+ * Provides methods to load (read) and save (write) tasks from/to file respectively
  */
 public class Storage {
     public static final String DATA_DIRECTORY = "data";
     public static final String DATA_FILE = "tasks.txt";
+    public static final String FILE_PATH_FORMAT = "%s/%s";
+
+    public static final int TASK_TYPE_INDEX_START = 0;
+    public static final int TASK_TYPE_INDEX_END = 1;
 
     private final String filePath;
 
     /**
-     * Sets up the path to the tasks file, which is a
-     * concatenation of {@link Storage#DATA_DIRECTORY} and
-     * {@link Storage#DATA_FILE}
+     * Sets up the path to the tasks file to be the default path,
+     * which is a concatenation of {@link Storage#DATA_DIRECTORY}
+     * and {@link Storage#DATA_FILE}
      */
     public Storage() {
-        this.filePath = String.format(
-                "%s/%s", Storage.DATA_DIRECTORY, Storage.DATA_FILE);
+        this(String.format(
+                Storage.FILE_PATH_FORMAT, Storage.DATA_DIRECTORY, Storage.DATA_FILE));
     }
 
     /**
@@ -55,7 +58,8 @@ public class Storage {
             return Optional.<Task>empty();
         }
 
-        String taskType = trimmedLine.substring(0, 1);
+        String taskType = trimmedLine.substring(
+                Storage.TASK_TYPE_INDEX_START, Storage.TASK_TYPE_INDEX_END);
 
         return switch (taskType) {
         case Todo.TYPE -> Optional.<Task>of(Todo.deSerialise(lineNumber, trimmedLine));
@@ -66,8 +70,7 @@ public class Storage {
     }
 
     /**
-     * Loads tasks from the tasks file and returns
-     * a {@link TaskList} object containing said loaded tasks
+     * Loads tasks from the tasks file and returns a {@link TaskList} object containing said loaded tasks
      *
      * @return a {@link TaskList} object containing the loaded tasks
      * @throws InvalidFileFormatException If the data in the file is not of valid format
