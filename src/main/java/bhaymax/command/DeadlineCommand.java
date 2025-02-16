@@ -21,8 +21,8 @@ public class DeadlineCommand extends Command {
     /**
      * Sets up the description and date of the deadline task to be created
      *
-     * @param taskDescription the description of the deadline (task)
-     * @param deadline the date and time the task will be due, as a {@code String}
+     * @param taskDescription the description of the deadline
+     * @param deadline the date and time the deadline will be due by, as a {@code String}
      * @see bhaymax.parser.Parser#DATETIME_INPUT_FORMAT
      */
     public DeadlineCommand(String taskDescription, String deadline) {
