@@ -75,6 +75,43 @@ public class Event extends TimeSensitiveTask {
      * @return a {@code Event} object
      */
     public static Event deSerialise(int lineNumber, String serialisedEvent) throws TaskDeSerialisationException {
+        MatchResult matchResult = Event.getMatchResult(lineNumber, serialisedEvent);
+        Event event = Event.getEvent(lineNumber, matchResult);
+        String eventStatus = matchResult.group(Event.REGEX_GROUP_STATUS);
+        Event.markEventBasedOnStatus(lineNumber, event, eventStatus);
+        return event;
+    }
+
+    private static void markEventBasedOnStatus(int lineNumber, Event event, String eventStatus)
+            throws InvalidTaskStatusException {
+        switch (eventStatus) {
+        case Event.EVENT_COMPLETE:
+            event.markAsDone();
+            break;
+        case Event.EVENT_INCOMPLETE:
+            event.markAsUndone();
+            break;
+        default:
+            throw new InvalidTaskStatusException(lineNumber);
+        }
+    }
+
+    private static Event getEvent(int lineNumber, MatchResult matchResult) throws WrongTaskFormatException {
+        Event event;
+        try {
+            String eventDescription = matchResult.group(Event.REGEX_GROUP_DESCRIPTION);
+            String eventStart = matchResult.group(Event.REGEX_GROUP_START_DATE);
+            String eventEnd = matchResult.group(Event.REGEX_GROUP_END_DATE);
+            event = new Event(eventDescription, eventStart, eventEnd);
+        } catch (DateTimeParseException e) {
+            throw new WrongTaskFormatException(
+                    lineNumber, Event.NAME, Event.TYPE,
+                    Event.START_DATE_INPUT_FORMAT, Event.END_DATE_INPUT_FORMAT);
+        }
+        return event;
+    }
+
+    private static MatchResult getMatchResult(int lineNumber, String serialisedEvent) throws WrongTaskFormatException {
         MatchResult matchResult;
 
         try {
@@ -88,32 +125,8 @@ public class Event extends TimeSensitiveTask {
                     Event.START_DATE_INPUT_FORMAT, Event.END_DATE_INPUT_FORMAT);
         }
 
-        String eventStatus = matchResult.group(Event.REGEX_GROUP_STATUS);
-        String eventDescription = matchResult.group(Event.REGEX_GROUP_DESCRIPTION);
-        String eventStart = matchResult.group(Event.REGEX_GROUP_START_DATE);
-        String eventEnd = matchResult.group(Event.REGEX_GROUP_END_DATE);
-
-        Event event;
-        try {
-            event = new Event(eventDescription, eventStart, eventEnd);
-        } catch (DateTimeParseException e) {
-            throw new WrongTaskFormatException(
-                    lineNumber, Event.NAME, Event.TYPE,
-                    Event.START_DATE_INPUT_FORMAT, Event.END_DATE_INPUT_FORMAT);
-        }
-
-        switch (eventStatus) {
-        case Event.EVENT_COMPLETE:
-            event.markAsDone();
-            break;
-        case Event.EVENT_INCOMPLETE:
-            event.markAsUndone();
-            break;
-        default:
-            throw new InvalidTaskStatusException(lineNumber);
-        }
-
-        return event;
+        assert matchResult.groupCount() == Event.EXPECTED_NUMBER_OF_REGEX_GROUPS;
+        return matchResult;
     }
 
     private String getStartDateInInputFormat() {
