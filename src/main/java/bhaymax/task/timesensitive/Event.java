@@ -7,7 +7,9 @@ import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.regex.MatchResult;
 
+import bhaymax.exception.file.InvalidTaskStatusException;
 import bhaymax.exception.file.TaskDeSerialisationException;
+import bhaymax.exception.file.WrongTaskFormatException;
 import bhaymax.parser.Parser;
 import bhaymax.task.Task;
 
@@ -16,25 +18,27 @@ import bhaymax.task.Task;
  */
 public class Event extends TimeSensitiveTask {
     public static final String TYPE = "E";
-    public static final String ERROR_WRONG_TASK_FORMAT = Task.getErrorWrongTaskStatus(
-            "Event",
-            Event.TYPE,
-            " " + Task.DELIMITER
-                    + " {start date: dd-MM-yyyy HH:mm} " + Task.DELIMITER
-                    + " {end date: dd-MM-yyyy HH:mm}");
+    public static final String NAME = "Event";
 
-    private static final String SERIAL_FORMAT = "%s " + Task.DELIMITER + " %s " + Task.DELIMITER + " %s";
-    private static final String DE_SERIAL_FORMAT = "^E \\| ([0-1]) \\| (.+)"
+    public static final String FLAG_START_DATE = "/from";
+    public static final String FLAG_END_DATE = "/to";
+
+    // For construction of exception message
+    public static final String START_DATE_INPUT_FORMAT = "{start date: " + Parser.DATETIME_INPUT_FORMAT + "}";
+    public static final String END_DATE_INPUT_FORMAT = "{end date: " + Parser.DATETIME_INPUT_FORMAT + "}";
+
+    private static final String SERIALISATION_FORMAT = "%s " + Task.DELIMITER + " %s " + Task.DELIMITER + " %s";
+    private static final String DE_SERIALISATION_FORMAT = "^E \\| ([0-1]) \\| (.+)"
             + " \\| (\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2}) \\| (\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2})$";
-    private static final int DE_SERIAL_FORMAT_NUMBER_OF_ITEMS = 4;
 
-    private static final int EVENT_STATUS_GROUP = 1;
-    private static final int EVENT_DESCRIPTION_GROUP = 2;
-    private static final int EVENT_START_DATE_GROUP = 3;
-    private static final int EVENT_END_DATE_GROUP = 4;
+    private static final int EXPECTED_NUMBER_OF_REGEX_GROUPS = 4;
+    private static final int REGEX_GROUP_STATUS = 1;
+    private static final int REGEX_GROUP_DESCRIPTION = 2;
+    private static final int REGEX_GROUP_START_DATE = 3;
+    private static final int REGEX_GROUP_END_DATE = 4;
 
-    private static final String EVENT_DONE = "1";
-    private static final String EVENT_NOT_DONE = "0";
+    private static final String EVENT_COMPLETE = "1";
+    private static final String EVENT_INCOMPLETE = "0";
 
     protected LocalDateTime start;
     protected LocalDateTime end;
@@ -59,7 +63,7 @@ public class Event extends TimeSensitiveTask {
 
     @Override
     public String serialise() {
-        return String.format(Event.SERIAL_FORMAT,
+        return String.format(Event.SERIALISATION_FORMAT,
                 super.serialise(), this.getStartDateInInputFormat(), this.getEndDateInInputFormat());
     }
 
@@ -71,36 +75,42 @@ public class Event extends TimeSensitiveTask {
      * @return a {@code Event} object
      */
     public static Event deSerialise(int lineNumber, String serialisedEvent) throws TaskDeSerialisationException {
-        Scanner sc = new Scanner(serialisedEvent);
-        sc.findInLine(Event.DE_SERIAL_FORMAT);
-        MatchResult matchResult = sc.match();
-        sc.close();
+        MatchResult matchResult;
 
-        if (matchResult.groupCount() != Event.DE_SERIAL_FORMAT_NUMBER_OF_ITEMS) {
-            throw new TaskDeSerialisationException(lineNumber, Event.ERROR_WRONG_TASK_FORMAT);
+        try {
+            Scanner sc = new Scanner(serialisedEvent);
+            sc.findInLine(Event.DE_SERIALISATION_FORMAT);
+            matchResult = sc.match();
+            sc.close();
+        } catch (IllegalStateException e) {
+            throw new WrongTaskFormatException(
+                    lineNumber, Event.NAME, Event.TYPE,
+                    Event.START_DATE_INPUT_FORMAT, Event.END_DATE_INPUT_FORMAT);
         }
 
-        String eventStatus = matchResult.group(Event.EVENT_STATUS_GROUP);
-        String eventDescription = matchResult.group(Event.EVENT_DESCRIPTION_GROUP);
-        String eventStart = matchResult.group(Event.EVENT_START_DATE_GROUP);
-        String eventEnd = matchResult.group(Event.EVENT_END_DATE_GROUP);
+        String eventStatus = matchResult.group(Event.REGEX_GROUP_STATUS);
+        String eventDescription = matchResult.group(Event.REGEX_GROUP_DESCRIPTION);
+        String eventStart = matchResult.group(Event.REGEX_GROUP_START_DATE);
+        String eventEnd = matchResult.group(Event.REGEX_GROUP_END_DATE);
 
         Event event;
         try {
             event = new Event(eventDescription, eventStart, eventEnd);
         } catch (DateTimeParseException e) {
-            throw new TaskDeSerialisationException(lineNumber, Event.ERROR_WRONG_TASK_FORMAT);
+            throw new WrongTaskFormatException(
+                    lineNumber, Event.NAME, Event.TYPE,
+                    Event.START_DATE_INPUT_FORMAT, Event.END_DATE_INPUT_FORMAT);
         }
 
         switch (eventStatus) {
-        case Event.EVENT_DONE:
+        case Event.EVENT_COMPLETE:
             event.markAsDone();
             break;
-        case Event.EVENT_NOT_DONE:
+        case Event.EVENT_INCOMPLETE:
             event.markAsUndone();
             break;
         default:
-            throw new TaskDeSerialisationException(lineNumber, Event.ERROR_WRONG_TASK_STATUS);
+            throw new InvalidTaskStatusException(lineNumber);
         }
 
         return event;
@@ -124,7 +134,7 @@ public class Event extends TimeSensitiveTask {
 
     @Override
     boolean isBeforeDate(LocalDate date) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_INPUT_FORMAT);
         LocalDate startDate = LocalDate.parse(
                 this.start.format(dateFormatter),
                 dateFormatter
@@ -145,7 +155,7 @@ public class Event extends TimeSensitiveTask {
 
     @Override
     boolean isAfterDate(LocalDate date) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_INPUT_FORMAT);
         LocalDate startDate = LocalDate.parse(this.start.format(dateFormatter), dateFormatter);
         LocalDate endDate = LocalDate.parse(this.end.format(dateFormatter), dateFormatter);
         return startDate.isAfter(date)
@@ -160,7 +170,7 @@ public class Event extends TimeSensitiveTask {
 
     @Override
     boolean isOnDate(LocalDate date) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_INPUT_FORMAT);
         LocalDate startDate = LocalDate.parse(
                 this.start.format(dateFormatter), dateFormatter);
         LocalDate endDate = LocalDate.parse(

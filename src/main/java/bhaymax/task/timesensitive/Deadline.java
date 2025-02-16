@@ -7,7 +7,9 @@ import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.regex.MatchResult;
 
+import bhaymax.exception.file.InvalidTaskStatusException;
 import bhaymax.exception.file.TaskDeSerialisationException;
+import bhaymax.exception.file.WrongTaskFormatException;
 import bhaymax.parser.Parser;
 import bhaymax.task.Task;
 
@@ -16,45 +18,46 @@ import bhaymax.task.Task;
  */
 public class Deadline extends TimeSensitiveTask {
     public static final String TYPE = "D";
-    public static final String ERROR_WRONG_TASK_FORMAT = Task.getErrorWrongTaskStatus(
-            "Deadline",
-            Deadline.TYPE,
-            " " + Task.DELIMITER + " {due-by date: dd-MM-yyyy HH:mm}");
+    public static final String NAME = "Deadline";
 
+    public static final String FLAG_DUE_BY = "/by";
 
-    private static final String SERIAL_FORMAT = "%s " + Task.DELIMITER + " %s";
-    private static final String DESERIAL_FORMAT = "^D \\| ([0-1]) \\| (.+)"
+    // For construction of exception message
+    public static final String DUE_DATE_INPUT_FORMAT = "{due-by date: " + Parser.DATETIME_INPUT_FORMAT + "}";
+
+    private static final String SERIALISATION_FORMAT = "%s " + Task.DELIMITER + " %s";
+    private static final String DE_SERIALISATION_FORMAT = "^D \\| ([0-1]) \\| (.+)"
             + " \\| (\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2})";
-    private static final int DESERIAL_FORMAT_NUMBER_OF_ITEMS = 3;
 
-    private static final int DEADLINE_STATUS_GROUP = 1;
-    private static final int DEADLINE_DESCRIPTION_GROUP = 2;
-    private static final int DEADLINE_DEADLINE_GROUP = 3;
+    private static final int EXPECTED_NUMBER_OF_REGEX_GROUPS = 3;
+    private static final int REGEX_GROUP_STATUS = 1;
+    private static final int REGEX_GROUP_DESCRIPTION = 2;
+    private static final int REGEX_GROUP_DEADLINE = 3;
 
-    private static final String DEADLINE_DONE = "1";
-    private static final String DEADLINE_NOT_DONE = "0";
+    private static final String DEADLINE_COMPLETE = "1";
+    private static final String DEADLINE_INCOMPLETE = "0";
 
-    protected LocalDateTime dueDate;
+    protected LocalDateTime dueDateTime;
 
     /**
      * Sets up the description and the
      * due date of the deadline
      *
      * @param description the description of the task
-     * @param dueDate the date and time the task is due, as a {@code String}
+     * @param dueDateTime the date and time the task is due, as a {@code String}
      * @throws DateTimeParseException if the deadline provided is not of the expected format
      * @see Parser#DATETIME_INPUT_FORMAT
      */
-    public Deadline(String description, String dueDate)
+    public Deadline(String description, String dueDateTime)
             throws DateTimeParseException {
         super(Deadline.TYPE, description);
-        this.dueDate = LocalDateTime.parse(
-                dueDate, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
+        this.dueDateTime = LocalDateTime.parse(
+                dueDateTime, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
     }
 
     @Override
     public String serialise() {
-        return String.format(Deadline.SERIAL_FORMAT, super.serialise(), this.getDeadlineInInputFormat());
+        return String.format(Deadline.SERIALISATION_FORMAT, super.serialise(), this.getDeadlineInInputFormat());
     }
 
     /**
@@ -64,85 +67,87 @@ public class Deadline extends TimeSensitiveTask {
      * @param serialisedDeadline the serialised deadline, as a {@code String}
      * @return a {@code Deadline} object
      */
-    public static Deadline deSerialise(int lineNumber, String serialisedDeadline) throws TaskDeSerialisationException {
-        Scanner sc = new Scanner(serialisedDeadline);
-        sc.findInLine(Deadline.DESERIAL_FORMAT);
-        MatchResult matchResult = sc.match();
-        sc.close();
-
-        if (matchResult.groupCount() != Deadline.DESERIAL_FORMAT_NUMBER_OF_ITEMS) {
-            throw new TaskDeSerialisationException(lineNumber, Deadline.ERROR_WRONG_TASK_FORMAT);
+    public static Deadline deSerialise(int lineNumber, String serialisedDeadline)
+            throws TaskDeSerialisationException {
+        MatchResult matchResult;
+        try {
+            Scanner sc = new Scanner(serialisedDeadline);
+            sc.findInLine(Deadline.DE_SERIALISATION_FORMAT);
+            matchResult = sc.match();
+            sc.close();
+        } catch (IllegalStateException e) {
+            throw new WrongTaskFormatException(
+                    lineNumber, Deadline.NAME, Deadline.TYPE, Deadline.DUE_DATE_INPUT_FORMAT);
         }
-
-        String deadlineStatus = matchResult.group(Deadline.DEADLINE_STATUS_GROUP);
-        String deadlineDescription = matchResult.group(Deadline.DEADLINE_DESCRIPTION_GROUP);
-        String deadlineDueDate = matchResult.group(Deadline.DEADLINE_DEADLINE_GROUP);
 
         Deadline deadline;
         try {
+            String deadlineDescription = matchResult.group(Deadline.REGEX_GROUP_DESCRIPTION);
+            String deadlineDueDate = matchResult.group(Deadline.REGEX_GROUP_DEADLINE);
             deadline = new Deadline(deadlineDescription, deadlineDueDate);
         } catch (DateTimeParseException e) {
-            throw new TaskDeSerialisationException(lineNumber, Deadline.ERROR_WRONG_TASK_FORMAT);
+            throw new WrongTaskFormatException(
+                    lineNumber, Deadline.NAME, Deadline.TYPE, Deadline.DUE_DATE_INPUT_FORMAT);
         }
 
+        String deadlineStatus = matchResult.group(Deadline.REGEX_GROUP_STATUS);
         switch (deadlineStatus) {
-        case Deadline.DEADLINE_DONE:
+        case Deadline.DEADLINE_COMPLETE:
             deadline.markAsDone();
             break;
-        case Deadline.DEADLINE_NOT_DONE:
+        case Deadline.DEADLINE_INCOMPLETE:
             deadline.markAsUndone();
             break;
         default:
-            throw new TaskDeSerialisationException(lineNumber, Deadline.ERROR_WRONG_TASK_STATUS);
+            throw new InvalidTaskStatusException(lineNumber);
         }
 
         return deadline;
     }
 
     private String getDeadlineInInputFormat() {
-        return this.dueDate.format(
+        return this.dueDateTime.format(
                 DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
     }
 
     private String getDeadlineInOutputFormat() {
-        return this.dueDate.format(
+        return this.dueDateTime.format(
                 DateTimeFormatter.ofPattern(Parser.DATETIME_OUTPUT_FORMAT));
+    }
+
+    private LocalDate getDueDateOnly() {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_INPUT_FORMAT);
+        return LocalDate.parse(this.dueDateTime.format(dateFormatter), dateFormatter);
     }
 
     @Override
     boolean isBeforeDate(LocalDate date) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
-        LocalDate deadlineDate = LocalDate.parse(this.dueDate.format(dateFormatter), dateFormatter);
-        return deadlineDate.isBefore(date);
+        return this.getDueDateOnly().isBefore(date);
     }
 
     @Override
     boolean isBeforeDateTime(LocalDateTime dateTime) {
-        return this.dueDate.isBefore(dateTime);
+        return this.dueDateTime.isBefore(dateTime);
     }
 
     @Override
     boolean isAfterDate(LocalDate date) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
-        LocalDate deadlineDate = LocalDate.parse(this.dueDate.format(dateFormatter), dateFormatter);
-        return deadlineDate.isAfter(date);
+        return this.getDueDateOnly().isAfter(date);
     }
 
     @Override
     boolean isAfterDateTime(LocalDateTime dateTime) {
-        return this.dueDate.isAfter(dateTime);
+        return this.dueDateTime.isAfter(dateTime);
     }
 
     @Override
     boolean isOnDate(LocalDate date) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
-        LocalDate deadlineDate = LocalDate.parse(this.dueDate.format(dateFormatter), dateFormatter);
-        return deadlineDate.isEqual(date);
+        return this.getDueDateOnly().isEqual(date);
     }
 
     @Override
     boolean isOnDateTime(LocalDateTime dateTime) {
-        return this.dueDate.isEqual(dateTime);
+        return this.dueDateTime.isEqual(dateTime);
     }
 
     @Override

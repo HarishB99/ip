@@ -46,7 +46,7 @@ public abstract class TimeSensitiveTask extends Task {
      * @return a boolean value indicating if this task is within
      *         this provided date filter
      * @throws DateTimeParseException if date and/or time provided is not of the expected format
-     * @see bhaymax.parser.Parser#DATE_FORMAT
+     * @see bhaymax.parser.Parser#DATE_INPUT_FORMAT
      * @see bhaymax.parser.Parser#DATETIME_INPUT_FORMAT
      */
     public boolean hasDateMatchingFilter(String dateTimeString, FilterOption filterOption)
@@ -58,7 +58,7 @@ public abstract class TimeSensitiveTask extends Task {
             // Fallthrough
         case DATE_AFTER:
             LocalDate date = LocalDate.parse(
-                    dateTimeString, DateTimeFormatter.ofPattern(Parser.DATE_FORMAT));
+                    dateTimeString, DateTimeFormatter.ofPattern(Parser.DATE_INPUT_FORMAT));
 
             if (filterOption.equals(FilterOption.DATE_ON)) {
                 return this.isOnDate(date);
