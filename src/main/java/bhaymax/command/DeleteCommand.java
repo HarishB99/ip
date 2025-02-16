@@ -19,7 +19,7 @@ public class DeleteCommand extends Command {
     private final int taskNumber;
 
     /**
-     * Sets up the task number of the task to be deleted
+     * Constructor for {@code DeleteCommand}
      *
      * @param taskNumber the index number of the task to be deleted
      */

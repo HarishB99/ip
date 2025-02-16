@@ -3,9 +3,7 @@ package bhaymax.command;
 import bhaymax.exception.command.UnrecognisedCommandException;
 
 /**
- * Provides enumeration values representing
- * the valid commands a user is allowed to
- * enter
+ * Provides enumeration values representing the valid commands a user is allowed to enter
  */
 public enum CommandString {
     LIST("list"),
@@ -30,10 +28,9 @@ public enum CommandString {
     }
 
     /**
-     * Returns the {@link CommandString} value corresponding to
-     * the command string entered by the user
+     * Returns the {@link CommandString} value corresponding to the given command in {@code String}
      *
-     * @param commandString the command string entered by the user
+     * @param commandString the command string entered by the user, as a {@code String}
      * @return a {@link CommandString} value corresponding to the
      *         given command string, if the command string is a recognised one
      * @throws UnrecognisedCommandException If the command string provided is not recognised

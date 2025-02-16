@@ -19,7 +19,7 @@ public class DeadlineCommand extends Command {
     private final String deadline;
 
     /**
-     * Sets up the description and date of the deadline task to be created
+     * Constructor for {@code DeadlineCommand}
      *
      * @param taskDescription the description of the deadline
      * @param deadline the date and time the deadline will be due by, as a {@code String}

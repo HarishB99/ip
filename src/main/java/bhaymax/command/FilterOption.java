@@ -3,9 +3,7 @@ package bhaymax.command;
 import bhaymax.exception.command.InvalidFilterOptionException;
 
 /**
- * Provides enumeration values representing
- * the options that can be passed to the {@code filter}
- * command
+ * Provides enumeration values representing the valid options that can be passed to the {@code filter} command
  */
 public enum FilterOption {
     DATE_ON("/on"),
@@ -22,10 +20,9 @@ public enum FilterOption {
     }
 
     /**
-     * Returns the {@link FilterOption} value corresponding to
-     * the filter option string entered by the user
+     * Returns the {@link FilterOption} value corresponding to the given filter option in {@code String}
      *
-     * @param filterOptionString the filter option provided by the user, as a String
+     * @param filterOptionString the filter option provided by the user, as a {@code String}
      * @return a {@link FilterOption} value corresponding to the given
      *         filter option string, if the filter option is recognised
      * @throws InvalidFilterOptionException If the filter option provided is not recognised

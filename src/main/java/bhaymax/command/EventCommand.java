@@ -20,7 +20,7 @@ public class EventCommand extends Command {
     private final String end;
 
     /**
-     * Sets up the description, the start date with time and the end date with time of the event task to be created
+     * Constructor for {@code EventCommand}
      *
      * @param taskDescription the description of the event task
      * @param start the date and time at which the event will start, as a {@code String}
