@@ -4,7 +4,9 @@ package bhaymax.exception.command;
  * Thrown when an end date is not provided for a {@link bhaymax.task.timesensitive.Event}
  */
 public class MissingEventEndDateException extends InvalidCommandFormatException {
+    public static final String ERROR_MESSAGE = "A end date and time is required to create an event.";
+
     public MissingEventEndDateException() {
-        super("A end date and time is required to create an event.");
+        super(MissingEventEndDateException.ERROR_MESSAGE);
     }
 }

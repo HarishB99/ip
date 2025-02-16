@@ -10,6 +10,10 @@ import bhaymax.exception.ErrorMessageLine;
  * Thrown when an {@link java.io.IOException} occurs when saving tasks to file
  */
 public class FileWriteException extends BhaymaxException {
+    public static final String ERROR_MESSAGE_IO_ERROR = "An I/O error occurred while writing to tasks file.";
+    public static final String ERROR_MESSAGE_FILE_WAS_NOT_SAVED =
+            "Your last change was not saved. Maybe you could try again?";
+
     public FileWriteException(IOException e) {
         super(e.getMessage());
     }
@@ -17,10 +21,9 @@ public class FileWriteException extends BhaymaxException {
     @Override
     public String getMessage() {
         return super.getConcatenatedMessage(List.<ErrorMessageLine>of(
-                new ErrorMessageLine("An I/O error occurred while writing to tasks file.", true),
+                new ErrorMessageLine(FileWriteException.ERROR_MESSAGE_IO_ERROR, true),
                 new ErrorMessageLine(super.getMessage(), false),
-                new ErrorMessageLine("Your last change was not saved. Maybe you could try again?",
-                        true)
+                new ErrorMessageLine(FileWriteException.ERROR_MESSAGE_FILE_WAS_NOT_SAVED, true)
         ));
     }
 }
