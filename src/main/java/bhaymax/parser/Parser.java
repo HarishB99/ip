@@ -30,6 +30,8 @@ import bhaymax.exception.command.TaskIndexIsNotANumberException;
 import bhaymax.exception.command.TaskIndexOutOfBoundsException;
 import bhaymax.exception.command.UnrecognisedCommandException;
 import bhaymax.task.TaskList;
+import bhaymax.task.timesensitive.Deadline;
+import bhaymax.task.timesensitive.Event;
 import bhaymax.util.Pair;
 
 /**
@@ -45,11 +47,6 @@ public class Parser {
     private static final int STRING_SPLIT_LIMIT = 2;
 
     private static final String COMMAND_DELIMITER = " ";
-
-    private static final String DEADLINE_OPT_BY = "/by";
-
-    private static final String EVENT_OPT_START = "/from";
-    private static final String EVENT_OPT_END = "/to";
 
     private static Pair<CommandString, String> getCommandAndArgs(String userInput)
             throws InvalidCommandFormatException {
@@ -112,7 +109,7 @@ public class Parser {
 
     private static Pair<String, String> getEventStartAndEndDates(String arguments)
             throws InvalidCommandFormatException {
-        String[] tokens = arguments.split(Parser.EVENT_OPT_END, Parser.STRING_SPLIT_LIMIT);
+        String[] tokens = arguments.split(Event.FLAG_END_DATE, Parser.STRING_SPLIT_LIMIT);
         String startDate = tokens[0].trim();
         if (startDate.isEmpty()) {
             throw new MissingEventStartDateException();
@@ -180,13 +177,13 @@ public class Parser {
             return new TodoCommand(Parser.getTaskDescription(arguments));
         case DEADLINE:
             Pair<String, String> descriptionAndDeadline = Parser.getTaskDescriptionAndArgs(
-                    arguments, Parser.DEADLINE_OPT_BY, new MissingDeadlineDueByDateException());
+                    arguments, Deadline.FLAG_DUE_BY, new MissingDeadlineDueByDateException());
             String deadlineDescription = descriptionAndDeadline.first();
             String deadline = descriptionAndDeadline.second();
             return new DeadlineCommand(deadlineDescription, deadline);
         case EVENT:
             Pair<String, String> descriptionAndArgs = Parser.getTaskDescriptionAndArgs(
-                    arguments, Parser.EVENT_OPT_START, new MissingEventStartDateException());
+                    arguments, Event.FLAG_START_DATE, new MissingEventStartDateException());
             String eventDescription = descriptionAndArgs.first();
             String eventArguments = descriptionAndArgs.second();
             Pair<String, String> eventStartAndEnd = Parser.getEventStartAndEndDates(eventArguments);
