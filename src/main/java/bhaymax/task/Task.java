@@ -12,7 +12,7 @@ public class Task {
     protected boolean isDone;
 
     /**
-     * Sets up the type and description of the task
+     * Constructor for Task object
      *
      * @param type the type of the task
      * @param description the description of the task
@@ -36,12 +36,9 @@ public class Task {
     }
 
     /**
-     * Returns a {@code String} representation
-     * of the {@code Task} object suitable for saving to
-     * a file
+     * Returns a {@code String} representation of the {@code Task} object, suitable for saving to a file
      *
-     * @return the {@code String} representation of this object,
-     *         suitable for saving to a file
+     * @return the {@code String} representation of this object, suitable for saving to a file
      */
     public String serialise() {
         return String.format(Task.SERIAL_FORMAT, this.type, (this.isDone ? 1 : 0), this.description);

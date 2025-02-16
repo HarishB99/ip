@@ -68,8 +68,8 @@ public class Event extends TimeSensitiveTask {
     }
 
     /**
-     * Returns a {@code Event} object by parsing
-     * a given serialised event, as a {@code String}
+     * Parses a serialised event (provided as a {@code String})
+     * and returns the corresponding {@code Event} object
      *
      * @param serialisedEvent the serialised event, as a {@code String}
      * @return a {@code Event} object

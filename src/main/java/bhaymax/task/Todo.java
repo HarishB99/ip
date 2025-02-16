@@ -33,8 +33,8 @@ public class Todo extends Task {
     }
 
     /**
-     * Returns a {@code Todo} object by parsing
-     * a given serialised to-do item, as a {@code String}
+     * Parses a serialised To-Do item (provided as a {@code String})
+     * and returns the corresponding {@code Todo} object
      *
      * @param serialisedTodo the serialised to-do, as a {@code String}
      * @return a {@code Todo} object
@@ -54,13 +54,18 @@ public class Todo extends Task {
         String taskStatus = matchResult.group(REGEX_GROUP_STATUS);
         String taskDescription = matchResult.group(REGEX_GROUP_DESCRIPTION);
         Todo todo = new Todo(taskDescription);
-        if (taskStatus.equals(Todo.TODO_COMPLETE)) {
+
+        switch (taskStatus) {
+        case Todo.TODO_COMPLETE:
             todo.markAsDone();
-        } else if (taskStatus.equals(Todo.TODO_INCOMPLETE)) {
+            break;
+        case Todo.TODO_INCOMPLETE:
             todo.markAsUndone();
-        } else {
+            break;
+        default:
             throw new InvalidTaskStatusException(lineNumber);
         }
+
         return todo;
     }
 

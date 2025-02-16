@@ -14,7 +14,7 @@ import bhaymax.task.Task;
  */
 public abstract class TimeSensitiveTask extends Task {
     /**
-     * Sets up the type and description of the task
+     * Constructor for TimeSensitiveTask objects, meant only for its subclasses
      *
      * @param type        the type of the task
      * @param description the description of the task
@@ -36,13 +36,12 @@ public abstract class TimeSensitiveTask extends Task {
     abstract boolean isOnDateTime(LocalDateTime dateTime);
 
     /**
-     * Checks whether the date(s) of this task
-     * fall within the provided date filter
+     * Checks whether the date(s) of this task matches the provided date filter
      *
      * @param dateTimeString the date and/or time to filter by, as a {@code String}
      * @param filterOption a {@link FilterOption} enum value indicating the type of
-     *                  filter (i.e., before the date, after the date, exactly on
-     *                  the date, include/exclude time)
+     *                     filter (i.e., before the date, after the date, exactly on
+     *                     the date, include/exclude time)
      * @return a boolean value indicating if this task is within
      *         this provided date filter
      * @throws DateTimeParseException if date and/or time provided is not of the expected format

@@ -61,8 +61,8 @@ public class Deadline extends TimeSensitiveTask {
     }
 
     /**
-     * Returns a {@code Deadline} object by parsing
-     * a given serialised deadline, as a {@code String}
+     * Parses a serialised deadline (provided as a {@code String})
+     * and returns the corresponding {@code Deadline} object
      *
      * @param serialisedDeadline the serialised deadline, as a {@code String}
      * @return a {@code Deadline} object
