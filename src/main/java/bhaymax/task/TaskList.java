@@ -96,7 +96,7 @@ public class TaskList {
                 .map(task -> (tasks.indexOf(task) + 1) + TaskList.TASK_LIST_BULLET_POINT_SEPARATOR + task)
                 .reduce((previousTask, nextTask)
                         -> previousTask + System.lineSeparator() + nextTask)
-                .ifPresentOrElse(mainWindowController::showResponse, () -> mainWindowController
+                .ifPresentOrElse(mainWindowController::showNormalResponse, () -> mainWindowController
                         .showExcitedResponse(TaskList.TASK_LIST_EMPTY));
     }
 
@@ -122,7 +122,7 @@ public class TaskList {
                 .reduce((previousTask, nextTask)
                         -> previousTask + System.lineSeparator() + nextTask)
                 .orElse(TaskList.NO_MATCH_FILTER);
-        mainWindowController.showResponse(response);
+        mainWindowController.showNormalResponse(response);
     }
 
     /**
@@ -139,7 +139,7 @@ public class TaskList {
                 .reduce((previousTask, nextTask)
                         -> previousTask + System.lineSeparator() + nextTask)
                 .orElse(TaskList.NO_MATCH_SEARCH);
-        mainWindowController.showResponse(response);
+        mainWindowController.showNormalResponse(response);
     }
 
     /**

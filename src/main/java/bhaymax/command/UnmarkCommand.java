@@ -30,7 +30,7 @@ public class UnmarkCommand extends Command {
         Task markedTask = taskList.markTaskAsUndone(this.taskNumber);
         storage.saveTasks(taskList);
         String response = String.format(RESPONSE_FORMAT, markedTask);
-        mainWindowController.showResponse(response);
+        mainWindowController.showNormalResponse(response);
     }
 
     @Override

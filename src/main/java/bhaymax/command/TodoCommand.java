@@ -36,7 +36,7 @@ public class TodoCommand extends Command {
                 newTodoTask,
                 taskListCount,
                 taskListCount == 1 ? "" : "s");
-        mainWindowController.showResponse(response);
+        mainWindowController.showNormalResponse(response);
     }
 
     @Override

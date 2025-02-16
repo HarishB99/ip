@@ -40,7 +40,7 @@ public class DeadlineCommand extends Command {
                 newDeadline,
                 taskListCount,
                 taskListCount == 1 ? "" : "s");
-        mainWindowController.showResponse(response);
+        mainWindowController.showNormalResponse(response);
     }
 
     @Override

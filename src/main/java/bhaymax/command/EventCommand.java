@@ -43,7 +43,7 @@ public class EventCommand extends Command {
                 newEvent,
                 taskListCount,
                 taskListCount == 1 ? "" : "s");
-        mainWindowController.showResponse(response);
+        mainWindowController.showNormalResponse(response);
     }
 
     @Override

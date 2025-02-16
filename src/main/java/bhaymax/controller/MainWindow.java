@@ -94,9 +94,9 @@ public class MainWindow {
      */
     public void showWelcomeDialogBox(String appName) {
         this.dialogContainer.getChildren().addAll(
-                this.getChatbotNormalDialog(
+                this.getNormalChatbotDialog(
                         String.format(MainWindow.MESSAGE_WELCOME_FORMAT, appName)),
-                this.getChatbotExcitedDialog(MainWindow.MESSAGE_GREETING)
+                this.getExcitedChatbotDialog(MainWindow.MESSAGE_GREETING)
         );
     }
 
@@ -105,7 +105,7 @@ public class MainWindow {
      */
     public void showGreetingDialogBox() {
         this.dialogContainer.getChildren().addAll(
-                this.getChatbotExcitedDialog(MainWindow.MESSAGE_GREETING)
+                this.getExcitedChatbotDialog(MainWindow.MESSAGE_GREETING)
         );
     }
 
@@ -114,7 +114,7 @@ public class MainWindow {
      */
     public void showFarewellDialogBox() {
         this.dialogContainer.getChildren().addAll(
-                this.getChatbotHappyDialog(MainWindow.MESSAGE_FAREWELL));
+                this.getHappyChatbotDialog(MainWindow.MESSAGE_FAREWELL));
     }
 
     /**
@@ -123,8 +123,8 @@ public class MainWindow {
      * @param response A message to be shown to the user
      *                 using a dialog box from the chatbot
      */
-    public void showResponse(String response) {
-        this.dialogContainer.getChildren().addAll(this.getChatbotNormalDialog(response));
+    public void showNormalResponse(String response) {
+        this.dialogContainer.getChildren().addAll(this.getNormalChatbotDialog(response));
     }
 
     /**
@@ -134,7 +134,7 @@ public class MainWindow {
      *                 using a dialog box from the chatbot
      */
     public void showExcitedResponse(String response) {
-        this.dialogContainer.getChildren().addAll(this.getChatbotExcitedDialog(response));
+        this.dialogContainer.getChildren().addAll(this.getExcitedChatbotDialog(response));
     }
 
     /**
@@ -144,7 +144,7 @@ public class MainWindow {
      *                 using a dialog box from the chatbot
      */
     public void showSadResponse(String response) {
-        this.dialogContainer.getChildren().addAll(this.getChatbotSadDialog(response));
+        this.dialogContainer.getChildren().addAll(this.getSadChatbotDialog(response));
     }
 
     /**
@@ -157,15 +157,6 @@ public class MainWindow {
     }
 
     /**
-     * Shows the appropriate response for when DateTimeParseException occurs
-     *
-     * @param exception an {@link DateTimeParseException} exception
-     */
-    public void showDateTimeParseExceptionDialogBox(DateTimeParseException exception) {
-        this.displayErrorResponses(this.getErrorResponses(exception), false);
-    }
-
-    /**
      * Removes all previous messages from the chat area
      */
     public void clearChat(boolean shouldIndicateChatbotCleared) {
@@ -174,7 +165,7 @@ public class MainWindow {
             return;
         }
         this.dialogContainer.getChildren().addAll(
-                this.getChatbotNormalDialog(MainWindow.MESSAGE_CHAT_BOX_CLEARED));
+                this.getNormalChatbotDialog(MainWindow.MESSAGE_CHAT_BOX_CLEARED));
     }
 
     /**
@@ -189,23 +180,23 @@ public class MainWindow {
         return DialogBox.getUserDialog(input, this.userImage);
     }
 
-    private DialogBox getChatbotNormalDialog(String input) {
+    private DialogBox getNormalChatbotDialog(String input) {
         return DialogBox.getChatbotDialog(input, this.chatbotNormalImage);
     }
 
-    private DialogBox getChatbotAnnoyedDialog(String input) {
+    private DialogBox getAnnoyedChatbotDialog(String input) {
         return DialogBox.getChatbotDialog(input, this.chatbotAnnoyedImage);
     }
 
-    private DialogBox getChatbotExcitedDialog(String input) {
+    private DialogBox getExcitedChatbotDialog(String input) {
         return DialogBox.getChatbotDialog(input, this.chatbotExcitedImage);
     }
 
-    private DialogBox getChatbotHappyDialog(String input) {
+    private DialogBox getHappyChatbotDialog(String input) {
         return DialogBox.getChatbotDialog(input, this.chatbotHappyImage);
     }
 
-    private DialogBox getChatbotSadDialog(String input) {
+    private DialogBox getSadChatbotDialog(String input) {
         return DialogBox.getChatbotDialog(input, this.chatbotSadImage);
     }
 
@@ -237,8 +228,8 @@ public class MainWindow {
                         -> previousResponse + System.lineSeparator() + nextResponse)
                 .orElse("");
         DialogBox dialogBox = hasFaultInApp
-                ? this.getChatbotSadDialog(finalResponse)
-                : this.getChatbotAnnoyedDialog(finalResponse);
+                ? this.getSadChatbotDialog(finalResponse)
+                : this.getAnnoyedChatbotDialog(finalResponse);
         this.dialogContainer.getChildren().addAll(dialogBox);
     }
 
@@ -250,12 +241,6 @@ public class MainWindow {
         pauseTransition.play();
     }
 
-    /**
-     * Creates two dialog boxes, one echoing user input and
-     * the other containing the chatbot's reply and then appends
-     * them to the dialog container. Clears the user input
-     * after processing
-     */
     @FXML
     private void handleUserInput() {
         String input = this.userInput.getText();
