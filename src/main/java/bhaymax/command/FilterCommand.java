@@ -21,7 +21,7 @@ public class FilterCommand extends Command {
      * @param filterOption a {@link FilterOption} enum value indicating the type of
      *                  filter (i.e., before the date, after the date, exactly on
      *                  the date, include/exclude time)
-     * @see bhaymax.parser.Parser#DATE_FORMAT
+     * @see bhaymax.parser.Parser#DATE_INPUT_FORMAT
      * @see bhaymax.parser.Parser#DATETIME_INPUT_FORMAT
      */
     public FilterCommand(String dateTime, FilterOption filterOption) {

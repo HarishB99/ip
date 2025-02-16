@@ -112,7 +112,7 @@ public class TaskList {
      *                  with/without time)
      * @param mainWindowController the {@link MainWindow} controller object - used to
      *                             display dialog boxes with the matched tasks in this list
-     * @see bhaymax.parser.Parser#DATE_FORMAT
+     * @see bhaymax.parser.Parser#DATE_INPUT_FORMAT
      * @see bhaymax.parser.Parser#DATETIME_INPUT_FORMAT
      */
     public void showTasksFilteredByDate(
