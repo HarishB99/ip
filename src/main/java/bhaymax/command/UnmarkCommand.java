@@ -1,8 +1,7 @@
 package bhaymax.command;
 
-import java.io.IOException;
-
 import bhaymax.controller.MainWindow;
+import bhaymax.exception.file.FileWriteException;
 import bhaymax.storage.Storage;
 import bhaymax.task.Task;
 import bhaymax.task.TaskList;
@@ -11,6 +10,10 @@ import bhaymax.task.TaskList;
  * Represents a {@code unmark} command
  */
 public class UnmarkCommand extends Command {
+    private static final String RESPONSE_FORMAT = "Noted. Marking:" + System.lineSeparator()
+                + "  %s" + System.lineSeparator()
+                + "as incomplete.";
+
     private final int taskNumber;
 
     /**
@@ -23,13 +26,11 @@ public class UnmarkCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws FileWriteException {
         Task markedTask = taskList.markTaskAsUndone(this.taskNumber);
         storage.saveTasks(taskList);
-        String response = "Noted. Marking:" + System.lineSeparator()
-                + "  " + markedTask + System.lineSeparator()
-                + "as incomplete.";
-        mainWindowController.showResponse(response);
+        String response = String.format(RESPONSE_FORMAT, markedTask);
+        mainWindowController.showNormalResponse(response);
     }
 
     @Override

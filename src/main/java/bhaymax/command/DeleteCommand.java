@@ -1,8 +1,7 @@
 package bhaymax.command;
 
-import java.io.IOException;
-
 import bhaymax.controller.MainWindow;
+import bhaymax.exception.file.FileWriteException;
 import bhaymax.storage.Storage;
 import bhaymax.task.Task;
 import bhaymax.task.TaskList;
@@ -12,10 +11,15 @@ import bhaymax.util.Pair;
  * Represents a {@code delete} command
  */
 public class DeleteCommand extends Command {
+    private static final String RESPONSE_FORMAT = "Noted. Removing: " + System.lineSeparator()
+                + "  %s" + System.lineSeparator()
+                + "from your list of tasks." + System.lineSeparator();
+    private static final String RESPONSE_FORMAT_NONEMPTY_TASK_LIST = "You now have %d task%s to complete.";
+
     private final int taskNumber;
 
     /**
-     * Sets up the task number of the task to be deleted
+     * Constructor for {@code DeleteCommand}
      *
      * @param taskNumber the index number of the task to be deleted
      */
@@ -24,22 +28,22 @@ public class DeleteCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws FileWriteException {
         Pair<Task, Integer> pair = taskList.removeTask(this.taskNumber);
-        Task deletedTask = pair.t();
-        int numberOfRemainingTasks = pair.u();
+        Task deletedTask = pair.first();
+        int numberOfRemainingTasks = pair.second();
         storage.saveTasks(taskList);
-        String response = "Noted. Removing: " + System.lineSeparator()
-                + "  " + deletedTask + System.lineSeparator()
-                + "from your list of tasks." + System.lineSeparator();
+        String response = String.format(RESPONSE_FORMAT, deletedTask);
         if (numberOfRemainingTasks == 0) {
-            mainWindowController.showResponse(response);
-            mainWindowController.showExcitedResponse("Congratulations! You don't have any outstanding tasks!");
+            mainWindowController.showNormalResponse(response);
+            mainWindowController.showExcitedResponse(TaskList.TASK_LIST_EMPTY);
             return;
         }
-        response += "You now have " + numberOfRemainingTasks + " task"
-                + (numberOfRemainingTasks == 1 ? "" : "s") + " to complete.";
-        mainWindowController.showResponse(response);
+        response += String.format(
+                RESPONSE_FORMAT_NONEMPTY_TASK_LIST,
+                numberOfRemainingTasks,
+                numberOfRemainingTasks == 1 ? "" : "s");
+        mainWindowController.showNormalResponse(response);
     }
 
     @Override

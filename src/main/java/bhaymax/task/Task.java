@@ -5,12 +5,14 @@ package bhaymax.task;
  */
 public class Task {
     public static final String DELIMITER = "|";
+    public static final String SERIAL_FORMAT = "%s " + Task.DELIMITER + " %d " + Task.DELIMITER + " %s";
+
     protected String description;
     protected String type;
     protected boolean isDone;
 
     /**
-     * Sets up the type and description of the task
+     * Constructor for Task object
      *
      * @param type the type of the task
      * @param description the description of the task
@@ -34,18 +36,12 @@ public class Task {
     }
 
     /**
-     * Returns a {@code String} representation
-     * of the {@code Task} object suitable for saving to
-     * a file
+     * Returns a {@code String} representation of the {@code Task} object, suitable for saving to a file
      *
-     * @return the {@code String} representation of this object,
-     *         suitable for saving to a file
+     * @return the {@code String} representation of this object, suitable for saving to a file
      */
     public String serialise() {
-        return this.type + " " + Task.DELIMITER + " "
-                + (this.isDone ? "1" : "0")
-                + " " + Task.DELIMITER + " "
-                + this.description;
+        return String.format(Task.SERIAL_FORMAT, this.type, (this.isDone ? 1 : 0), this.description);
     }
 
     public boolean hasSearchTerm(String searchTerm) {
@@ -54,7 +50,6 @@ public class Task {
 
     @Override
     public String toString() {
-        return "[" + this.getStatusIcon() + "] "
-                + this.description;
+        return "[" + this.getStatusIcon() + "] " + this.description;
     }
 }

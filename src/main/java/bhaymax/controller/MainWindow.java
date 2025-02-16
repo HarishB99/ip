@@ -1,14 +1,17 @@
 package bhaymax.controller;
 
-import java.io.IOException;
 import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 import bhaymax.command.Command;
-import bhaymax.exception.InvalidCommandException;
-import bhaymax.exception.InvalidCommandFormatException;
-import bhaymax.exception.InvalidFileFormatException;
+import bhaymax.exception.UnknownException;
+import bhaymax.exception.command.InvalidCommandFormatException;
+import bhaymax.exception.command.InvalidDateFormatInCommandException;
+import bhaymax.exception.file.FileWriteException;
+import bhaymax.exception.file.InvalidFileFormatException;
+import bhaymax.main.ImageFilePath;
 import bhaymax.parser.Parser;
 import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
@@ -26,6 +29,15 @@ import javafx.util.Duration;
  * A controller for the MainWindow
  */
 public class MainWindow {
+    // Specified in milliseconds
+    private static final int PAUSE_DURATION_ON_EXIT = 650;
+
+    private static final String MESSAGE_WELCOME_FORMAT = "Hello! I'm %s, your personal chatbot and task list manager!";
+    private static final String MESSAGE_GREETING = "Hello! How can I help you today?";
+    private static final String MESSAGE_FAREWELL = "Bye. Hope to see you again soon!";
+    private static final String MESSAGE_CHAT_BOX_CLEARED = "I have cleared the chat. Is there anything else "
+            + "you want me to do?";
+
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -36,41 +48,27 @@ public class MainWindow {
     private Button sendButton;
 
     private final Image userImage = new Image(
-            Objects.requireNonNull(
-                    this.getClass().getResourceAsStream(
-                            "/images/bhaymax_user.png")));
+            Objects.requireNonNull(this.getClass().getResourceAsStream(ImageFilePath.USER.toString())));
     private final Image chatbotNormalImage = new Image(
-            Objects.requireNonNull(
-                    this.getClass().getResourceAsStream(
-                            "/images/bhaymax_chatbot_normal.png")));
+            Objects.requireNonNull(this.getClass().getResourceAsStream(ImageFilePath.CHATBOT_NORMAL.toString())));
     private final Image chatbotAnnoyedImage = new Image(
-            Objects.requireNonNull(
-                    this.getClass().getResourceAsStream(
-                            "/images/bhaymax_chatbot_annoyed.png")));
+            Objects.requireNonNull(this.getClass().getResourceAsStream(ImageFilePath.CHATBOT_ANNOYED.toString())));
     private final Image chatbotExcitedImage = new Image(
-            Objects.requireNonNull(
-                    this.getClass().getResourceAsStream(
-                            "/images/bhaymax_chatbot_excited.png")));
+            Objects.requireNonNull(this.getClass().getResourceAsStream(ImageFilePath.CHATBOT_EXCITED.toString())));
     private final Image chatbotHappyImage = new Image(
-            Objects.requireNonNull(
-                    this.getClass().getResourceAsStream(
-                            "/images/bhaymax_chatbot_happy.png")));
+            Objects.requireNonNull(this.getClass().getResourceAsStream(ImageFilePath.CHATBOT_HAPPY.toString())));
     private final Image chatbotSadImage = new Image(
-            Objects.requireNonNull(
-                    this.getClass().getResourceAsStream(
-                            "/images/bhaymax_chatbot_sad.png")));
+            Objects.requireNonNull(this.getClass().getResourceAsStream(ImageFilePath.CHATBOT_SAD.toString())));
 
     private TaskList tasks;
     private Storage storage;
-    private String appName;
 
     /**
-     * Binds the scroll pane's vertical value to the height of the dialog container it holds
+     * Binds the scroll pane's height to the height of the dialog container it holds
      */
     @FXML
     public void initialize() {
-        this.scrollPane.vvalueProperty().bind(
-                this.dialogContainer.heightProperty());
+        this.scrollPane.vvalueProperty().bind(this.dialogContainer.heightProperty());
     }
 
     /**
@@ -83,15 +81,6 @@ public class MainWindow {
     }
 
     /**
-     * Sets the name of the app
-     *
-     * @param appName the name of the app
-     */
-    public void setAppName(String appName) {
-        this.appName = appName;
-    }
-
-    /**
      * Sets the storage object
      *
      * @param storage the {@link Storage} object
@@ -101,136 +90,13 @@ public class MainWindow {
     }
 
     /**
-     * Shows an error message when {@code InvalidCommandException} occurs
-     *
-     * @param exception An {@code InvalidCommandException} object
-     */
-    private LinkedList<String> getErrorResponses(InvalidCommandException exception) {
-        LinkedList<String> responses = new LinkedList<String>();
-        responses.add("[-] Invalid command syntax provided:");
-        responses.add("[-]   " + exception.getMessage());
-        responses.add("[-] Try again.");
-        return responses;
-    }
-
-    /**
-     * Shows an error message when {@code InvalidCommandFormatException} occurs
-     *
-     * @param exception An {@code InvalidCommandFormatException} object
-     */
-    private LinkedList<String> getErrorResponses(InvalidCommandFormatException exception) {
-        LinkedList<String> responses = new LinkedList<String>();
-        responses.add("[-] Invalid command syntax provided:");
-        responses.add("[-]   " + exception.getMessage());
-        responses.add("[-] Try again.");
-        return responses;
-    }
-
-    /**
-     * Shows an error message when {@code InvalidFileFormatException} occurs
-     *
-     * @param exception An {@code InvalidFileFormatException} object
-     */
-    private LinkedList<String> getErrorResponses(InvalidFileFormatException exception) {
-        LinkedList<String> responses = new LinkedList<String>();
-        responses.add("[-] Format of task file is incorrect:");
-        responses.add("[-]   " + exception.getMessage());
-        responses.add("[-] Please check your task file and try again");
-        return responses;
-    }
-
-    /**
-     * Shows an error message when {@code NumberFormatException} occurs
-     *
-     * @param ignored An {@code NumberFormatException} object
-     */
-    private LinkedList<String> getErrorResponses(NumberFormatException ignored) {
-        LinkedList<String> responses = new LinkedList<String>();
-        responses.add("[-] Invalid command syntax provided:");
-        responses.add("[-]   Task number should be numerical");
-        responses.add("[-] Try again.");
-        return responses;
-    }
-
-    /**
-     * Shows an error message when {@code IOException} occurs
-     *
-     * @param exception An {@code IOException} object
-     */
-    private LinkedList<String> getErrorResponses(IOException exception) {
-        LinkedList<String> responses = new LinkedList<String>();
-        responses.add("[-] Unable to save task to file:");
-        responses.add("[-]   " + exception.getMessage());
-        return responses;
-    }
-
-    /**
-     * Shows an error message when {@code DateTimeParseException} occurs
-     *
-     * @param ignored An {@code DateTimeParseException} object
-     */
-    private LinkedList<String> getErrorResponses(DateTimeParseException ignored) {
-        LinkedList<String> responses = new LinkedList<String>();
-        responses.add("[-] Task format is incorrect:");
-        responses.add("[-]   Wrong date/time format");
-        responses.add("[-] Try again.");
-        return responses;
-    }
-
-    /**
-     * Prints the given message as an error message. (meant to be used when a generic {@code Exception} occurs)
-     *
-     * @param message The error message to be printed
-     */
-    private LinkedList<String> getErrorResponses(String message) {
-        LinkedList<String> responses = new LinkedList<String>();
-        responses.add("[-] An unknown error occurred:");
-        responses.add("[-]   " + message);
-        responses.add("[-] Please try again later");
-        responses.add("[-] Alternatively, you can try restarting the app");
-        return responses;
-    }
-
-    private void displayErrorResponses(LinkedList<String> responses) {
-        String finalResponse = responses.stream()
-                .reduce((previousResponse, nextResponse)
-                        -> previousResponse + System.lineSeparator() + nextResponse)
-                .orElse("");
-        this.dialogContainer.getChildren().addAll(this.getChatbotAnnoyedDialog(finalResponse));
-    }
-
-    private DialogBox getUserDialog(String input) {
-        return DialogBox.getUserDialog(input, this.userImage);
-    }
-
-    private DialogBox getChatbotNormalDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotNormalImage);
-    }
-
-    private DialogBox getChatbotAnnoyedDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotAnnoyedImage);
-    }
-
-    private DialogBox getChatbotExcitedDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotExcitedImage);
-    }
-
-    private DialogBox getChatbotHappyDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotHappyImage);
-    }
-
-    private DialogBox getChatbotSadDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotSadImage);
-    }
-
-    /**
      * Shows a dialog box that is meant to be shown to the user at the start of the app
      */
-    public void showWelcomeDialogBox() {
+    public void showWelcomeDialogBox(String appName) {
         this.dialogContainer.getChildren().addAll(
-                this.getChatbotNormalDialog("Hello! I'm " + this.appName
-                        + ", your personal chatbot and task list manager!"),
-                this.getChatbotExcitedDialog("What can I do for you?")
+                this.getNormalChatbotDialog(
+                        String.format(MainWindow.MESSAGE_WELCOME_FORMAT, appName)),
+                this.getExcitedChatbotDialog(MainWindow.MESSAGE_GREETING)
         );
     }
 
@@ -239,7 +105,7 @@ public class MainWindow {
      */
     public void showGreetingDialogBox() {
         this.dialogContainer.getChildren().addAll(
-                this.getChatbotExcitedDialog("Hello! How can I help you today?")
+                this.getExcitedChatbotDialog(MainWindow.MESSAGE_GREETING)
         );
     }
 
@@ -248,7 +114,7 @@ public class MainWindow {
      */
     public void showFarewellDialogBox() {
         this.dialogContainer.getChildren().addAll(
-                this.getChatbotHappyDialog("Bye. Hope to see you again soon!"));
+                this.getHappyChatbotDialog(MainWindow.MESSAGE_FAREWELL));
     }
 
     /**
@@ -257,8 +123,8 @@ public class MainWindow {
      * @param response A message to be shown to the user
      *                 using a dialog box from the chatbot
      */
-    public void showResponse(String response) {
-        this.dialogContainer.getChildren().addAll(this.getChatbotNormalDialog(response));
+    public void showNormalResponse(String response) {
+        this.dialogContainer.getChildren().addAll(this.getNormalChatbotDialog(response));
     }
 
     /**
@@ -268,7 +134,7 @@ public class MainWindow {
      *                 using a dialog box from the chatbot
      */
     public void showExcitedResponse(String response) {
-        this.dialogContainer.getChildren().addAll(this.getChatbotExcitedDialog(response));
+        this.dialogContainer.getChildren().addAll(this.getExcitedChatbotDialog(response));
     }
 
     /**
@@ -278,7 +144,7 @@ public class MainWindow {
      *                 using a dialog box from the chatbot
      */
     public void showSadResponse(String response) {
-        this.dialogContainer.getChildren().addAll(this.getChatbotSadDialog(response));
+        this.dialogContainer.getChildren().addAll(this.getSadChatbotDialog(response));
     }
 
     /**
@@ -287,16 +153,7 @@ public class MainWindow {
      * @param exception an {@link InvalidFileFormatException} exception
      */
     public void showInvalidFileFormatDialogBox(InvalidFileFormatException exception) {
-        this.displayErrorResponses(this.getErrorResponses(exception));
-    }
-
-    /**
-     * Shows the appropriate response for when DateTimeParseException occurs
-     *
-     * @param exception an {@link DateTimeParseException} exception
-     */
-    public void showDateTimeParseExceptionDialogBox(DateTimeParseException exception) {
-        this.displayErrorResponses(this.getErrorResponses(exception));
+        this.displayErrorResponses(List.<String>of(exception.getMessage()), false);
     }
 
     /**
@@ -308,24 +165,82 @@ public class MainWindow {
             return;
         }
         this.dialogContainer.getChildren().addAll(
-                this.getChatbotNormalDialog(
-                        "I have cleared the chat. Is there anything else you want me to do?"));
+                this.getNormalChatbotDialog(MainWindow.MESSAGE_CHAT_BOX_CLEARED));
     }
 
     /**
-     * Disables the textfield and button in the UI
+     * Disables the text field and button in the UI
      */
     public void disableInputs() {
         this.userInput.setDisable(true);
         this.sendButton.setDisable(true);
     }
 
+    private DialogBox getUserDialog(String input) {
+        return DialogBox.getUserDialog(input, this.userImage);
+    }
+
+    private DialogBox getNormalChatbotDialog(String input) {
+        return DialogBox.getChatbotDialog(input, this.chatbotNormalImage);
+    }
+
+    private DialogBox getAnnoyedChatbotDialog(String input) {
+        return DialogBox.getChatbotDialog(input, this.chatbotAnnoyedImage);
+    }
+
+    private DialogBox getExcitedChatbotDialog(String input) {
+        return DialogBox.getChatbotDialog(input, this.chatbotExcitedImage);
+    }
+
+    private DialogBox getHappyChatbotDialog(String input) {
+        return DialogBox.getChatbotDialog(input, this.chatbotHappyImage);
+    }
+
+    private DialogBox getSadChatbotDialog(String input) {
+        return DialogBox.getChatbotDialog(input, this.chatbotSadImage);
+    }
+
     /**
-     * Creates two dialog boxes, one echoing user input and
-     * the other containing Bhaymax's reply and then appends
-     * them to the dialog container. Clears the user input
-     * after processing
+     * Shows an error message when {@code DateTimeParseException} occurs
+     *
+     * @param ignored An {@code DateTimeParseException} object
      */
+    private LinkedList<String> getErrorResponses(DateTimeParseException ignored) {
+        LinkedList<String> responses = new LinkedList<String>();
+        responses.add(new InvalidDateFormatInCommandException().getMessage());
+        return responses;
+    }
+
+    /**
+     * Prints the given message as an error message. (meant to be used when a generic {@code Exception} occurs)
+     *
+     * @param message The error message to be printed
+     */
+    private LinkedList<String> getErrorResponses(String message) {
+        LinkedList<String> responses = new LinkedList<String>();
+        responses.add(new UnknownException(message).getMessage());
+        return responses;
+    }
+
+    private void displayErrorResponses(List<String> responses, boolean hasFaultInApp) {
+        String finalResponse = responses.stream()
+                .reduce((previousResponse, nextResponse)
+                        -> previousResponse + System.lineSeparator() + nextResponse)
+                .orElse("");
+        DialogBox dialogBox = hasFaultInApp
+                ? this.getSadChatbotDialog(finalResponse)
+                : this.getAnnoyedChatbotDialog(finalResponse);
+        this.dialogContainer.getChildren().addAll(dialogBox);
+    }
+
+    private void closeApp() {
+        this.disableInputs();
+        PauseTransition pauseTransition = new PauseTransition(
+                Duration.millis(MainWindow.PAUSE_DURATION_ON_EXIT));
+        pauseTransition.setOnFinished(event -> Platform.exit());
+        pauseTransition.play();
+    }
+
     @FXML
     private void handleUserInput() {
         String input = this.userInput.getText();
@@ -334,23 +249,14 @@ public class MainWindow {
             Command command = Parser.parse(input, this.tasks);
             command.execute(this.tasks, this, this.storage);
             if (command.isExit()) {
-                this.disableInputs();
-                PauseTransition pauseTransition = new PauseTransition(Duration.millis(650));
-                pauseTransition.setOnFinished(event -> Platform.exit());
-                pauseTransition.play();
+                this.closeApp();
             }
-        } catch (InvalidCommandFormatException e) {
-            this.displayErrorResponses(this.getErrorResponses(e));
-        } catch (InvalidCommandException e) {
-            this.displayErrorResponses(this.getErrorResponses(e));
+        } catch (InvalidCommandFormatException | FileWriteException e) {
+            this.displayErrorResponses(List.<String>of(e.getMessage()), false);
         } catch (DateTimeParseException e) {
-            this.displayErrorResponses(this.getErrorResponses(e));
-        } catch (NumberFormatException e) {
-            this.displayErrorResponses(this.getErrorResponses(e));
-        } catch (IOException e) {
-            this.displayErrorResponses(this.getErrorResponses(e));
+            this.displayErrorResponses(this.getErrorResponses(e), false);
         } catch (Exception e) {
-            this.displayErrorResponses(this.getErrorResponses(e.getMessage()));
+            this.displayErrorResponses(this.getErrorResponses(e.getMessage()), true);
         } finally {
             this.userInput.clear();
         }

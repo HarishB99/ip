@@ -1,8 +1,7 @@
 package bhaymax.command;
 
-import java.io.IOException;
-
 import bhaymax.controller.MainWindow;
+import bhaymax.exception.file.FileWriteException;
 import bhaymax.storage.Storage;
 import bhaymax.task.Task;
 import bhaymax.task.TaskList;
@@ -11,6 +10,10 @@ import bhaymax.task.TaskList;
  * Represents a {@code mark} command
  */
 public class MarkCommand extends Command {
+    private static final String RESPONSE_FORMAT = "Congratulations on completing the task:" + System.lineSeparator()
+                + "  %s" + System.lineSeparator()
+                + "I have marked it as complete.";
+
     private final int taskNumber;
 
     /**
@@ -23,12 +26,10 @@ public class MarkCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws FileWriteException {
         Task markedTask = taskList.markTaskAsDone(this.taskNumber);
         storage.saveTasks(taskList);
-        String response = "Congratulations on completing the task:" + System.lineSeparator()
-                + "  " + markedTask + System.lineSeparator()
-                + "I have marked it as complete.";
+        String response = String.format(RESPONSE_FORMAT, markedTask);
         mainWindowController.showExcitedResponse(response);
     }
 

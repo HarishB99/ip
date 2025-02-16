@@ -1,13 +1,9 @@
 package bhaymax.command;
 
-import java.util.HashMap;
-
-import bhaymax.exception.InvalidCommandException;
+import bhaymax.exception.command.UnrecognisedCommandException;
 
 /**
- * Provides enumeration values representing
- * the valid commands a user is allowed to
- * enter
+ * Provides enumeration values representing the valid commands a user is allowed to enter
  */
 public enum CommandString {
     LIST("list"),
@@ -25,40 +21,26 @@ public enum CommandString {
     BYE("bye"),
     EXIT("exit");
 
-    private static final HashMap<String, CommandString> COMMAND_STRINGS = new HashMap<String, CommandString>();
-
-    static {
-        for (CommandString commandStringEnum : values()) {
-            COMMAND_STRINGS.put(
-                    commandStringEnum.command, commandStringEnum);
-        }
-    }
-
     private final String command;
 
     CommandString(String command) {
         this.command = command;
     }
 
-    public static boolean isValidCommandString(String commandString) {
-        return COMMAND_STRINGS.containsKey(commandString);
-    }
-
     /**
-     * Returns the {@link CommandString} value corresponding to
-     * the command string entered by the user
+     * Returns the {@link CommandString} value corresponding to the given command in {@code String}
      *
-     * @param commandString the command string entered by the user
+     * @param commandString the command string entered by the user, as a {@code String}
      * @return a {@link CommandString} value corresponding to the
      *         given command string, if the command string is a recognised one
-     * @throws InvalidCommandException If the command string provided is not recognised
+     * @throws UnrecognisedCommandException If the command string provided is not recognised
      */
-    public static CommandString valueOfCommandString(String commandString) throws InvalidCommandException {
-        for (CommandString commandStringEnum : values()) {
+    public static CommandString valueOfCommandString(String commandString) throws UnrecognisedCommandException {
+        for (CommandString commandStringEnum : CommandString.values()) {
             if (commandStringEnum.command.equals(commandString)) {
                 return commandStringEnum;
             }
         }
-        throw new InvalidCommandException();
+        throw new UnrecognisedCommandException(commandString);
     }
 }

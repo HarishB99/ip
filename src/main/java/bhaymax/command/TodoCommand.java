@@ -1,8 +1,7 @@
 package bhaymax.command;
 
-import java.io.IOException;
-
 import bhaymax.controller.MainWindow;
+import bhaymax.exception.file.FileWriteException;
 import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
 import bhaymax.task.Todo;
@@ -11,6 +10,11 @@ import bhaymax.task.Todo;
  * Represents a {@code todo} command
  */
 public class TodoCommand extends Command {
+    private static final String RESPONSE_FORMAT = "Noted. Adding: " + System.lineSeparator()
+            + "  %s" + System.lineSeparator()
+            + "to your to-do list." + System.lineSeparator()
+            + "You now have %d task%s to complete.";
+
     private final String taskDescription;
 
     /**
@@ -23,15 +27,16 @@ public class TodoCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws FileWriteException {
         Todo newTodoTask = new Todo(this.taskDescription);
         int taskListCount = taskList.addTask(newTodoTask);
         storage.saveTasks(taskList);
-        String response = "Noted. Adding: " + System.lineSeparator()
-                + "  " + newTodoTask + System.lineSeparator()
-                + "to your to-do list." + System.lineSeparator()
-                + "You now have " + taskListCount + " task" + (taskListCount == 1 ? "" : "s") + " to complete.";
-        mainWindowController.showResponse(response);
+        String response = String.format(
+                RESPONSE_FORMAT,
+                newTodoTask,
+                taskListCount,
+                taskListCount == 1 ? "" : "s");
+        mainWindowController.showNormalResponse(response);
     }
 
     @Override

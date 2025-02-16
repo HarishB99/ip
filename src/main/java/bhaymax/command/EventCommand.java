@@ -1,8 +1,7 @@
 package bhaymax.command;
 
-import java.io.IOException;
-
 import bhaymax.controller.MainWindow;
+import bhaymax.exception.file.FileWriteException;
 import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
 import bhaymax.task.timesensitive.Event;
@@ -11,12 +10,17 @@ import bhaymax.task.timesensitive.Event;
  * Represents a {@code event} command
  */
 public class EventCommand extends Command {
+    private static final String RESPONSE_FORMAT = "Noted. Adding: " + System.lineSeparator()
+            + "  %s" + System.lineSeparator()
+            + "to your list of events." + System.lineSeparator()
+            + "You now have %d task%s to complete.";
+
     private final String taskDescription;
     private final String start;
     private final String end;
 
     /**
-     * Sets up the description, the start date with time and the end date with time of the event task to be created
+     * Constructor for {@code EventCommand}
      *
      * @param taskDescription the description of the event task
      * @param start the date and time at which the event will start, as a {@code String}
@@ -30,15 +34,16 @@ public class EventCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws IOException {
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws FileWriteException {
         Event newEvent = new Event(this.taskDescription, this.start, this.end);
         int taskListCount = taskList.addTask(newEvent);
         storage.saveTasks(taskList);
-        String response = "Noted. Adding: " + System.lineSeparator()
-                + "  " + newEvent + System.lineSeparator()
-                + "to your list of events." + System.lineSeparator()
-                + "You now have " + taskListCount + " task" + (taskListCount == 1 ? "" : "s") + " to complete.";
-        mainWindowController.showResponse(response);
+        String response = String.format(
+                RESPONSE_FORMAT,
+                newEvent,
+                taskListCount,
+                taskListCount == 1 ? "" : "s");
+        mainWindowController.showNormalResponse(response);
     }
 
     @Override

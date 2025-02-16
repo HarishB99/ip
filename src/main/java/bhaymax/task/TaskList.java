@@ -2,7 +2,7 @@ package bhaymax.task;
 
 import java.util.LinkedList;
 
-import bhaymax.command.FilterOpt;
+import bhaymax.command.FilterOption;
 import bhaymax.controller.MainWindow;
 import bhaymax.task.timesensitive.TimeSensitiveTask;
 import bhaymax.util.Pair;
@@ -11,6 +11,12 @@ import bhaymax.util.Pair;
  * Represents a list of tasks
  */
 public class TaskList {
+    public static final String TASK_LIST_EMPTY = "Congratulations! You don't have any outstanding tasks!";
+    public static final String TASK_LIST_BULLET_POINT_SEPARATOR = ". ";
+
+    public static final String NO_MATCH_FILTER = "There are no tasks in your list for me to filter.";
+    public static final String NO_MATCH_SEARCH = "There are no tasks that match the search term you provided.";
+
     private final LinkedList<Task> tasks;
 
     public TaskList() {
@@ -22,8 +28,7 @@ public class TaskList {
      * (in other words, to see if a task with the given index number exists)
      *
      * @param index the index number of a task
-     * @return a boolean value indicating if the index number
-     *         is valid
+     * @return a boolean value indicating if the index number is valid
      */
     public boolean isValidIndex(int index) {
         return index >= 0 && index < this.tasks.size();
@@ -33,8 +38,7 @@ public class TaskList {
      * Adds a task to the list of tasks
      *
      * @param task an object of {@link Task} type to be added
-     * @return the number of tasks in the list after adding
-     *         the new task
+     * @return the number of tasks in the list after adding the new task
      */
     public int addTask(Task task) {
         this.tasks.add(task);
@@ -82,43 +86,43 @@ public class TaskList {
     }
 
     /**
-     * Shows the tasks in this list as dialog boxes from the chatbot
+     * Shows the tasks in this list as dialog boxes in the chatbot
      *
      * @param mainWindowController the {@link MainWindow} controller object - used to
      *                             display dialog boxes with the tasks in this list
      */
     public void showTasks(MainWindow mainWindowController) {
         this.tasks.stream()
-                .map(task -> (tasks.indexOf(task) + 1) + ". " + task)
+                .map(task -> (tasks.indexOf(task) + 1) + TaskList.TASK_LIST_BULLET_POINT_SEPARATOR + task)
                 .reduce((previousTask, nextTask)
                         -> previousTask + System.lineSeparator() + nextTask)
-                .ifPresentOrElse(mainWindowController::showResponse, () -> mainWindowController
-                        .showExcitedResponse("Congratulations! You don't have any outstanding tasks!"));
+                .ifPresentOrElse(mainWindowController::showNormalResponse, () -> mainWindowController
+                        .showExcitedResponse(TaskList.TASK_LIST_EMPTY));
     }
 
     /**
-     * Displays the tasks in the list (in dialog boxes) that match the provided date (and optionally time) frame
+     * Displays the tasks in the list (as dialog boxes) that match the provided date (and optionally time) frame
      *
      * @param dateTime the date and/or time to filter the list by
-     * @param filterOpt the nature of the filter (i.e., show tasks
-     *                  before the date, after the date, exactly on the date,
-     *                  with/without time)
+     * @param filterOption the nature of the filter (i.e., show tasks
+     *                     before the date, after the date, exactly on the date,
+     *                     with/without time)
      * @param mainWindowController the {@link MainWindow} controller object - used to
      *                             display dialog boxes with the matched tasks in this list
-     * @see bhaymax.parser.Parser#DATE_FORMAT
+     * @see bhaymax.parser.Parser#DATE_INPUT_FORMAT
      * @see bhaymax.parser.Parser#DATETIME_INPUT_FORMAT
      */
     public void showTasksFilteredByDate(
-            String dateTime, FilterOpt filterOpt, MainWindow mainWindowController) {
+            String dateTime, FilterOption filterOption, MainWindow mainWindowController) {
         String response = this.tasks.stream()
                 .filter(task -> task instanceof TimeSensitiveTask)
                 .filter(timeSensitiveTask -> (
-                        (TimeSensitiveTask) timeSensitiveTask).hasDateMatchingFilter(dateTime, filterOpt))
-                .map(task -> (this.tasks.indexOf(task) + 1) + ". " + task)
+                        (TimeSensitiveTask) timeSensitiveTask).hasDateMatchingFilter(dateTime, filterOption))
+                .map(task -> (this.tasks.indexOf(task) + 1) + TaskList.TASK_LIST_BULLET_POINT_SEPARATOR + task)
                 .reduce((previousTask, nextTask)
                         -> previousTask + System.lineSeparator() + nextTask)
-                .orElse("There are no tasks in your list for me to filter.");
-        mainWindowController.showResponse(response);
+                .orElse(TaskList.NO_MATCH_FILTER);
+        mainWindowController.showNormalResponse(response);
     }
 
     /**
@@ -131,19 +135,17 @@ public class TaskList {
     public void showTasksContainingSearchTerm(String searchTerm, MainWindow mainWindowController) {
         String response = this.tasks.stream()
                 .filter(task -> task.hasSearchTerm(searchTerm))
-                .map(task -> (this.tasks.indexOf(task) + 1) + ". " + task)
+                .map(task -> (this.tasks.indexOf(task) + 1) + TaskList.TASK_LIST_BULLET_POINT_SEPARATOR + task)
                 .reduce((previousTask, nextTask)
                         -> previousTask + System.lineSeparator() + nextTask)
-                .orElse("There are no tasks that match the search term you provided.");
-        mainWindowController.showResponse(response);
+                .orElse(TaskList.NO_MATCH_SEARCH);
+        mainWindowController.showNormalResponse(response);
     }
 
     /**
      * Returns a {@code String} representation of the {@code TaskList} object that is suitable for saving to a file
      *
-     * @return the {@code String} representation of the
-     *         {@code TaskList} object that is suitable
-     *         for saving to a file
+     * @return the {@code String} representation of the {@code TaskList} object that is suitable for saving to a file
      */
     public String serialise() {
         return this.tasks.stream()

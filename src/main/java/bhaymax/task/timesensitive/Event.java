@@ -4,7 +4,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Scanner;
+import java.util.regex.MatchResult;
 
+import bhaymax.exception.file.InvalidTaskStatusException;
+import bhaymax.exception.file.TaskDeSerialisationException;
+import bhaymax.exception.file.WrongTaskFormatException;
 import bhaymax.parser.Parser;
 import bhaymax.task.Task;
 
@@ -13,6 +18,28 @@ import bhaymax.task.Task;
  */
 public class Event extends TimeSensitiveTask {
     public static final String TYPE = "E";
+    public static final String NAME = "Event";
+
+    public static final String FLAG_START_DATE = "/from";
+    public static final String FLAG_END_DATE = "/to";
+
+    // For construction of exception message
+    public static final String START_DATE_INPUT_FORMAT = "{start date: " + Parser.DATETIME_INPUT_FORMAT + "}";
+    public static final String END_DATE_INPUT_FORMAT = "{end date: " + Parser.DATETIME_INPUT_FORMAT + "}";
+
+    private static final String SERIALISATION_FORMAT = "%s " + Task.DELIMITER + " %s " + Task.DELIMITER + " %s";
+    private static final String DE_SERIALISATION_FORMAT = "^E \\| ([0-1]) \\| (.+)"
+            + " \\| (\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2}) \\| (\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2})$";
+
+    private static final int EXPECTED_NUMBER_OF_REGEX_GROUPS = 4;
+    private static final int REGEX_GROUP_STATUS = 1;
+    private static final int REGEX_GROUP_DESCRIPTION = 2;
+    private static final int REGEX_GROUP_START_DATE = 3;
+    private static final int REGEX_GROUP_END_DATE = 4;
+
+    private static final String EVENT_COMPLETE = "1";
+    private static final String EVENT_INCOMPLETE = "0";
+
     protected LocalDateTime start;
     protected LocalDateTime end;
 
@@ -30,45 +57,92 @@ public class Event extends TimeSensitiveTask {
     public Event(String description, String start, String end)
             throws DateTimeParseException {
         super(Event.TYPE, description);
-        this.start = LocalDateTime.parse(
-                start, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
-        this.end = LocalDateTime.parse(
-                end, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
+        this.start = LocalDateTime.parse(start, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
+        this.end = LocalDateTime.parse(end, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
     }
 
     @Override
     public String serialise() {
-        return super.serialise() + " " + Task.DELIMITER + " "
-                + this.getStartDateInInputFormat()
-                + " " + Task.DELIMITER + " "
-                + this.getEndDateInInputFormat();
+        return String.format(Event.SERIALISATION_FORMAT,
+                super.serialise(), this.getStartDateInInputFormat(), this.getEndDateInInputFormat());
+    }
+
+    /**
+     * Parses a serialised event (provided as a {@code String})
+     * and returns the corresponding {@code Event} object
+     *
+     * @param serialisedEvent the serialised event, as a {@code String}
+     * @return a {@code Event} object
+     */
+    public static Event deSerialise(int lineNumber, String serialisedEvent) throws TaskDeSerialisationException {
+        MatchResult matchResult;
+
+        try {
+            Scanner sc = new Scanner(serialisedEvent);
+            sc.findInLine(Event.DE_SERIALISATION_FORMAT);
+            matchResult = sc.match();
+            sc.close();
+        } catch (IllegalStateException e) {
+            throw new WrongTaskFormatException(
+                    lineNumber, Event.NAME, Event.TYPE,
+                    Event.START_DATE_INPUT_FORMAT, Event.END_DATE_INPUT_FORMAT);
+        }
+
+        String eventStatus = matchResult.group(Event.REGEX_GROUP_STATUS);
+        String eventDescription = matchResult.group(Event.REGEX_GROUP_DESCRIPTION);
+        String eventStart = matchResult.group(Event.REGEX_GROUP_START_DATE);
+        String eventEnd = matchResult.group(Event.REGEX_GROUP_END_DATE);
+
+        Event event;
+        try {
+            event = new Event(eventDescription, eventStart, eventEnd);
+        } catch (DateTimeParseException e) {
+            throw new WrongTaskFormatException(
+                    lineNumber, Event.NAME, Event.TYPE,
+                    Event.START_DATE_INPUT_FORMAT, Event.END_DATE_INPUT_FORMAT);
+        }
+
+        switch (eventStatus) {
+        case Event.EVENT_COMPLETE:
+            event.markAsDone();
+            break;
+        case Event.EVENT_INCOMPLETE:
+            event.markAsUndone();
+            break;
+        default:
+            throw new InvalidTaskStatusException(lineNumber);
+        }
+
+        return event;
     }
 
     private String getStartDateInInputFormat() {
-        return this.start.format(
-                DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
+        return this.start.format(DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
     }
 
     private String getStartDateInOutputFormat() {
-        return this.start.format(
-                DateTimeFormatter.ofPattern(Parser.DATETIME_OUTPUT_FORMAT));
+        return this.start.format(DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
     }
 
     private String getEndDateInInputFormat() {
-        return this.end.format(
-                DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
+        return this.end.format(DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
     }
 
     private String getEndDateInOutputFormat() {
-        return this.end.format(
-                DateTimeFormatter.ofPattern(Parser.DATETIME_OUTPUT_FORMAT));
+        return this.end.format(DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
     }
 
     @Override
     boolean isBeforeDate(LocalDate date) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
-        LocalDate startDate = LocalDate.parse(this.start.format(dateFormatter), dateFormatter);
-        LocalDate endDate = LocalDate.parse(this.end.format(dateFormatter), dateFormatter);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_INPUT_FORMAT);
+        LocalDate startDate = LocalDate.parse(
+                this.start.format(dateFormatter),
+                dateFormatter
+        );
+        LocalDate endDate = LocalDate.parse(
+                this.end.format(dateFormatter),
+                dateFormatter
+        );
         return endDate.isBefore(date)
                 || (startDate.isBefore(date) && endDate.isAfter(date));
     }
@@ -81,7 +155,7 @@ public class Event extends TimeSensitiveTask {
 
     @Override
     boolean isAfterDate(LocalDate date) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_INPUT_FORMAT);
         LocalDate startDate = LocalDate.parse(this.start.format(dateFormatter), dateFormatter);
         LocalDate endDate = LocalDate.parse(this.end.format(dateFormatter), dateFormatter);
         return startDate.isAfter(date)
@@ -96,7 +170,7 @@ public class Event extends TimeSensitiveTask {
 
     @Override
     boolean isOnDate(LocalDate date) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_FORMAT);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Parser.DATE_INPUT_FORMAT);
         LocalDate startDate = LocalDate.parse(
                 this.start.format(dateFormatter), dateFormatter);
         LocalDate endDate = LocalDate.parse(
