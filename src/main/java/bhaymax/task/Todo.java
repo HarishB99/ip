@@ -40,21 +40,19 @@ public class Todo extends Task {
      * @return a {@code Todo} object
      */
     public static Todo deSerialise(int lineNumber, String serialisedTodo) throws TaskDeSerialisationException {
-        MatchResult matchResult;
-
-        try {
-            Scanner sc = new Scanner(serialisedTodo).useDelimiter(Task.DELIMITER);
-            sc.findInLine(Todo.DE_SERIALISATION_FORMAT);
-            matchResult = sc.match();
-            sc.close();
-        } catch (IllegalStateException e) {
-            throw new WrongTaskFormatException(lineNumber, Todo.NAME, Todo.TYPE);
-        }
+        MatchResult matchResult = Todo.getMatchResult(lineNumber, serialisedTodo);
 
         String taskStatus = matchResult.group(REGEX_GROUP_STATUS);
         String taskDescription = matchResult.group(REGEX_GROUP_DESCRIPTION);
         Todo todo = new Todo(taskDescription);
 
+        Todo.markTaskBasedOnStatus(lineNumber, taskStatus, todo);
+
+        return todo;
+    }
+
+    private static void markTaskBasedOnStatus(int lineNumber, String taskStatus, Todo todo)
+            throws InvalidTaskStatusException {
         switch (taskStatus) {
         case Todo.TODO_COMPLETE:
             todo.markAsDone();
@@ -65,8 +63,21 @@ public class Todo extends Task {
         default:
             throw new InvalidTaskStatusException(lineNumber);
         }
+    }
 
-        return todo;
+    private static MatchResult getMatchResult(int lineNumber, String serialisedTodo) throws WrongTaskFormatException {
+        MatchResult matchResult;
+        try {
+            Scanner sc = new Scanner(serialisedTodo).useDelimiter(Task.DELIMITER);
+            sc.findInLine(Todo.DE_SERIALISATION_FORMAT);
+            matchResult = sc.match();
+            sc.close();
+        } catch (IllegalStateException e) {
+            throw new WrongTaskFormatException(lineNumber, Todo.NAME, Todo.TYPE);
+        }
+
+        assert matchResult.groupCount() == Todo.EXPECTED_NUMBER_OF_REGEX_GROUPS;
+        return matchResult;
     }
 
     @Override

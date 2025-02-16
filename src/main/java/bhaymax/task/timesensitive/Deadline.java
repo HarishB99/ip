@@ -69,6 +69,42 @@ public class Deadline extends TimeSensitiveTask {
      */
     public static Deadline deSerialise(int lineNumber, String serialisedDeadline)
             throws TaskDeSerialisationException {
+        MatchResult matchResult = Deadline.getMatchResult(lineNumber, serialisedDeadline);
+        Deadline deadline = Deadline.getDeadline(lineNumber, matchResult);
+        String deadlineStatus = matchResult.group(Deadline.REGEX_GROUP_STATUS);
+        Deadline.markDeadlineBasedOnStatus(lineNumber, deadline, deadlineStatus);
+        return deadline;
+    }
+
+    private static void markDeadlineBasedOnStatus(int lineNumber, Deadline deadline, String deadlineStatus)
+            throws InvalidTaskStatusException {
+        switch (deadlineStatus) {
+        case Deadline.DEADLINE_COMPLETE:
+            deadline.markAsDone();
+            break;
+        case Deadline.DEADLINE_INCOMPLETE:
+            deadline.markAsUndone();
+            break;
+        default:
+            throw new InvalidTaskStatusException(lineNumber);
+        }
+    }
+
+    private static Deadline getDeadline(int lineNumber, MatchResult matchResult) throws WrongTaskFormatException {
+        Deadline deadline;
+        try {
+            String deadlineDescription = matchResult.group(Deadline.REGEX_GROUP_DESCRIPTION);
+            String deadlineDueDate = matchResult.group(Deadline.REGEX_GROUP_DEADLINE);
+            deadline = new Deadline(deadlineDescription, deadlineDueDate);
+        } catch (DateTimeParseException e) {
+            throw new WrongTaskFormatException(
+                    lineNumber, Deadline.NAME, Deadline.TYPE, Deadline.DUE_DATE_INPUT_FORMAT);
+        }
+        return deadline;
+    }
+
+    private static MatchResult getMatchResult(int lineNumber, String serialisedDeadline)
+            throws WrongTaskFormatException {
         MatchResult matchResult;
         try {
             Scanner sc = new Scanner(serialisedDeadline);
@@ -80,29 +116,8 @@ public class Deadline extends TimeSensitiveTask {
                     lineNumber, Deadline.NAME, Deadline.TYPE, Deadline.DUE_DATE_INPUT_FORMAT);
         }
 
-        Deadline deadline;
-        try {
-            String deadlineDescription = matchResult.group(Deadline.REGEX_GROUP_DESCRIPTION);
-            String deadlineDueDate = matchResult.group(Deadline.REGEX_GROUP_DEADLINE);
-            deadline = new Deadline(deadlineDescription, deadlineDueDate);
-        } catch (DateTimeParseException e) {
-            throw new WrongTaskFormatException(
-                    lineNumber, Deadline.NAME, Deadline.TYPE, Deadline.DUE_DATE_INPUT_FORMAT);
-        }
-
-        String deadlineStatus = matchResult.group(Deadline.REGEX_GROUP_STATUS);
-        switch (deadlineStatus) {
-        case Deadline.DEADLINE_COMPLETE:
-            deadline.markAsDone();
-            break;
-        case Deadline.DEADLINE_INCOMPLETE:
-            deadline.markAsUndone();
-            break;
-        default:
-            throw new InvalidTaskStatusException(lineNumber);
-        }
-
-        return deadline;
+        assert matchResult.groupCount() == Deadline.EXPECTED_NUMBER_OF_REGEX_GROUPS;
+        return matchResult;
     }
 
     private String getDeadlineInInputFormat() {
