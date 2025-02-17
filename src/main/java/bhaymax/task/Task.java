@@ -45,7 +45,7 @@ public class Task {
     }
 
     public boolean hasSearchTerm(String searchTerm) {
-        return this.description.contains(searchTerm);
+        return this.description.toLowerCase().contains(searchTerm.toLowerCase());
     }
 
     @Override
