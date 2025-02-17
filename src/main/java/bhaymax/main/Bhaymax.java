@@ -45,8 +45,6 @@ public class Bhaymax extends Application {
     private void prepareStage(Stage stage) {
         stage.setMinHeight(Bhaymax.PREFERRED_HEIGHT);
         stage.setMinWidth(Bhaymax.PREFERRED_WIDTH);
-        stage.setMaxHeight(Bhaymax.PREFERRED_HEIGHT);
-        stage.setMaxWidth(Bhaymax.PREFERRED_WIDTH);
 
         stage.getIcons().add(this.appIcon);
         stage.setTitle(Bhaymax.APP_NAME);
