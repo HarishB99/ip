@@ -1,6 +1,8 @@
 .root {
     main-color: rgb(217, 100, 113);       /* Create a looked-up color called "main-color" within root. */
     -fx-background-color: main-color;
+    -fx-background-image: url("../images/bhaymax_chatbox_background.jpg"); /* Set image */
+    -fx-background-size: cover;
 }
 
 .text-field {
@@ -24,10 +26,14 @@
     -fx-text-fill: white;
 }
 
-.scroll-pane,
+.scroll-pane {
+    -fx-background-color: rgba(0,0,0,.5);
+}
 .scroll-pane .viewport {
     -fx-background-color: transparent;
 }
+
+
 
 .scroll-bar {
     -fx-font-size: 10px;  /* Change width of scroll bar. */
