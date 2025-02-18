@@ -140,7 +140,7 @@ public class Event extends TimeSensitiveTask {
     }
 
     private String getStartDateInOutputFormat() {
-        return this.start.format(DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
+        return this.start.format(DateTimeFormatter.ofPattern(Parser.DATETIME_OUTPUT_FORMAT));
     }
 
     private String getEndDateInInputFormat() {
@@ -148,7 +148,7 @@ public class Event extends TimeSensitiveTask {
     }
 
     private String getEndDateInOutputFormat() {
-        return this.end.format(DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
+        return this.end.format(DateTimeFormatter.ofPattern(Parser.DATETIME_OUTPUT_FORMAT));
     }
 
     @Override
