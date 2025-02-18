@@ -1,5 +1,6 @@
 package bhaymax.task;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 
 import bhaymax.command.FilterOption;
@@ -92,7 +93,9 @@ public class TaskList {
      *                             display dialog boxes with the tasks in this list
      */
     public void showTasks(MainWindow mainWindowController) {
+        this.tasks.sort(Task::compareTo);
         this.tasks.stream()
+                //.sorted()
                 .map(task -> (tasks.indexOf(task) + 1) + TaskList.TASK_LIST_BULLET_POINT_SEPARATOR + task)
                 .reduce((previousTask, nextTask)
                         -> previousTask + System.lineSeparator() + nextTask)
@@ -114,7 +117,9 @@ public class TaskList {
      */
     public void showTasksFilteredByDate(
             String dateTime, FilterOption filterOption, MainWindow mainWindowController) {
+        this.tasks.sort(Task::compareTo);
         String response = this.tasks.stream()
+                //.sorted()
                 .filter(task -> task instanceof TimeSensitiveTask)
                 .filter(timeSensitiveTask -> (
                         (TimeSensitiveTask) timeSensitiveTask).hasDateMatchingFilter(dateTime, filterOption))
@@ -133,7 +138,9 @@ public class TaskList {
      *                             display dialog boxes with the matched tasks in this list
      */
     public void showTasksContainingSearchTerm(String searchTerm, MainWindow mainWindowController) {
+        this.tasks.sort(Task::compareTo);
         String response = this.tasks.stream()
+                //.sorted()
                 .filter(task -> task.hasSearchTerm(searchTerm))
                 .map(task -> (this.tasks.indexOf(task) + 1) + TaskList.TASK_LIST_BULLET_POINT_SEPARATOR + task)
                 .reduce((previousTask, nextTask)
@@ -148,7 +155,9 @@ public class TaskList {
      * @return the {@code String} representation of the {@code TaskList} object that is suitable for saving to a file
      */
     public String serialise() {
+        this.tasks.sort(Task::compareTo);
         return this.tasks.stream()
+                //.sorted()
                 .map(Task::serialise)
                 .reduce((task1, task2)
                         -> task1 + System.lineSeparator() + task2)

@@ -1,6 +1,7 @@
 package bhaymax.command;
 
 import bhaymax.controller.MainWindow;
+import bhaymax.exception.command.InvalidCommandFormatException;
 import bhaymax.exception.file.FileWriteException;
 import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
@@ -34,7 +35,8 @@ public class EventCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws FileWriteException {
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage)
+            throws FileWriteException, InvalidCommandFormatException {
         Event newEvent = new Event(this.taskDescription, this.start, this.end);
         int taskListCount = taskList.addTask(newEvent);
         storage.saveTasks(taskList);

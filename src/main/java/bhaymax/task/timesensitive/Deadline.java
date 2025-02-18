@@ -50,7 +50,8 @@ public class Deadline extends TimeSensitiveTask {
      */
     public Deadline(String description, String dueDateTime)
             throws DateTimeParseException {
-        super(Deadline.TYPE, description);
+        super(Deadline.TYPE, description,
+                LocalDateTime.parse(dueDateTime, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT)));
         this.dueDateTime = LocalDateTime.parse(
                 dueDateTime, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
     }
