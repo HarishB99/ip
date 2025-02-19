@@ -1,6 +1,5 @@
 package bhaymax.task;
 
-import java.util.Comparator;
 import java.util.LinkedList;
 
 import bhaymax.command.FilterOption;
