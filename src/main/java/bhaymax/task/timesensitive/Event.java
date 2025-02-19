@@ -204,6 +204,18 @@ public class Event extends TimeSensitiveTask {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Event event) {
+            return this.compareTo(event) == 0;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public String toString() {
         return "[E]" + super.toString() + " (from: "
                 + this.getStartDateInOutputFormat() + " to: "

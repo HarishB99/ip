@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import bhaymax.command.FilterOption;
 import bhaymax.controller.MainWindow;
+import bhaymax.exception.TaskAlreadyExistsException;
 import bhaymax.task.timesensitive.TimeSensitiveTask;
 import bhaymax.util.Pair;
 
@@ -40,7 +41,10 @@ public class TaskList {
      * @param task an object of {@link Task} type to be added
      * @return the number of tasks in the list after adding the new task
      */
-    public int addTask(Task task) {
+    public int addTask(Task task) throws TaskAlreadyExistsException {
+        if (this.tasks.contains(task)) {
+            throw new TaskAlreadyExistsException();
+        }
         this.tasks.add(task);
         return this.tasks.size();
     }

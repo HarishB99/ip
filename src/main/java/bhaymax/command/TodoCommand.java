@@ -1,6 +1,11 @@
 package bhaymax.command;
 
+import com.sun.javafx.tk.Toolkit;
+
 import bhaymax.controller.MainWindow;
+import bhaymax.exception.TaskAlreadyExistsException;
+import bhaymax.exception.command.AttemptToCreateDuplicateTaskException;
+import bhaymax.exception.command.InvalidCommandFormatException;
 import bhaymax.exception.file.FileWriteException;
 import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
@@ -27,9 +32,15 @@ public class TodoCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws FileWriteException {
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage)
+            throws FileWriteException, InvalidCommandFormatException {
         Todo newTodoTask = new Todo(this.taskDescription);
-        int taskListCount = taskList.addTask(newTodoTask);
+        int taskListCount;
+        try {
+            taskListCount = taskList.addTask(newTodoTask);
+        } catch (TaskAlreadyExistsException e) {
+            throw new AttemptToCreateDuplicateTaskException();
+        }
         storage.saveTasks(taskList);
         String response = String.format(
                 RESPONSE_FORMAT,

@@ -167,6 +167,18 @@ public class Deadline extends TimeSensitiveTask {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Deadline deadline) {
+            return this.compareTo(deadline) == 0;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public String toString() {
         return "[D]" + super.toString() + " (by: " + this.getDeadlineInOutputFormat() + ")";
     }
