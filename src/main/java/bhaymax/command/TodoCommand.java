@@ -1,7 +1,5 @@
 package bhaymax.command;
 
-import com.sun.javafx.tk.Toolkit;
-
 import bhaymax.controller.MainWindow;
 import bhaymax.exception.TaskAlreadyExistsException;
 import bhaymax.exception.command.AttemptToCreateDuplicateTaskException;
