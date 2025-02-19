@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import bhaymax.command.FilterOption;
 import bhaymax.controller.MainWindow;
+import bhaymax.exception.TaskAlreadyExistsException;
 import bhaymax.task.timesensitive.TimeSensitiveTask;
 import bhaymax.util.Pair;
 
@@ -40,7 +41,10 @@ public class TaskList {
      * @param task an object of {@link Task} type to be added
      * @return the number of tasks in the list after adding the new task
      */
-    public int addTask(Task task) {
+    public int addTask(Task task) throws TaskAlreadyExistsException {
+        if (this.tasks.contains(task)) {
+            throw new TaskAlreadyExistsException();
+        }
         this.tasks.add(task);
         return this.tasks.size();
     }
@@ -92,7 +96,9 @@ public class TaskList {
      *                             display dialog boxes with the tasks in this list
      */
     public void showTasks(MainWindow mainWindowController) {
+        this.tasks.sort(Task::compareTo);
         this.tasks.stream()
+                //.sorted()
                 .map(task -> (tasks.indexOf(task) + 1) + TaskList.TASK_LIST_BULLET_POINT_SEPARATOR + task)
                 .reduce((previousTask, nextTask)
                         -> previousTask + System.lineSeparator() + nextTask)
@@ -114,7 +120,9 @@ public class TaskList {
      */
     public void showTasksFilteredByDate(
             String dateTime, FilterOption filterOption, MainWindow mainWindowController) {
+        this.tasks.sort(Task::compareTo);
         String response = this.tasks.stream()
+                //.sorted()
                 .filter(task -> task instanceof TimeSensitiveTask)
                 .filter(timeSensitiveTask -> (
                         (TimeSensitiveTask) timeSensitiveTask).hasDateMatchingFilter(dateTime, filterOption))
@@ -133,7 +141,9 @@ public class TaskList {
      *                             display dialog boxes with the matched tasks in this list
      */
     public void showTasksContainingSearchTerm(String searchTerm, MainWindow mainWindowController) {
+        this.tasks.sort(Task::compareTo);
         String response = this.tasks.stream()
+                //.sorted()
                 .filter(task -> task.hasSearchTerm(searchTerm))
                 .map(task -> (this.tasks.indexOf(task) + 1) + TaskList.TASK_LIST_BULLET_POINT_SEPARATOR + task)
                 .reduce((previousTask, nextTask)
@@ -148,7 +158,9 @@ public class TaskList {
      * @return the {@code String} representation of the {@code TaskList} object that is suitable for saving to a file
      */
     public String serialise() {
+        this.tasks.sort(Task::compareTo);
         return this.tasks.stream()
+                //.sorted()
                 .map(Task::serialise)
                 .reduce((task1, task2)
                         -> task1 + System.lineSeparator() + task2)

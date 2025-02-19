@@ -50,7 +50,8 @@ public class Deadline extends TimeSensitiveTask {
      */
     public Deadline(String description, String dueDateTime)
             throws DateTimeParseException {
-        super(Deadline.TYPE, description);
+        super(Deadline.TYPE, description,
+                LocalDateTime.parse(dueDateTime, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT)));
         this.dueDateTime = LocalDateTime.parse(
                 dueDateTime, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
     }
@@ -163,6 +164,18 @@ public class Deadline extends TimeSensitiveTask {
     @Override
     boolean isOnDateTime(LocalDateTime dateTime) {
         return this.dueDateTime.isEqual(dateTime);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Deadline deadline) {
+            return this.compareTo(deadline) == 0;
+        } else {
+            return false;
+        }
     }
 
     @Override

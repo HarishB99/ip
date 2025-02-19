@@ -81,6 +81,18 @@ public class Todo extends Task {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Todo todoTask) {
+            return this.compareTo(todoTask) == 0;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public String toString() {
         return "[T]" + super.toString();
     }
