@@ -1,6 +1,9 @@
 package bhaymax.command;
 
 import bhaymax.controller.MainWindow;
+import bhaymax.exception.TaskAlreadyExistsException;
+import bhaymax.exception.command.AttemptToCreateDuplicateTaskException;
+import bhaymax.exception.command.InvalidCommandFormatException;
 import bhaymax.exception.file.FileWriteException;
 import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
@@ -31,9 +34,15 @@ public class DeadlineCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) throws FileWriteException {
+    public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage)
+            throws FileWriteException, InvalidCommandFormatException {
         Deadline newDeadline = new Deadline(this.taskDescription, this.deadline);
-        int taskListCount = taskList.addTask(newDeadline);
+        int taskListCount;
+        try {
+            taskListCount = taskList.addTask(newDeadline);
+        } catch (TaskAlreadyExistsException e) {
+            throw new AttemptToCreateDuplicateTaskException();
+        }
         storage.saveTasks(taskList);
         String response = String.format(
                 DeadlineCommand.RESPONSE_FORMAT,

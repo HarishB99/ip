@@ -13,14 +13,17 @@ import bhaymax.task.Task;
  * An interface for task types that need to track time
  */
 public abstract class TimeSensitiveTask extends Task {
+    private final LocalDateTime dateTimeUsedForComparison;
+
     /**
      * Constructor for TimeSensitiveTask objects, meant only for its subclasses
      *
      * @param type        the type of the task
      * @param description the description of the task
      */
-    protected TimeSensitiveTask(String type, String description) {
+    protected TimeSensitiveTask(String type, String description, LocalDateTime dateTimeUsedForComparison) {
         super(type, description);
+        this.dateTimeUsedForComparison = dateTimeUsedForComparison;
     }
 
     abstract boolean isBeforeDate(LocalDate date);
@@ -34,6 +37,15 @@ public abstract class TimeSensitiveTask extends Task {
     abstract boolean isOnDate(LocalDate date);
 
     abstract boolean isOnDateTime(LocalDateTime dateTime);
+
+    @Override
+    public int compareTo(Task task) {
+        if (!(task instanceof TimeSensitiveTask timeSensitiveTask)) {
+            return super.compareTo(task);
+        }
+        int differenceInTime = this.dateTimeUsedForComparison.compareTo(timeSensitiveTask.dateTimeUsedForComparison);
+        return (differenceInTime != 0) ? differenceInTime : super.compareTo(task);
+    }
 
     /**
      * Checks whether the date(s) of this task matches the provided date filter
