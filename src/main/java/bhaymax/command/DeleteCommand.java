@@ -34,6 +34,9 @@ public class DeleteCommand extends Command {
         int numberOfRemainingTasks = pair.second();
         storage.saveTasks(taskList);
         String response = String.format(RESPONSE_FORMAT, deletedTask);
+
+        assert numberOfRemainingTasks >= 0;
+
         if (numberOfRemainingTasks == 0) {
             mainWindowController.showNormalResponse(response);
             mainWindowController.showExcitedResponse(TaskList.TASK_LIST_EMPTY);

@@ -3,7 +3,7 @@ package bhaymax.task;
 /**
  * Represents a generic task
  */
-public class Task {
+public abstract class Task implements Comparable<Task> {
     public static final String DELIMITER = "|";
     public static final String SERIAL_FORMAT = "%s " + Task.DELIMITER + " %d " + Task.DELIMITER + " %s";
 
@@ -45,11 +45,19 @@ public class Task {
     }
 
     public boolean hasSearchTerm(String searchTerm) {
-        return this.description.contains(searchTerm);
+        return this.description.toLowerCase().contains(searchTerm.toLowerCase());
     }
 
     @Override
     public String toString() {
         return "[" + this.getStatusIcon() + "] " + this.description;
+    }
+
+    @Override
+    public int compareTo(Task task) {
+        int differenceInType = this.type.compareTo(task.type);
+        return (differenceInType != 0)
+                ? differenceInType
+                : this.description.toLowerCase().compareTo(task.description.toLowerCase());
     }
 }

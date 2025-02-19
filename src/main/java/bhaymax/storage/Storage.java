@@ -9,7 +9,9 @@ import java.time.format.DateTimeParseException;
 import java.util.Optional;
 import java.util.Scanner;
 
+import bhaymax.exception.TaskAlreadyExistsException;
 import bhaymax.exception.command.InvalidDateFormatInFileException;
+import bhaymax.exception.file.DuplicateTaskInFileException;
 import bhaymax.exception.file.FileWriteException;
 import bhaymax.exception.file.InvalidFileFormatException;
 import bhaymax.exception.file.UnrecognisedTaskTypeException;
@@ -94,6 +96,8 @@ public class Storage {
             return taskList;
         } catch (DateTimeParseException e) {
             throw new InvalidDateFormatInFileException(lineNumber);
+        } catch (TaskAlreadyExistsException e) {
+            throw new DuplicateTaskInFileException(lineNumber);
         } catch (FileNotFoundException e) {
             return taskList;
         }

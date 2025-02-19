@@ -244,6 +244,9 @@ public class MainWindow {
     @FXML
     private void handleUserInput() {
         String input = this.userInput.getText();
+        if (input.isEmpty()) {
+            return;
+        }
         this.dialogContainer.getChildren().addAll(this.getUserDialog(input));
         try {
             Command command = Parser.parse(input, this.tasks);

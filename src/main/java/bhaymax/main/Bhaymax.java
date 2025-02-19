@@ -1,6 +1,7 @@
 package bhaymax.main;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import bhaymax.controller.MainWindow;
 import bhaymax.exception.file.InvalidFileFormatException;
@@ -10,6 +11,7 @@ import bhaymax.util.Pair;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -24,6 +26,9 @@ public class Bhaymax extends Application {
 
     private static final String ERROR_MESSAGE_RECTIFY_FILE_ERRORS =
             "Please close this app, rectify the errors in file, and try again.";
+
+    private final Image appIcon = new Image(
+            Objects.requireNonNull(this.getClass().getResourceAsStream(ImageFilePath.CHATBOT_NORMAL.toString())));
 
     private Pair<MainWindow, AnchorPane> loadMainWindowAndAnchorPane() {
         try {
@@ -40,8 +45,9 @@ public class Bhaymax extends Application {
     private void prepareStage(Stage stage) {
         stage.setMinHeight(Bhaymax.PREFERRED_HEIGHT);
         stage.setMinWidth(Bhaymax.PREFERRED_WIDTH);
-        stage.setMaxHeight(Bhaymax.PREFERRED_HEIGHT);
-        stage.setMaxWidth(Bhaymax.PREFERRED_WIDTH);
+
+        stage.getIcons().add(this.appIcon);
+        stage.setTitle(Bhaymax.APP_NAME);
     }
 
     @Override

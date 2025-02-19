@@ -18,6 +18,7 @@ import javafx.scene.layout.HBox;
  * Controller for DialogBox
  */
 public class DialogBox extends HBox {
+    public static final String REPLY_LABEL_CLASS_NAME = "reply-label";
     @FXML
     private Label dialog;
     @FXML
@@ -46,6 +47,7 @@ public class DialogBox extends HBox {
         FXCollections.reverse(nodes);
         this.getChildren().setAll(nodes);
         this.setAlignment(Pos.TOP_LEFT);
+        dialog.getStyleClass().add(DialogBox.REPLY_LABEL_CLASS_NAME);
     }
 
     public static DialogBox getUserDialog(String text, Image img) {
