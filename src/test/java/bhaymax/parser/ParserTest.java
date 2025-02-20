@@ -3,6 +3,7 @@ package bhaymax.parser;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,36 +15,38 @@ import bhaymax.exception.command.UnrecognisedCommandException;
 import bhaymax.task.TaskList;
 
 public class ParserTest {
+    public static final TaskList MOCK_TASK_LIST = mock(TaskList.class);
+
     @Test
     public void parse_emptyCommandString_throwsInvalidCommandFormatException() {
         assertThrows(InvalidCommandFormatException.class, () -> Parser.parse(
-                "", new TaskListStub()));
+                "", ParserTest.MOCK_TASK_LIST));
     }
 
     @Test
     public void parse_unrecognisedCommand_throwsInvalidCommandFormatException() {
         assertThrows(UnrecognisedCommandException.class, () -> Parser.parse(
-                "ads", new TaskListStub()));
+                "ads", ParserTest.MOCK_TASK_LIST));
     }
 
     @Test
     public void parse_byeCommand_returnsExitCommand() {
         try {
-            assertInstanceOf(ExitCommand.class, Parser.parse("bye", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse(" bye", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("bye ", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("  bye ", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("   bye     ", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("   bYe     ", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("   byE     ", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("   Bye     ", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("   BYE     ", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("BYE", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("Bye", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("bYe", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("byE", new TaskListStub()));
+            assertInstanceOf(ExitCommand.class, Parser.parse("bye", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse(" bye", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("bye ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("  bye ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("   bye     ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("   bYe     ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("   byE     ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("   Bye     ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("   BYE     ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("BYE", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("Bye", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("bYe", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("byE", ParserTest.MOCK_TASK_LIST));
             assertThrows(UnrecognisedCommandException.class, () -> Parser.parse(
-                    "by E", new TaskListStub()));
+                    "by E", ParserTest.MOCK_TASK_LIST));
         } catch (InvalidCommandFormatException e) {
             fail();
         }
@@ -52,22 +55,22 @@ public class ParserTest {
     @Test
     public void parse_exitCommand_returnsExitCommand() {
         try {
-            assertInstanceOf(ExitCommand.class, Parser.parse("exit", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse(" exit", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("exit ", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("  exit ", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("         exIT      ", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("         exiT      ", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("         eXit      ", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("         exIt      ", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("         Exit      ", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("         EXIT      ", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("EXIT", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("EXIt", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("ExIt", new TaskListStub()));
-            assertInstanceOf(ExitCommand.class, Parser.parse("Exit", new TaskListStub()));
+            assertInstanceOf(ExitCommand.class, Parser.parse("exit", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse(" exit", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("exit ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("  exit ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("         exIT      ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("         exiT      ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("         eXit      ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("         exIt      ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("         Exit      ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("         EXIT      ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("EXIT", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("EXIt", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("ExIt", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ExitCommand.class, Parser.parse("Exit", ParserTest.MOCK_TASK_LIST));
             assertThrows(UnrecognisedCommandException.class, () -> Parser.parse(
-                    "exi t", new TaskList()));
+                    "exi t", ParserTest.MOCK_TASK_LIST));
         } catch (InvalidCommandFormatException e) {
             fail();
         }
@@ -76,17 +79,17 @@ public class ParserTest {
     @Test
     public void parse_hiCommand_returnsHelloCommand() {
         try {
-            assertInstanceOf(HelloCommand.class, Parser.parse("hi", new TaskListStub()));
-            assertInstanceOf(HelloCommand.class, Parser.parse("Hi", new TaskListStub()));
-            assertInstanceOf(HelloCommand.class, Parser.parse("hI", new TaskListStub()));
-            assertInstanceOf(HelloCommand.class, Parser.parse("HI", new TaskListStub()));
-            assertInstanceOf(HelloCommand.class, Parser.parse(" hi", new TaskListStub()));
-            assertInstanceOf(HelloCommand.class, Parser.parse("   Hi", new TaskListStub()));
-            assertInstanceOf(HelloCommand.class, Parser.parse("hI ", new TaskListStub()));
-            assertInstanceOf(HelloCommand.class, Parser.parse("HI   ", new TaskListStub()));
-            assertInstanceOf(HelloCommand.class, Parser.parse("  hI   ", new TaskListStub()));
+            assertInstanceOf(HelloCommand.class, Parser.parse("hi", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(HelloCommand.class, Parser.parse("Hi", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(HelloCommand.class, Parser.parse("hI", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(HelloCommand.class, Parser.parse("HI", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(HelloCommand.class, Parser.parse(" hi", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(HelloCommand.class, Parser.parse("   Hi", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(HelloCommand.class, Parser.parse("hI ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(HelloCommand.class, Parser.parse("HI   ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(HelloCommand.class, Parser.parse("  hI   ", ParserTest.MOCK_TASK_LIST));
             assertThrows(UnrecognisedCommandException.class, () -> Parser.parse(
-                    "H i", new TaskList()));
+                    "H i", ParserTest.MOCK_TASK_LIST));
         } catch (InvalidCommandFormatException e) {
             fail();
         }
@@ -95,17 +98,17 @@ public class ParserTest {
     @Test
     public void parse_helloCommand_returnsHelloCommand() {
         try {
-            assertInstanceOf(HelloCommand.class, Parser.parse("hello", new TaskListStub()));
-            assertInstanceOf(HelloCommand.class, Parser.parse("HELLO", new TaskListStub()));
-            assertInstanceOf(HelloCommand.class, Parser.parse("helLo", new TaskListStub()));
-            assertInstanceOf(HelloCommand.class, Parser.parse("Hello", new TaskListStub()));
-            assertInstanceOf(HelloCommand.class, Parser.parse("HEllo", new TaskListStub()));
-            assertInstanceOf(HelloCommand.class, Parser.parse(" hello", new TaskListStub()));
-            assertInstanceOf(HelloCommand.class, Parser.parse("HELLO ", new TaskListStub()));
-            assertInstanceOf(HelloCommand.class, Parser.parse("helLo  ", new TaskListStub()));
-            assertInstanceOf(HelloCommand.class, Parser.parse("   Hello  ", new TaskListStub()));
+            assertInstanceOf(HelloCommand.class, Parser.parse("hello", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(HelloCommand.class, Parser.parse("HELLO", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(HelloCommand.class, Parser.parse("helLo", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(HelloCommand.class, Parser.parse("Hello", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(HelloCommand.class, Parser.parse("HEllo", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(HelloCommand.class, Parser.parse(" hello", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(HelloCommand.class, Parser.parse("HELLO ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(HelloCommand.class, Parser.parse("helLo  ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(HelloCommand.class, Parser.parse("   Hello  ", ParserTest.MOCK_TASK_LIST));
             assertThrows(UnrecognisedCommandException.class, () -> Parser.parse(
-                    "H ello", new TaskList()));
+                    "H ello", ParserTest.MOCK_TASK_LIST));
         } catch (InvalidCommandFormatException e) {
             fail();
         }
@@ -114,13 +117,13 @@ public class ParserTest {
     @Test
     public void parse_clearCommand_returnsClearCommand() {
         try {
-            assertInstanceOf(ClearCommand.class, Parser.parse("clear", new TaskListStub()));
-            assertInstanceOf(ClearCommand.class, Parser.parse("Clear", new TaskListStub()));
-            assertInstanceOf(ClearCommand.class, Parser.parse(" cLear", new TaskListStub()));
-            assertInstanceOf(ClearCommand.class, Parser.parse("clEAr ", new TaskListStub()));
-            assertInstanceOf(ClearCommand.class, Parser.parse("CLEAR", new TaskListStub()));
+            assertInstanceOf(ClearCommand.class, Parser.parse("clear", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ClearCommand.class, Parser.parse("Clear", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ClearCommand.class, Parser.parse(" cLear", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ClearCommand.class, Parser.parse("clEAr ", ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(ClearCommand.class, Parser.parse("CLEAR", ParserTest.MOCK_TASK_LIST));
             assertThrows(UnrecognisedCommandException.class, () -> Parser.parse(
-                    "cLe ar", new TaskListStub()));
+                    "cLe ar", ParserTest.MOCK_TASK_LIST));
         } catch (InvalidCommandFormatException e) {
             fail();
         }
