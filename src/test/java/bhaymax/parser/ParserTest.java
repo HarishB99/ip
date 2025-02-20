@@ -26,7 +26,7 @@ public class ParserTest {
         "    ",
         "           ",
     })
-    public void parse_emptyCommandString_throwsEmptyCommandException(String testInput) {
+    public void parse_emptyCommandStringProvided_throwsEmptyCommandException(String testInput) {
         assertThrows(EmptyCommandException.class, () -> Parser.parse(
                 testInput, ParserTest.MOCK_TASK_LIST));
     }
@@ -41,7 +41,7 @@ public class ParserTest {
         "H ello",
         "cLe ar"
     })
-    public void parse_unrecognisedCommand_throwsUnrecognisedCommandException(String testInput) {
+    public void parse_unrecognisedCommandProvided_throwsUnrecognisedCommandException(String testInput) {
         assertThrows(UnrecognisedCommandException.class, () -> Parser.parse(
                 testInput, ParserTest.MOCK_TASK_LIST));
     }
@@ -62,7 +62,7 @@ public class ParserTest {
         "bYe",
         "byE"
     })
-    public void parse_byeCommand_returnsExitCommand(String testInput) {
+    public void parse_validByeCommandProvided_returnsExitCommand(String testInput) {
         try {
             assertInstanceOf(ExitCommand.class, Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
         } catch (InvalidCommandFormatException e) {
@@ -87,7 +87,7 @@ public class ParserTest {
         "ExIt",
         "Exit"
     })
-    public void parse_exitCommand_returnsExitCommand(String testInput) {
+    public void parse_validExitCommandProvided_returnsExitCommand(String testInput) {
         try {
             assertInstanceOf(ExitCommand.class, Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
         } catch (InvalidCommandFormatException e) {
@@ -107,7 +107,7 @@ public class ParserTest {
         "HI   ",
         "  hI   "
     })
-    public void parse_hiCommand_returnsHelloCommand(String testInput) {
+    public void parse_validHiCommandProvided_returnsHelloCommand(String testInput) {
         try {
             assertInstanceOf(HelloCommand.class, Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
         } catch (InvalidCommandFormatException e) {
@@ -127,7 +127,7 @@ public class ParserTest {
         "helLo  ",
         "   Hello  "
     })
-    public void parse_helloCommand_returnsHelloCommand(String testInput) {
+    public void parse_validHelloCommandProvided_returnsHelloCommand(String testInput) {
         try {
             assertInstanceOf(HelloCommand.class, Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
         } catch (InvalidCommandFormatException e) {
@@ -143,7 +143,7 @@ public class ParserTest {
         "clEAr ",
         "CLEAR"
     })
-    public void parse_clearCommand_returnsClearCommand(String testInput) {
+    public void parse_validClearCommandProvided_returnsClearCommand(String testInput) {
         try {
             assertInstanceOf(ClearCommand.class, Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
         } catch (InvalidCommandFormatException e) {
