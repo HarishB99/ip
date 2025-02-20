@@ -247,7 +247,7 @@ public class MainWindow {
         if (input.isEmpty()) {
             return;
         }
-        this.dialogContainer.getChildren().addAll(this.getUserDialog(input));
+        this.dialogContainer.getChildren().addAll(this.getUserDialog(this.userInput.getText()));
         try {
             Command command = Parser.parse(input, this.tasks);
             command.execute(this.tasks, this, this.storage);
