@@ -38,8 +38,8 @@ import bhaymax.util.Pair;
  * and returns a {@link Command} object
  */
 public class Parser {
-    public static final String DATE_INPUT_FORMAT = "dd-MM-yyyy";
-    public static final String DATETIME_INPUT_FORMAT = "dd-MM-yyyy HH:mm";
+    public static final String DATE_INPUT_FORMAT = "dd/MM/yyyy";
+    public static final String DATETIME_INPUT_FORMAT = "dd/MM/yyyy HH:mm";
     public static final String DATETIME_OUTPUT_FORMAT = "dd MMM yyyy, EEE @ HH:mm";
 
     public static final int TWO_TOKENS = 2;
