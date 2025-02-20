@@ -26,6 +26,9 @@ import bhaymax.exception.command.MissingFilterDateException;
 import bhaymax.exception.command.MissingFilterOptionException;
 import bhaymax.exception.command.MissingSearchTermException;
 import bhaymax.exception.command.MissingTaskNumberException;
+import bhaymax.exception.command.MissingTaskNumberForDeleteException;
+import bhaymax.exception.command.MissingTaskNumberForMarkException;
+import bhaymax.exception.command.MissingTaskNumberForUnmarkException;
 import bhaymax.exception.command.MissingTodoDescriptionException;
 import bhaymax.exception.command.TaskIndexIsNotANumberException;
 import bhaymax.exception.command.TaskIndexOutOfBoundsException;
@@ -71,12 +74,9 @@ public class Parser {
         );
     }
 
-    private static int getTaskIndex(String arguments, TaskList taskList)
+    private static int getTaskIndex(CommandString commandString, String arguments, TaskList taskList)
             throws InvalidCommandFormatException {
-        String trimmedArguments = arguments.trim();
-        if (trimmedArguments.isEmpty()) {
-            throw new MissingTaskNumberException();
-        }
+        String trimmedArguments = Parser.getTrimmedArguments(commandString, arguments);
 
         try {
             int index = Integer.parseInt(trimmedArguments) + Parser.INDEX_OFFSET;
@@ -89,6 +89,22 @@ public class Parser {
         }
     }
 
+    private static String getTrimmedArguments(CommandString commandString, String arguments)
+            throws MissingTaskNumberException {
+        String trimmedArguments = arguments.trim();
+        if (trimmedArguments.isEmpty()) {
+            if (commandString.equals(CommandString.DELETE)) {
+                throw new MissingTaskNumberForDeleteException();
+            } else if (commandString.equals(CommandString.MARK)) {
+                throw new MissingTaskNumberForMarkException();
+            } else {
+                assert commandString.equals(CommandString.UNMARK);
+                throw new MissingTaskNumberForUnmarkException();
+            }
+        }
+        return trimmedArguments;
+    }
+
     private static String getTodoDescription(String arguments)
             throws InvalidCommandFormatException {
         if (arguments.isEmpty()) {
@@ -98,8 +114,8 @@ public class Parser {
     }
 
     private static Pair<String, String> getTaskDescriptionAndArgs(
-            String arguments,
             CommandString commandString,
+            String arguments,
             String option,
             InvalidCommandFormatException exceptionToThrow
     ) throws InvalidCommandFormatException {
@@ -183,22 +199,22 @@ public class Parser {
         case LIST:
             return new ListCommand();
         case DELETE:
-            return new DeleteCommand(Parser.getTaskIndex(arguments, taskList));
+            return new DeleteCommand(Parser.getTaskIndex(commandString, arguments, taskList));
         case MARK:
-            return new MarkCommand(Parser.getTaskIndex(arguments, taskList));
+            return new MarkCommand(Parser.getTaskIndex(commandString, arguments, taskList));
         case UNMARK:
-            return new UnmarkCommand(Parser.getTaskIndex(arguments, taskList));
+            return new UnmarkCommand(Parser.getTaskIndex(commandString, arguments, taskList));
         case TODO:
             return new TodoCommand(Parser.getTodoDescription(arguments));
         case DEADLINE:
             Pair<String, String> descriptionAndDeadline = Parser.getTaskDescriptionAndArgs(
-                    arguments, commandString, Deadline.FLAG_DUE_BY, new MissingDeadlineDueByDateException());
+                    commandString, arguments, Deadline.FLAG_DUE_BY, new MissingDeadlineDueByDateException());
             String deadlineDescription = descriptionAndDeadline.first();
             String deadline = descriptionAndDeadline.second();
             return new DeadlineCommand(deadlineDescription, deadline);
         case EVENT:
             Pair<String, String> descriptionAndArgs = Parser.getTaskDescriptionAndArgs(
-                    arguments, commandString, Event.FLAG_START_DATE, new MissingEventStartDateException());
+                    commandString, arguments, Event.FLAG_START_DATE, new MissingEventStartDateException());
             String eventDescription = descriptionAndArgs.first();
             String eventArguments = descriptionAndArgs.second();
             Pair<String, String> eventStartAndEnd = Parser.getEventStartAndEndDates(eventArguments);

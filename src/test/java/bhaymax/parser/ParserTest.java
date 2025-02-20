@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -20,7 +21,12 @@ import bhaymax.command.UnmarkCommand;
 import bhaymax.exception.command.EmptyCommandException;
 import bhaymax.exception.command.InvalidCommandFormatException;
 import bhaymax.exception.command.MissingSearchTermException;
+import bhaymax.exception.command.MissingTaskNumberForDeleteException;
+import bhaymax.exception.command.MissingTaskNumberForMarkException;
+import bhaymax.exception.command.MissingTaskNumberForUnmarkException;
 import bhaymax.exception.command.MissingTodoDescriptionException;
+import bhaymax.exception.command.TaskIndexIsNotANumberException;
+import bhaymax.exception.command.TaskIndexOutOfBoundsException;
 import bhaymax.exception.command.UnrecognisedCommandException;
 import bhaymax.task.TaskList;
 
@@ -206,7 +212,7 @@ public class ParserTest {
         "Search",
         "Search ",
         "seaRch   ",
-        " search   ",
+        " search   "
     })
     public void parse_searchCommandMissingSearchTerm_throwsMissingSearchTermException(String testInput) {
         assertThrows(MissingSearchTermException.class, () -> Parser.parse(
@@ -218,7 +224,7 @@ public class ParserTest {
         "todo stuff",
         "Todo play games",
         "todo revise for cs2103t",
-        " todo complete iP ",
+        " todo complete iP "
     })
     public void parse_validTodoCommandProvided_returnsSearchCommand(String testInput) {
         try {
@@ -234,7 +240,7 @@ public class ParserTest {
         "Todo",
         "Todo ",
         "toDo   ",
-        " todo   ",
+        " todo   "
     })
     public void parse_todoCommandMissingTaskDescription_throwsMissingTodoDescriptionException(String testInput) {
         assertThrows(MissingTodoDescriptionException.class, () -> Parser.parse(
@@ -247,26 +253,59 @@ public class ParserTest {
         " dElete 2",
         "delete 3 ",
         " Delete 5",
-        "Delete 4",
+        "Delete 4"
     })
     public void parse_validDeleteCommandProvided_returnsDeleteCommand(String testInput) {
+        TaskList taskList = ParserTest.MOCK_TASK_LIST;
+        for (int i = 0; i < 5; i++) {
+            when(taskList.isValidIndex(i)).thenReturn(true);
+        }
         try {
-            assertInstanceOf(DeleteCommand.class, Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(DeleteCommand.class, Parser.parse(testInput, taskList));
         } catch (InvalidCommandFormatException e) {
             fail();
         }
     }
 
-    public void parse_deleteCommandMissingTaskNumber_throwsMissingTaskNumberException() {
-
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "delete ",
+        " dElete",
+        "delete",
+        " Delete",
+        "Delete"
+    })
+    public void parse_deleteCommandMissingTaskNumber_throwsMissingTaskNumberException(String testInput) {
+        assertThrows(MissingTaskNumberForDeleteException.class, ()
+                -> Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
     }
 
-    public void parse_deleteCommandTaskNumberIsNotANumber_throwsTaskIndexIsNotANumberException() {
-
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "delete -",
+        " dElete a",
+        "delete final exams",
+        " Delete stuff",
+        "Delete 0.1"
+    })
+    public void parse_deleteCommandTaskNumberIsNotANumber_throwsTaskIndexIsNotANumberException(String testInput) {
+        assertThrows(TaskIndexIsNotANumberException.class, () -> Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
     }
 
-    public void parse_deleteCommandOutOfBoundsIndexProvided_throwsTaskIndexOutOfBoundsExceptions() {
-
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "delete 1",
+        " dElete 2",
+        "delete 3 ",
+        " Delete 5",
+        "Delete 4"
+    })
+    public void parse_deleteCommandOutOfBoundsIndexProvided_throwsTaskIndexOutOfBoundsException(String testInput) {
+        TaskList taskList = ParserTest.MOCK_TASK_LIST;
+        for (int i = 0; i < 5; i++) {
+            when(taskList.isValidIndex(i)).thenReturn(false);
+        }
+        assertThrows(TaskIndexOutOfBoundsException.class, () -> Parser.parse(testInput, taskList));
     }
 
     @ParameterizedTest
@@ -275,26 +314,59 @@ public class ParserTest {
         " mArk 2",
         "mark 3 ",
         " Mark 5",
-        "Mark 4",
+        "Mark 4"
     })
     public void parse_validMarkCommandProvided_returnsMarkCommand(String testInput) {
+        TaskList taskList = ParserTest.MOCK_TASK_LIST;
+        for (int i = 0; i < 5; i++) {
+            when(taskList.isValidIndex(i)).thenReturn(true);
+        }
         try {
-            assertInstanceOf(MarkCommand.class, Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(MarkCommand.class, Parser.parse(testInput, taskList));
         } catch (InvalidCommandFormatException e) {
             fail();
         }
     }
 
-    public void parse_markCommandMissingTaskNumber_throwsMissingTaskNumberException() {
-
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "mark ",
+        " mArk ",
+        "mark",
+        " Mark",
+        "Mark"
+    })
+    public void parse_markCommandMissingTaskNumber_throwsMissingTaskNumberException(String testInput) {
+        assertThrows(MissingTaskNumberForMarkException.class, ()
+                -> Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
     }
 
-    public void parse_markCommandTaskNumberIsNotANumber_throwsTaskIndexIsNotANumberException() {
-
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "mark -",
+        " mArk a",
+        "mark complete homework ",
+        " Mark exercise",
+        "Mark 0.1"
+    })
+    public void parse_markCommandTaskNumberIsNotANumber_throwsTaskIndexIsNotANumberException(String testInput) {
+        assertThrows(TaskIndexIsNotANumberException.class, () -> Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
     }
 
-    public void parse_markCommandOutOfBoundsIndexProvided_throwsTaskIndexOutOfBoundsExceptions() {
-
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "mark 1",
+        " mArk 2",
+        "mark 3 ",
+        " Mark 5",
+        "Mark 4"
+    })
+    public void parse_markCommandOutOfBoundsIndexProvided_throwsTaskIndexOutOfBoundsException(String testInput) {
+        TaskList taskList = ParserTest.MOCK_TASK_LIST;
+        for (int i = 0; i < 5; i++) {
+            when(taskList.isValidIndex(i)).thenReturn(false);
+        }
+        assertThrows(TaskIndexOutOfBoundsException.class, () -> Parser.parse(testInput, taskList));
     }
 
     @ParameterizedTest
@@ -303,25 +375,58 @@ public class ParserTest {
         " UnmArk 2",
         "Unmark 3 ",
         " unMark 5",
-        "UNMark 4",
+        "UNMark 4"
     })
     public void parse_validUnmarkCommandProvided_returnsUnmarkCommand(String testInput) {
+        TaskList taskList = ParserTest.MOCK_TASK_LIST;
+        for (int i = 0; i < 5; i++) {
+            when(taskList.isValidIndex(i)).thenReturn(true);
+        }
         try {
-            assertInstanceOf(UnmarkCommand.class, Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
+            assertInstanceOf(UnmarkCommand.class, Parser.parse(testInput, taskList));
         } catch (InvalidCommandFormatException e) {
             fail();
         }
     }
 
-    public void parse_unmarkCommandMissingTaskNumber_throwsMissingTaskNumberException() {
-
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "unmark ",
+        " UnmArk",
+        "Unmark  ",
+        " unMark ",
+        "UNMark"
+    })
+    public void parse_unmarkCommandMissingTaskNumber_throwsMissingTaskNumberException(String testInput) {
+        assertThrows(MissingTaskNumberForUnmarkException.class, ()
+                -> Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
     }
 
-    public void parse_unmarkCommandTaskNumberIsNotANumber_throwsTaskIndexIsNotANumberException() {
-
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "unmark -",
+        " unmArk a",
+        "unmark complete homework ",
+        " unMark exercise",
+        "unmark 0.1"
+    })
+    public void parse_unmarkCommandTaskNumberIsNotANumber_throwsTaskIndexIsNotANumberException(String testInput) {
+        assertThrows(TaskIndexIsNotANumberException.class, () -> Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
     }
 
-    public void parse_unmarkCommandOutOfBoundsIndexProvided_throwsTaskIndexOutOfBoundsExceptions() {
-
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "unmark 1",
+        " UnmArk 2",
+        "Unmark 3 ",
+        " unMark 5",
+        "UNMark 4"
+    })
+    public void parse_unmarkCommandOutOfBoundsIndexProvided_throwsTaskIndexOutOfBoundsException(String testInput) {
+        TaskList taskList = ParserTest.MOCK_TASK_LIST;
+        for (int i = 0; i < 5; i++) {
+            when(taskList.isValidIndex(i)).thenReturn(false);
+        }
+        assertThrows(TaskIndexOutOfBoundsException.class, () -> Parser.parse(testInput, taskList));
     }
 }
