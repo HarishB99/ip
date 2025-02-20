@@ -12,8 +12,10 @@ import bhaymax.command.ClearCommand;
 import bhaymax.command.ExitCommand;
 import bhaymax.command.HelloCommand;
 import bhaymax.command.ListCommand;
+import bhaymax.command.SearchCommand;
 import bhaymax.exception.command.EmptyCommandException;
 import bhaymax.exception.command.InvalidCommandFormatException;
+import bhaymax.exception.command.MissingSearchTermException;
 import bhaymax.exception.command.UnrecognisedCommandException;
 import bhaymax.task.TaskList;
 
@@ -176,4 +178,33 @@ public class ParserTest {
             fail();
         }
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "search todo",
+        "Search event",
+        "seaRch deadLine",
+        " search eveNt ",
+    })
+    public void parse_validSearchCommandProvided_returnsSearchCommand(String testInput) {
+        try {
+            assertInstanceOf(SearchCommand.class, Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
+        } catch (InvalidCommandFormatException e) {
+            fail();
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "search",
+        "Search",
+        "Search ",
+        "seaRch   ",
+        " search   ",
+    })
+    public void parse_searchCommandMissingSearchTerm_throwsMissingSearchTermException(String testInput) {
+        assertThrows(MissingSearchTermException.class, () -> Parser.parse(
+                testInput, ParserTest.MOCK_TASK_LIST));
+    }
+
 }
