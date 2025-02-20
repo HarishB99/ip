@@ -2,6 +2,7 @@ package bhaymax.command;
 
 import bhaymax.controller.MainWindow;
 import bhaymax.exception.command.InvalidCommandFormatException;
+import bhaymax.parser.Parser;
 import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
 
@@ -9,6 +10,11 @@ import bhaymax.task.TaskList;
  * Represents a {@code filter} command
  */
 public class FilterCommand extends Command {
+    public static final String COMMAND_FORMAT = "filter "
+            + "{/on | /before | /after | /on_time | /before_time | /after_time} "
+            + "{date (for /on | /before | /after): " + Parser.DATE_INPUT_FORMAT
+            + " | date and time (for /on_time | /before_time | /after_time): " + Parser.DATETIME_INPUT_FORMAT + "}";
+
     private final String dateTime;
     private final FilterOption filterOption;
 

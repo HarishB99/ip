@@ -8,6 +8,8 @@ import bhaymax.task.TaskList;
  * Represents a {@code clear} command
  */
 public class ClearCommand extends Command {
+    public static final String COMMAND_FORMAT = "clear";
+
     @Override
     public void execute(TaskList taskList, MainWindow mainWindowController, Storage storage) {
         mainWindowController.clearChat(true);

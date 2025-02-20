@@ -5,7 +5,7 @@ package bhaymax.task;
  */
 public abstract class Task implements Comparable<Task> {
     public static final String DELIMITER = "|";
-    public static final String SERIAL_FORMAT = "%s " + Task.DELIMITER + " %d " + Task.DELIMITER + " %s";
+    public static final String SERIALISATION_FORMAT = "%s " + Task.DELIMITER + " %d " + Task.DELIMITER + " %s";
 
     protected String description;
     protected String type;
@@ -41,7 +41,7 @@ public abstract class Task implements Comparable<Task> {
      * @return the {@code String} representation of this object, suitable for saving to a file
      */
     public String serialise() {
-        return String.format(Task.SERIAL_FORMAT, this.type, (this.isDone ? 1 : 0), this.description);
+        return String.format(Task.SERIALISATION_FORMAT, this.type, (this.isDone ? 1 : 0), this.description);
     }
 
     public boolean hasSearchTerm(String searchTerm) {

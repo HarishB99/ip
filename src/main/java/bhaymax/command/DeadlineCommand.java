@@ -13,6 +13,8 @@ import bhaymax.task.timesensitive.Deadline;
  * Represents a {@code deadline} command
  */
 public class DeadlineCommand extends Command {
+    public static final String COMMAND_FORMAT = "deadline {description} /by " + Deadline.DUE_DATE_INPUT_FORMAT;
+
     private static final String RESPONSE_FORMAT = "Noted. Adding: " + System.lineSeparator()
             + "  %s" + System.lineSeparator()
             + "to your list of deadlines." + System.lineSeparator()

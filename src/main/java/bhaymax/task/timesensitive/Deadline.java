@@ -22,12 +22,13 @@ public class Deadline extends TimeSensitiveTask {
 
     public static final String FLAG_DUE_BY = "/by";
 
-    // For construction of exception message
     public static final String DUE_DATE_INPUT_FORMAT = "{due-by date: " + Parser.DATETIME_INPUT_FORMAT + "}";
 
     private static final String SERIALISATION_FORMAT = "%s " + Task.DELIMITER + " %s";
-    private static final String DE_SERIALISATION_FORMAT = "^D \\| ([0-1]) \\| (.+)"
-            + " \\| (\\d{2}/\\d{2}/\\d{4} \\d{2}:\\d{2})";
+    private static final String DE_SERIALISATION_FORMAT = "^D \\" + Task.DELIMITER
+            + " ([0-1]) \\" + Task.DELIMITER
+            + " (.+) \\" + Task.DELIMITER
+            + " (\\d{2}/\\d{2}/\\d{4} \\d{2}:\\d{2})";
 
     private static final int EXPECTED_NUMBER_OF_REGEX_GROUPS = 3;
     private static final int REGEX_GROUP_STATUS = 1;

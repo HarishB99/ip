@@ -9,13 +9,18 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import bhaymax.command.ClearCommand;
+import bhaymax.command.DeleteCommand;
 import bhaymax.command.ExitCommand;
 import bhaymax.command.HelloCommand;
 import bhaymax.command.ListCommand;
+import bhaymax.command.MarkCommand;
 import bhaymax.command.SearchCommand;
+import bhaymax.command.TodoCommand;
+import bhaymax.command.UnmarkCommand;
 import bhaymax.exception.command.EmptyCommandException;
 import bhaymax.exception.command.InvalidCommandFormatException;
 import bhaymax.exception.command.MissingSearchTermException;
+import bhaymax.exception.command.MissingTodoDescriptionException;
 import bhaymax.exception.command.UnrecognisedCommandException;
 import bhaymax.task.TaskList;
 
@@ -169,7 +174,7 @@ public class ParserTest {
         "LIST",
         "LISt",
         "LiSt",
-        "List",
+        "List"
     })
     public void parse_validListCommandProvided_returnsListCommand(String testInput) {
         try {
@@ -185,6 +190,7 @@ public class ParserTest {
         "Search event",
         "seaRch deadLine",
         " search eveNt ",
+        " search mid-term exams "
     })
     public void parse_validSearchCommandProvided_returnsSearchCommand(String testInput) {
         try {
@@ -207,4 +213,115 @@ public class ParserTest {
                 testInput, ParserTest.MOCK_TASK_LIST));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "todo stuff",
+        "Todo play games",
+        "todo revise for cs2103t",
+        " todo complete iP ",
+    })
+    public void parse_validTodoCommandProvided_returnsSearchCommand(String testInput) {
+        try {
+            assertInstanceOf(TodoCommand.class, Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
+        } catch (InvalidCommandFormatException e) {
+            fail();
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "todo",
+        "Todo",
+        "Todo ",
+        "toDo   ",
+        " todo   ",
+    })
+    public void parse_todoCommandMissingTaskDescription_throwsMissingTodoDescriptionException(String testInput) {
+        assertThrows(MissingTodoDescriptionException.class, () -> Parser.parse(
+                testInput, ParserTest.MOCK_TASK_LIST));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "delete 1",
+        " dElete 2",
+        "delete 3 ",
+        " Delete 5",
+        "Delete 4",
+    })
+    public void parse_validDeleteCommandProvided_returnsDeleteCommand(String testInput) {
+        try {
+            assertInstanceOf(DeleteCommand.class, Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
+        } catch (InvalidCommandFormatException e) {
+            fail();
+        }
+    }
+
+    public void parse_deleteCommandMissingTaskNumber_throwsMissingTaskNumberException() {
+
+    }
+
+    public void parse_deleteCommandTaskNumberIsNotANumber_throwsTaskIndexIsNotANumberException() {
+
+    }
+
+    public void parse_deleteCommandOutOfBoundsIndexProvided_throwsTaskIndexOutOfBoundsExceptions() {
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "mark 1",
+        " mArk 2",
+        "mark 3 ",
+        " Mark 5",
+        "Mark 4",
+    })
+    public void parse_validMarkCommandProvided_returnsMarkCommand(String testInput) {
+        try {
+            assertInstanceOf(MarkCommand.class, Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
+        } catch (InvalidCommandFormatException e) {
+            fail();
+        }
+    }
+
+    public void parse_markCommandMissingTaskNumber_throwsMissingTaskNumberException() {
+
+    }
+
+    public void parse_markCommandTaskNumberIsNotANumber_throwsTaskIndexIsNotANumberException() {
+
+    }
+
+    public void parse_markCommandOutOfBoundsIndexProvided_throwsTaskIndexOutOfBoundsExceptions() {
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "unmark 1",
+        " UnmArk 2",
+        "Unmark 3 ",
+        " unMark 5",
+        "UNMark 4",
+    })
+    public void parse_validUnmarkCommandProvided_returnsUnmarkCommand(String testInput) {
+        try {
+            assertInstanceOf(UnmarkCommand.class, Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
+        } catch (InvalidCommandFormatException e) {
+            fail();
+        }
+    }
+
+    public void parse_unmarkCommandMissingTaskNumber_throwsMissingTaskNumberException() {
+
+    }
+
+    public void parse_unmarkCommandTaskNumberIsNotANumber_throwsTaskIndexIsNotANumberException() {
+
+    }
+
+    public void parse_unmarkCommandOutOfBoundsIndexProvided_throwsTaskIndexOutOfBoundsExceptions() {
+
+    }
 }

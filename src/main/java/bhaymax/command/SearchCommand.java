@@ -8,6 +8,8 @@ import bhaymax.task.TaskList;
  * Represents a {@code search} command
  */
 public class SearchCommand extends Command {
+    public static final String COMMAND_FORMAT = "search {search term or phrase}";
+
     private final String searchTerm;
 
     /**

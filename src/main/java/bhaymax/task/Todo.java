@@ -14,7 +14,9 @@ public class Todo extends Task {
     public static final String TYPE = "T";
     public static final String NAME = "Todo Item";
 
-    private static final String DE_SERIALISATION_FORMAT = "^T \\| ([0-1]) \\| (.+)$";
+    private static final String DE_SERIALISATION_FORMAT = "^T \\" + Task.DELIMITER
+            + " ([0-1]) \\" + Task.DELIMITER
+            + " (.+)$";
 
     private static final int EXPECTED_NUMBER_OF_REGEX_GROUPS = 2;
     private static final int REGEX_GROUP_STATUS = 1;

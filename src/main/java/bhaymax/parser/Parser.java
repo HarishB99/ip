@@ -17,14 +17,16 @@ import bhaymax.command.TodoCommand;
 import bhaymax.command.UnmarkCommand;
 import bhaymax.exception.command.EmptyCommandException;
 import bhaymax.exception.command.InvalidCommandFormatException;
+import bhaymax.exception.command.MissingDeadlineDescriptionException;
 import bhaymax.exception.command.MissingDeadlineDueByDateException;
+import bhaymax.exception.command.MissingEventDescriptionException;
 import bhaymax.exception.command.MissingEventEndDateException;
 import bhaymax.exception.command.MissingEventStartDateException;
 import bhaymax.exception.command.MissingFilterDateException;
 import bhaymax.exception.command.MissingFilterOptionException;
 import bhaymax.exception.command.MissingSearchTermException;
-import bhaymax.exception.command.MissingTaskDescriptionException;
 import bhaymax.exception.command.MissingTaskNumberException;
+import bhaymax.exception.command.MissingTodoDescriptionException;
 import bhaymax.exception.command.TaskIndexIsNotANumberException;
 import bhaymax.exception.command.TaskIndexOutOfBoundsException;
 import bhaymax.exception.command.UnrecognisedCommandException;
@@ -87,21 +89,29 @@ public class Parser {
         }
     }
 
-    private static String getTaskDescription(String arguments)
+    private static String getTodoDescription(String arguments)
             throws InvalidCommandFormatException {
         if (arguments.isEmpty()) {
-            throw new MissingTaskDescriptionException();
+            throw new MissingTodoDescriptionException();
         }
         return arguments;
     }
 
     private static Pair<String, String> getTaskDescriptionAndArgs(
-            String arguments, String option, InvalidCommandFormatException exceptionToThrow)
-            throws InvalidCommandFormatException {
+            String arguments,
+            CommandString commandString,
+            String option,
+            InvalidCommandFormatException exceptionToThrow
+    ) throws InvalidCommandFormatException {
         String[] tokens = arguments.split(option, Parser.TWO_TOKENS);
         String taskDescription = tokens[Parser.FIRST_TOKEN].trim();
         if (taskDescription.isEmpty()) {
-            throw new MissingTaskDescriptionException();
+            if (commandString.equals(CommandString.DEADLINE)) {
+                throw new MissingDeadlineDescriptionException();
+            } else {
+                assert commandString.equals(CommandString.EVENT);
+                throw new MissingEventDescriptionException();
+            }
         }
         if (tokens.length < Parser.TWO_TOKENS) {
             throw exceptionToThrow;
@@ -179,16 +189,16 @@ public class Parser {
         case UNMARK:
             return new UnmarkCommand(Parser.getTaskIndex(arguments, taskList));
         case TODO:
-            return new TodoCommand(Parser.getTaskDescription(arguments));
+            return new TodoCommand(Parser.getTodoDescription(arguments));
         case DEADLINE:
             Pair<String, String> descriptionAndDeadline = Parser.getTaskDescriptionAndArgs(
-                    arguments, Deadline.FLAG_DUE_BY, new MissingDeadlineDueByDateException());
+                    arguments, commandString, Deadline.FLAG_DUE_BY, new MissingDeadlineDueByDateException());
             String deadlineDescription = descriptionAndDeadline.first();
             String deadline = descriptionAndDeadline.second();
             return new DeadlineCommand(deadlineDescription, deadline);
         case EVENT:
             Pair<String, String> descriptionAndArgs = Parser.getTaskDescriptionAndArgs(
-                    arguments, Event.FLAG_START_DATE, new MissingEventStartDateException());
+                    arguments, commandString, Event.FLAG_START_DATE, new MissingEventStartDateException());
             String eventDescription = descriptionAndArgs.first();
             String eventArguments = descriptionAndArgs.second();
             Pair<String, String> eventStartAndEnd = Parser.getEventStartAndEndDates(eventArguments);

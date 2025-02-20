@@ -13,6 +13,9 @@ import bhaymax.task.timesensitive.Event;
  * Represents a {@code event} command
  */
 public class EventCommand extends Command {
+    public static final String COMMAND_FORMAT = "event {description} /from " + Event.START_DATE_INPUT_FORMAT
+            + " /to " + Event.END_DATE_INPUT_FORMAT;
+
     private static final String RESPONSE_FORMAT = "Noted. Adding: " + System.lineSeparator()
             + "  %s" + System.lineSeparator()
             + "to your list of events." + System.lineSeparator()

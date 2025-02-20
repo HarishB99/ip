@@ -13,6 +13,8 @@ import bhaymax.task.Todo;
  * Represents a {@code todo} command
  */
 public class TodoCommand extends Command {
+    public static final String COMMAND_FORMAT = "todo {description}";
+
     private static final String RESPONSE_FORMAT = "Noted. Adding: " + System.lineSeparator()
             + "  %s" + System.lineSeparator()
             + "to your to-do list." + System.lineSeparator()
