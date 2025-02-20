@@ -26,7 +26,7 @@ public class TaskListTest {
     @Test
     public void isValidIndex_indexBelowZero_returnsFalse() {
         TaskList taskList = new TaskList();
-        assertEquals(1, taskList.addTask(TaskListTest.MOCK_TASK));
+        taskList.addTask(TaskListTest.MOCK_TASK);
         for (int i = -20; i < 0; i++) {
             assertFalse(taskList.isValidIndex(i), "Negative index " + i + " is invalid (cannot be negative).");
         }
