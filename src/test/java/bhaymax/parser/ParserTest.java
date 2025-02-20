@@ -286,7 +286,8 @@ public class ParserTest {
         " dElete a",
         "delete final exams",
         " Delete stuff",
-        "Delete 0.1"
+        "Delete 0.1",
+        "delete 1/3"
     })
     public void parse_deleteCommandTaskNumberIsNotANumber_throwsTaskIndexIsNotANumberException(String testInput) {
         assertThrows(TaskIndexIsNotANumberException.class, () -> Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
@@ -347,7 +348,8 @@ public class ParserTest {
         " mArk a",
         "mark complete homework ",
         " Mark exercise",
-        "Mark 0.1"
+        "Mark 0.1",
+        "mark 1/3"
     })
     public void parse_markCommandTaskNumberIsNotANumber_throwsTaskIndexIsNotANumberException(String testInput) {
         assertThrows(TaskIndexIsNotANumberException.class, () -> Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
@@ -408,7 +410,8 @@ public class ParserTest {
         " unmArk a",
         "unmark complete homework ",
         " unMark exercise",
-        "unmark 0.1"
+        "unmark 0.1",
+        "unmark 1/3"
     })
     public void parse_unmarkCommandTaskNumberIsNotANumber_throwsTaskIndexIsNotANumberException(String testInput) {
         assertThrows(TaskIndexIsNotANumberException.class, () -> Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
