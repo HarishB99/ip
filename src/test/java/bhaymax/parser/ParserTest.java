@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import bhaymax.command.ClearCommand;
 import bhaymax.command.ExitCommand;
 import bhaymax.command.HelloCommand;
+import bhaymax.command.ListCommand;
 import bhaymax.exception.command.EmptyCommandException;
 import bhaymax.exception.command.InvalidCommandFormatException;
 import bhaymax.exception.command.UnrecognisedCommandException;
@@ -146,6 +147,31 @@ public class ParserTest {
     public void parse_validClearCommandProvided_returnsClearCommand(String testInput) {
         try {
             assertInstanceOf(ClearCommand.class, Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
+        } catch (InvalidCommandFormatException e) {
+            fail();
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "list",
+        " list",
+        "list ",
+        "  list ",
+        "         liST      ",
+        "         lisT      ",
+        "         lIst      ",
+        "         liSt      ",
+        "         List      ",
+        "         LIST      ",
+        "LIST",
+        "LISt",
+        "LiSt",
+        "List",
+    })
+    public void parse_validListCommandProvided_returnsListCommand(String testInput) {
+        try {
+            assertInstanceOf(ListCommand.class, Parser.parse(testInput, ParserTest.MOCK_TASK_LIST));
         } catch (InvalidCommandFormatException e) {
             fail();
         }
