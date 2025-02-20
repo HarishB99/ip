@@ -27,7 +27,7 @@ public class Deadline extends TimeSensitiveTask {
 
     private static final String SERIALISATION_FORMAT = "%s " + Task.DELIMITER + " %s";
     private static final String DE_SERIALISATION_FORMAT = "^D \\| ([0-1]) \\| (.+)"
-            + " \\| (\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2})";
+            + " \\| (\\d{2}/\\d{2}/\\d{4} \\d{2}:\\d{2})";
 
     private static final int EXPECTED_NUMBER_OF_REGEX_GROUPS = 3;
     private static final int REGEX_GROUP_STATUS = 1;

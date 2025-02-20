@@ -1,0 +1,54 @@
+.root {
+    main-color: rgb(217, 100, 113);       /* Create a looked-up color called "main-color" within root. */
+    -fx-background-color: main-color;
+    -fx-background-image: url("../images/bhaymax_chatbox_background.jpg"); /* Set image */
+    -fx-background-size: cover;
+}
+
+.text-field {
+    -fx-background-color: #e7ced1;
+    -fx-font: 20px "Arial";
+}
+
+.button {
+    -fx-background-color: rgb(192, 32, 49);
+    -fx-text-fill: white;
+    -fx-font: italic bold 16px "Arial";
+}
+
+.button:hover {
+    -fx-background-color: white;
+    -fx-text-fill: rgb(192, 32, 49);
+}
+
+.button:pressed {
+    -fx-background-color: #750c18;
+    -fx-text-fill: white;
+}
+
+.scroll-pane {
+    -fx-background-color: rgba(0,0,0,.5);
+}
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+
+
+.scroll-bar {
+    -fx-font-size: 10px;  /* Change width of scroll bar. */
+    -fx-background-color: main-color;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #ff9cb4;
+    -fx-background-radius: 1em;
+}
+
+/* Hides the increment and decrement buttons. */
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-pref-height: 0;
+    -fx-opacity: 0;
+}
+
