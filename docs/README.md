@@ -1,8 +1,8 @@
 # Bhaymax User Guide
 
-// Product screenshot goes here
+![Ui.png](Ui.png)
 
-// Product intro goes here
+Bhaymax is a chatbot app that is designed to manage tasks {i.e., to-do items, deadlines and events}.
 
 ## Greeting the chatbot (Optional)
 
@@ -12,37 +12,159 @@ Format: `hello` __or__ `hi`
 
 ## Adding To-Do Items: `todo`
 
-// Describe the action and its outcome.
+Adds a to-do item to be tracked.
 
-// Give examples of usage
+Format: `todo {description}`
 
-Example: `keyword (optional arguments)`
+Explanation of parameters:
+- `{description}`: (Compulsory) A brief description about the
+  to-do item to be created.
 
-// A description of the expected outcome goes here
+Examples:
+- `todo get notes from friend`
+- `todo buy groceries for mother`
+- `todo study`
 
-```
-expected output
-```
+## Adding Deadline: `deadline`
 
-## Feature ABC
+Adds a deadline item to be tracked.
 
-// Feature details
+Format: `deadline {description} /by {due-by date}`
 
-## Adding Deadline Items: `deadline`
+Explanation of parameters:
+- `{description}`: (Compulsory) A brief description about the
+  deadline item to be created.
+- `{due-by date}`: (Compulsory) The date and time at which the 
+  deadline is due by, in the format `dd/MM/yyyy HH:mm`
+- Order of the parameters must be followed strictly (i.e.,
+  `{description}` after `deadline`, `{description}` and `{due-by
+  date}` separated by ` /by `)
+
+Examples:
+- You need to submit a report by 20 March 2025, 11:59 pm
+    - `deadline submit report /by 20/03/2025 23:59`
+- You are required to finish your essay by 05 January 2026,
+  1:00pm
+    - `deadline finish essay /by 05/01/2025 13:00`
 
 ## Adding Events: `event`
 
+Adds an event to be tracked.
+
+Format: `event {description} /from {start date} /to {end date}`
+
+Explanation of parameters:
+- `{description}`: (Compulsory) A brief description about the
+  event to be created.
+- `{start date}`: (Compulsory) The date and time at which the 
+  event starts, in the format `dd/MM/yyyy HH:mm`
+- `{end date}`: (Compulsory) The date and time at which the 
+  event end, in the format `dd/MM/yyyy HH:mm`
+- Order of the parameters must be followed strictly (i.e.,
+  `{description}` after `event`, `{description}` and `{start date}` 
+  separated by ` /from `, etc.)
+
+Examples:
+- You have a mid-terms on 5 March 2025 from 12pm to 2pm
+    - `event mid-terms /from 05/03/2025 12:00 /to 05/03/2025
+      14:00`
+- There is a movie screening on 22 February 2025 from 1pm to
+  3pm
+    - `event movie screening /from 22/02/2025 13:00 /to
+      22/02/2025 15:00`
+
 ## Listing all tasks and events: `list`
 
-## Filtering list of tasks and events by date: `filter`
+Shows a list of all to-do items, deadlines and events created.
+
+Format: `list`
+
+## Filtering deadlines and events by date: `filter`
+
+Filters deadlines and events by date.
+
+Format: `search {filter_option} {date / date and time}`
+
+Explanation of parameters:
+- `{filter_option}`: One of 6 values - `/before`, `/on`,
+  `/after`, `/before_time`, `/on_time`, `/after_time`
+    - Each option specifies whether to list deadlines and events
+    occurring before, on or after the date specified
+    - Suffix an option with `_time` if you also wish to
+      specify the time to filter by
+- `{date / date and time}`: The date or the date and time to
+  filter by, in the format `dd/MM/yyyy` and `dd/MM/yyyy HH:mm`
+  respectively
+    - If the `{filter_option}` provided contains the suffix
+      `_time`, then a time is also required for the filter
+- Order of the parameters must be followed strictly.
 
 ## Search for tasks with description matching keywords: `search`
 
+Searches for a task that has a description matching the provided
+search term.
+
+Format: `search {keyword or phrase}`
+
+Explanation of parameters:
+- `{keyword or phrase}`: (Compulsory) A keyword or a phrase to
+  search for
+
+Examples:
+- `search exam`
+- `search buy`
+- `search movie`
+
 ## Marking a task as completed: `mark`
+
+Marks a task (i.e., a to-do item, deadline or event) as
+completed.
+
+Format: `mark {index of task}`
+
+Explanation of parameters:
+- `{index of task}`: (Compulsory) The index number of the task to be 
+  marked as completed. This number can be retrieved using the output 
+  of `list`.
+
+Examples:
+- `mark 11`
+- `mark 1`
+- `mark 23`
 
 ## Marking a task as _incomplete_: `unmark`
 
+Marks a task (i.e., a to-do item, deadline or event) as
+incomplete.
+
+Format: `unmark {index of task}`
+
+Explanation of parameters:
+- `{index of task}`: (Compulsory) The index number of the task to be 
+  marked as incomplete. This number can be retrieved using the output
+  of `list`.
+
+Examples:
+- `unmark 11`
+- `unmark 1`
+- `unmark 23`
+
 ## Deleting a task: `delete`
+
+Removes a task (i.e., a to-do item, deadline or event) from
+getting tracked.
+
+Format: `delete {index of task}`
+
+Explanation of parameters:
+- `{index of task}`: (Compulsory) The index number of the task to be
+  deleted. This number can be retrieved using the output
+  of `list`.
+
+Examples:
+- `delete 11`
+- `delete 1`
+- `delete 23`
 
 ## Clear the chat area: `clear`
 
@@ -62,21 +184,31 @@ The data file is automatically created when a task is added to the program.
 It is saved at `[JAR file location]/data/tasks.txt`.
 Tasks are stored in the following format:
 
-`TASK_TYPE | TASK_COMPLETION_STATUS | TASK_DESCRIPTION |
-[DUE_BY_DATE or START_DATE] | [END_DATE]`
-
-- `TASK_TYPE`: The type of task. It can take one of three
-  values:
-  - `T` - Represents a to-do item
-  - `D` - Represents a deadline item
-  - `E` - Represents an event
-- `TASK_COMPLETION_STATUS`: Indicates whether the task has been marked as completed. It can take one of two values:
-  - `1` - Indicates the task has been marked as completed
-  - `0` - Indicates the task has been marked as incomplete
-- `TASK_DESCRIPTION`: A brief description about the task.
-- `DUE_BY_DATE` (Required for deadline items): The date and time the deadline item is due by. Specified in the format `dd/MM/yyyy HH:mm`.
-  - E.g., You need to submit a report on March 2nd, 2025, at 11:59 pm. You will input this deadline as follows:
-    - `deadline submit report /by 02/03/2025 23:59`
-    - Note that the time is in _24-hour format_.
-- `START_DATE` (Required by events): The date and time at which the event starts.
-- `END_DATE` (Required by events): The date and time at which the event ends.
+- To-do item:
+    - Format: `T | {task completion status} | {task description}`
+    - `{task completion status}`: Indicates whether the task has 
+    been marked as completed. It can take one of two values:
+        - `1` - Indicates the task has been marked as completed
+        - `0` - Indicates the task has been marked as incomplete
+    - `{task description}`: A brief description about the
+      to-do item.
+- Deadline item:
+    - Format: `D | {task completion status} | {task description} | {due-by date}`
+    - `{task completion status}`: Indicates whether the task has 
+    been marked as completed. It can take one of two values:
+        - `1` - Indicates the task has been marked as completed
+        - `0` - Indicates the task has been marked as incomplete
+    - `{task description}`: A brief description about the
+      deadline.
+    - `{due-by date}`: The date and time the deadline item is due 
+    by. Specified in the format `dd/MM/yyyy HH:mm`.
+- Event:
+    - Format: `E | {task completion status} | {task description} | {start date} | {end date}`
+    - `{task completion status}`: Indicates whether the task has 
+    been marked as completed. It can take one of two values:
+        - `1` - Indicates the task has been marked as completed
+        - `0` - Indicates the task has been marked as incomplete
+    - `{task description}`: A brief description about the
+      event.
+    - `{start date}`: The date and time at which the event starts, in the format `dd/MM/yyyy HH:mm`.
+    - `{end date}`: The date and time at which the event ends, in the format `dd/MM/yyyy HH:mm`.
