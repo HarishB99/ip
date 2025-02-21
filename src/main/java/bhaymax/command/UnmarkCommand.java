@@ -10,6 +10,9 @@ import bhaymax.task.TaskList;
  * Represents a {@code unmark} command
  */
 public class UnmarkCommand extends Command {
+    public static final String COMMAND_FORMAT =
+            "unmark {index number of task to be marked as incomplete - use 'list' to find the index}";
+
     private static final String RESPONSE_FORMAT = "Noted. Marking:" + System.lineSeparator()
                 + "  %s" + System.lineSeparator()
                 + "as incomplete.";

@@ -17,17 +17,21 @@ import bhaymax.command.TodoCommand;
 import bhaymax.command.UnmarkCommand;
 import bhaymax.exception.command.EmptyCommandException;
 import bhaymax.exception.command.InvalidCommandFormatException;
-import bhaymax.exception.command.MissingDeadlineDueByDateException;
-import bhaymax.exception.command.MissingEventEndDateException;
-import bhaymax.exception.command.MissingEventStartDateException;
-import bhaymax.exception.command.MissingFilterDateException;
-import bhaymax.exception.command.MissingFilterOptionException;
 import bhaymax.exception.command.MissingSearchTermException;
-import bhaymax.exception.command.MissingTaskDescriptionException;
-import bhaymax.exception.command.MissingTaskNumberException;
+import bhaymax.exception.command.MissingTaskNumberForDeleteException;
+import bhaymax.exception.command.MissingTaskNumberForMarkException;
+import bhaymax.exception.command.MissingTaskNumberForUnmarkException;
+import bhaymax.exception.command.MissingTodoDescriptionException;
 import bhaymax.exception.command.TaskIndexIsNotANumberException;
 import bhaymax.exception.command.TaskIndexOutOfBoundsException;
 import bhaymax.exception.command.UnrecognisedCommandException;
+import bhaymax.exception.command.deadline.MissingDeadlineDescriptionException;
+import bhaymax.exception.command.deadline.MissingDeadlineDueByDateException;
+import bhaymax.exception.command.event.MissingEventDescriptionException;
+import bhaymax.exception.command.event.MissingEventEndDateException;
+import bhaymax.exception.command.event.MissingEventStartDateException;
+import bhaymax.exception.command.filter.MissingFilterDateException;
+import bhaymax.exception.command.filter.MissingFilterOptionException;
 import bhaymax.task.TaskList;
 import bhaymax.task.timesensitive.Deadline;
 import bhaymax.task.timesensitive.Event;
@@ -38,8 +42,8 @@ import bhaymax.util.Pair;
  * and returns a {@link Command} object
  */
 public class Parser {
-    public static final String DATE_INPUT_FORMAT = "dd-MM-yyyy";
-    public static final String DATETIME_INPUT_FORMAT = "dd-MM-yyyy HH:mm";
+    public static final String DATE_INPUT_FORMAT = "dd/MM/yyyy";
+    public static final String DATETIME_INPUT_FORMAT = "dd/MM/yyyy HH:mm";
     public static final String DATETIME_OUTPUT_FORMAT = "dd MMM yyyy, EEE @ HH:mm";
 
     public static final int TWO_TOKENS = 2;
@@ -69,11 +73,12 @@ public class Parser {
         );
     }
 
-    private static int getTaskIndex(String arguments, TaskList taskList)
+    private static int getTaskIndex(String arguments, TaskList taskList,
+                                    InvalidCommandFormatException exceptionToThrowOnMissingTaskNumber)
             throws InvalidCommandFormatException {
         String trimmedArguments = arguments.trim();
         if (trimmedArguments.isEmpty()) {
-            throw new MissingTaskNumberException();
+            throw exceptionToThrowOnMissingTaskNumber;
         }
 
         try {
@@ -87,28 +92,31 @@ public class Parser {
         }
     }
 
-    private static String getTaskDescription(String arguments)
+    private static String getTodoDescription(String arguments)
             throws InvalidCommandFormatException {
         if (arguments.isEmpty()) {
-            throw new MissingTaskDescriptionException();
+            throw new MissingTodoDescriptionException();
         }
         return arguments;
     }
 
     private static Pair<String, String> getTaskDescriptionAndArgs(
-            String arguments, String option, InvalidCommandFormatException exceptionToThrow)
-            throws InvalidCommandFormatException {
+            String arguments,
+            String option,
+            InvalidCommandFormatException exceptionToThrowOnMissingDescription,
+            InvalidCommandFormatException exceptionToThrowOnMissingArgs
+    ) throws InvalidCommandFormatException {
         String[] tokens = arguments.split(option, Parser.TWO_TOKENS);
         String taskDescription = tokens[Parser.FIRST_TOKEN].trim();
         if (taskDescription.isEmpty()) {
-            throw new MissingTaskDescriptionException();
+            throw exceptionToThrowOnMissingDescription;
         }
         if (tokens.length < Parser.TWO_TOKENS) {
-            throw exceptionToThrow;
+            throw exceptionToThrowOnMissingArgs;
         }
         String argumentForOption = tokens[Parser.SECOND_TOKEN].trim();
         if (argumentForOption.isEmpty()) {
-            throw exceptionToThrow;
+            throw exceptionToThrowOnMissingArgs;
         }
         return new Pair<String, String>(taskDescription, argumentForOption);
     }
@@ -173,22 +181,27 @@ public class Parser {
         case LIST:
             return new ListCommand();
         case DELETE:
-            return new DeleteCommand(Parser.getTaskIndex(arguments, taskList));
+            return new DeleteCommand(Parser.getTaskIndex(arguments, taskList,
+                    new MissingTaskNumberForDeleteException()));
         case MARK:
-            return new MarkCommand(Parser.getTaskIndex(arguments, taskList));
+            return new MarkCommand(Parser.getTaskIndex(arguments, taskList,
+                    new MissingTaskNumberForMarkException()));
         case UNMARK:
-            return new UnmarkCommand(Parser.getTaskIndex(arguments, taskList));
+            return new UnmarkCommand(Parser.getTaskIndex(arguments, taskList,
+                    new MissingTaskNumberForUnmarkException()));
         case TODO:
-            return new TodoCommand(Parser.getTaskDescription(arguments));
+            return new TodoCommand(Parser.getTodoDescription(arguments));
         case DEADLINE:
-            Pair<String, String> descriptionAndDeadline = Parser.getTaskDescriptionAndArgs(
-                    arguments, Deadline.FLAG_DUE_BY, new MissingDeadlineDueByDateException());
-            String deadlineDescription = descriptionAndDeadline.first();
-            String deadline = descriptionAndDeadline.second();
-            return new DeadlineCommand(deadlineDescription, deadline);
+            Pair<String, String> descriptionAndDueByDate = Parser.getTaskDescriptionAndArgs(
+                    arguments, Deadline.FLAG_DUE_BY,
+                    new MissingDeadlineDescriptionException(), new MissingDeadlineDueByDateException());
+            String deadlineDescription = descriptionAndDueByDate.first();
+            String dueByDate = descriptionAndDueByDate.second();
+            return new DeadlineCommand(deadlineDescription, dueByDate);
         case EVENT:
             Pair<String, String> descriptionAndArgs = Parser.getTaskDescriptionAndArgs(
-                    arguments, Event.FLAG_START_DATE, new MissingEventStartDateException());
+                    arguments, Event.FLAG_START_DATE,
+                    new MissingEventDescriptionException(), new MissingEventStartDateException());
             String eventDescription = descriptionAndArgs.first();
             String eventArguments = descriptionAndArgs.second();
             Pair<String, String> eventStartAndEnd = Parser.getEventStartAndEndDates(eventArguments);

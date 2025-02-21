@@ -10,6 +10,9 @@ import bhaymax.task.TaskList;
  * Represents a {@code mark} command
  */
 public class MarkCommand extends Command {
+    public static final String COMMAND_FORMAT =
+            "mark {index number of task to be marked as completed - use 'list' to find the index}";
+
     private static final String RESPONSE_FORMAT = "Congratulations on completing the task:" + System.lineSeparator()
                 + "  %s" + System.lineSeparator()
                 + "I have marked it as complete.";

@@ -22,12 +22,13 @@ public class Deadline extends TimeSensitiveTask {
 
     public static final String FLAG_DUE_BY = "/by";
 
-    // For construction of exception message
     public static final String DUE_DATE_INPUT_FORMAT = "{due-by date: " + Parser.DATETIME_INPUT_FORMAT + "}";
 
     private static final String SERIALISATION_FORMAT = "%s " + Task.DELIMITER + " %s";
-    private static final String DE_SERIALISATION_FORMAT = "^D \\| ([0-1]) \\| (.+)"
-            + " \\| (\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2})";
+    private static final String DE_SERIALISATION_FORMAT = "^D \\" + Task.DELIMITER
+            + " ([0-1]) \\" + Task.DELIMITER
+            + " (.+) \\" + Task.DELIMITER
+            + " (\\d{2}/\\d{2}/\\d{4} \\d{2}:\\d{2})";
 
     private static final int EXPECTED_NUMBER_OF_REGEX_GROUPS = 3;
     private static final int REGEX_GROUP_STATUS = 1;
@@ -44,16 +45,12 @@ public class Deadline extends TimeSensitiveTask {
      * due date of the deadline
      *
      * @param description the description of the task
-     * @param dueDateTime the date and time the task is due, as a {@code String}
-     * @throws DateTimeParseException if the deadline provided is not of the expected format
+     * @param dueDateTime the date and time the task is due, as a {@link LocalDateTime} object
      * @see Parser#DATETIME_INPUT_FORMAT
      */
-    public Deadline(String description, String dueDateTime)
-            throws DateTimeParseException {
-        super(Deadline.TYPE, description,
-                LocalDateTime.parse(dueDateTime, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT)));
-        this.dueDateTime = LocalDateTime.parse(
-                dueDateTime, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
+    public Deadline(String description, LocalDateTime dueDateTime) {
+        super(Deadline.TYPE, description, dueDateTime);
+        this.dueDateTime = dueDateTime;
     }
 
     @Override
@@ -92,16 +89,16 @@ public class Deadline extends TimeSensitiveTask {
     }
 
     private static Deadline getDeadline(int lineNumber, MatchResult matchResult) throws WrongTaskFormatException {
-        Deadline deadline;
         try {
             String deadlineDescription = matchResult.group(Deadline.REGEX_GROUP_DESCRIPTION);
-            String deadlineDueDate = matchResult.group(Deadline.REGEX_GROUP_DEADLINE);
-            deadline = new Deadline(deadlineDescription, deadlineDueDate);
+            String deadlineDueDateString = matchResult.group(Deadline.REGEX_GROUP_DEADLINE);
+            LocalDateTime deadlineDueDate = LocalDateTime.parse(
+                    deadlineDueDateString, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
+            return new Deadline(deadlineDescription, deadlineDueDate);
         } catch (DateTimeParseException e) {
             throw new WrongTaskFormatException(
                     lineNumber, Deadline.NAME, Deadline.TYPE, Deadline.DUE_DATE_INPUT_FORMAT);
         }
-        return deadline;
     }
 
     private static MatchResult getMatchResult(int lineNumber, String serialisedDeadline)
