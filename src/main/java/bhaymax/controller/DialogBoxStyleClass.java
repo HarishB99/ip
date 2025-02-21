@@ -1,7 +1,5 @@
 package bhaymax.controller;
 
-import java.util.HashMap;
-
 /**
  * Provides enumeration values for class names available to style a dialog box
  */
