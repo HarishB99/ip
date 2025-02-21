@@ -73,7 +73,7 @@ public class Parser {
         );
     }
 
-    private static int getTaskIndex(CommandString commandString, String arguments, TaskList taskList,
+    private static int getTaskIndex(String arguments, TaskList taskList,
                                     InvalidCommandFormatException exceptionToThrowOnMissingTaskNumber)
             throws InvalidCommandFormatException {
         String trimmedArguments = arguments.trim();
@@ -181,13 +181,13 @@ public class Parser {
         case LIST:
             return new ListCommand();
         case DELETE:
-            return new DeleteCommand(Parser.getTaskIndex(commandString, arguments, taskList,
+            return new DeleteCommand(Parser.getTaskIndex(arguments, taskList,
                     new MissingTaskNumberForDeleteException()));
         case MARK:
-            return new MarkCommand(Parser.getTaskIndex(commandString, arguments, taskList,
+            return new MarkCommand(Parser.getTaskIndex(arguments, taskList,
                     new MissingTaskNumberForMarkException()));
         case UNMARK:
-            return new UnmarkCommand(Parser.getTaskIndex(commandString, arguments, taskList,
+            return new UnmarkCommand(Parser.getTaskIndex(arguments, taskList,
                     new MissingTaskNumberForUnmarkException()));
         case TODO:
             return new TodoCommand(Parser.getTodoDescription(arguments));
