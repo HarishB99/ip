@@ -1,7 +1,7 @@
 .label {
-    -fx-font: 20px "Arial";
+    -fx-font: 16px "Arial";
     -fx-border-width: 2px;
-    -fx-padding: 10px;
+    -fx-padding: 6px;
     -fx-background-color: white;
     -fx-border-color: #e4182e;
     -fx-background-radius: 1em 1em 0 1em;
