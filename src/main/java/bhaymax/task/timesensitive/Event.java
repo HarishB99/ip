@@ -7,7 +7,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.regex.MatchResult;
 
-import bhaymax.exception.command.InvalidTimeRangeForEventException;
+import bhaymax.exception.command.event.InvalidTimeRangeForEventException;
 import bhaymax.exception.file.InvalidTaskStatusException;
 import bhaymax.exception.file.TaskDeSerialisationException;
 import bhaymax.exception.file.WrongTaskFormatException;

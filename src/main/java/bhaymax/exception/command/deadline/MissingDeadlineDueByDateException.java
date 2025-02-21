@@ -1,4 +1,6 @@
-package bhaymax.exception.command;
+package bhaymax.exception.command.deadline;
+
+import bhaymax.exception.command.InvalidCommandFormatException;
 
 /**
  * Thrown when a due-by date is not provided for a {@link bhaymax.task.timesensitive.Deadline}

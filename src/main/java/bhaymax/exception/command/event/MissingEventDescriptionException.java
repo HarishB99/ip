@@ -1,6 +1,7 @@
-package bhaymax.exception.command;
+package bhaymax.exception.command.event;
 
 import bhaymax.command.EventCommand;
+import bhaymax.exception.command.MissingTaskDescriptionException;
 
 /**
  * Thrown when a description is not provided for an event

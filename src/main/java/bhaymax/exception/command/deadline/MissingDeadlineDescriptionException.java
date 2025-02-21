@@ -1,6 +1,7 @@
-package bhaymax.exception.command;
+package bhaymax.exception.command.deadline;
 
 import bhaymax.command.DeadlineCommand;
+import bhaymax.exception.command.MissingTaskDescriptionException;
 
 /**
  * Thrown when a description is not provided for a deadline item

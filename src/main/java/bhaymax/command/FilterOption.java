@@ -1,6 +1,6 @@
 package bhaymax.command;
 
-import bhaymax.exception.command.InvalidFilterOptionException;
+import bhaymax.exception.command.filter.InvalidFilterOptionException;
 
 /**
  * Provides enumeration values representing the valid options that can be passed to the {@code filter} command
