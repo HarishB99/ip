@@ -1,10 +1,17 @@
 package bhaymax.command;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 import bhaymax.controller.MainWindow;
 import bhaymax.exception.TaskAlreadyExistsException;
 import bhaymax.exception.command.AttemptToCreateDuplicateTaskException;
 import bhaymax.exception.command.InvalidCommandFormatException;
+import bhaymax.exception.command.InvalidDateTimeFormatInCommandException;
+import bhaymax.exception.command.event.InvalidTimeRangeForEventException;
 import bhaymax.exception.file.FileWriteException;
+import bhaymax.parser.Parser;
 import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
 import bhaymax.task.timesensitive.Event;
@@ -22,8 +29,8 @@ public class EventCommand extends Command {
             + "You now have %d task%s to complete.";
 
     private final String taskDescription;
-    private final String start;
-    private final String end;
+    private final LocalDateTime start;
+    private final LocalDateTime end;
 
     /**
      * Constructor for {@code EventCommand}
@@ -33,10 +40,18 @@ public class EventCommand extends Command {
      * @param end the date and time at which the event will end, as a {@code String}
      * @see bhaymax.parser.Parser#DATETIME_INPUT_FORMAT
      */
-    public EventCommand(String taskDescription, String start, String end) {
-        this.taskDescription = taskDescription;
-        this.start = start;
-        this.end = end;
+    public EventCommand(String taskDescription, String start, String end)
+            throws InvalidDateTimeFormatInCommandException, InvalidTimeRangeForEventException {
+        try {
+            this.taskDescription = taskDescription;
+            this.start = LocalDateTime.parse(start, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
+            this.end = LocalDateTime.parse(end, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
+            if (this.end.isBefore(this.start)) {
+                throw new InvalidTimeRangeForEventException();
+            }
+        } catch (DateTimeParseException e) {
+            throw new InvalidDateTimeFormatInCommandException();
+        }
     }
 
     @Override

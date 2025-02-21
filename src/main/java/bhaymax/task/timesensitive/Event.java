@@ -55,20 +55,14 @@ public class Event extends TimeSensitiveTask {
      * and end
      *
      * @param description the description of the event
-     * @param start the date and time when the event will start, as a {@code String}
-     * @param end the date and time when the event will end, as a {@code String}
-     * @throws DateTimeParseException if the start date or end date provided is not of the expected format
+     * @param start the date and time when the event will start, as a {@link LocalDateTime} object
+     * @param end the date and time when the event will end, as a {@link LocalDateTime} object
      * @see Parser#DATETIME_INPUT_FORMAT
      */
-    public Event(String description, String start, String end)
-            throws DateTimeParseException, InvalidTimeRangeForEventException {
-        super(Event.TYPE, description,
-                LocalDateTime.parse(start, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT)));
-        this.start = LocalDateTime.parse(start, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
-        this.end = LocalDateTime.parse(end, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
-        if (this.end.isBefore(this.start)) {
-            throw new InvalidTimeRangeForEventException();
-        }
+    public Event(String description, LocalDateTime start, LocalDateTime end) {
+        super(Event.TYPE, description, start);
+        this.start = start;
+        this.end = end;
     }
 
     @Override
@@ -107,18 +101,23 @@ public class Event extends TimeSensitiveTask {
     }
 
     private static Event getEvent(int lineNumber, MatchResult matchResult) throws WrongTaskFormatException {
-        Event event;
         try {
             String eventDescription = matchResult.group(Event.REGEX_GROUP_DESCRIPTION);
-            String eventStart = matchResult.group(Event.REGEX_GROUP_START_DATE);
-            String eventEnd = matchResult.group(Event.REGEX_GROUP_END_DATE);
-            event = new Event(eventDescription, eventStart, eventEnd);
+            String eventStartString = matchResult.group(Event.REGEX_GROUP_START_DATE);
+            String eventEndString = matchResult.group(Event.REGEX_GROUP_END_DATE);
+            LocalDateTime eventStart = LocalDateTime.parse(
+                    eventStartString, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
+            LocalDateTime eventEnd = LocalDateTime.parse(
+                    eventEndString, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
+            if (eventEnd.isBefore(eventStart)) {
+                throw new InvalidTimeRangeForEventException();
+            }
+            return new Event(eventDescription, eventStart, eventEnd);
         } catch (DateTimeParseException | InvalidTimeRangeForEventException e) {
             throw new WrongTaskFormatException(
                     lineNumber, Event.NAME, Event.TYPE,
                     Event.START_DATE_INPUT_FORMAT, Event.END_DATE_INPUT_FORMAT);
         }
-        return event;
     }
 
     private static MatchResult getMatchResult(int lineNumber, String serialisedEvent) throws WrongTaskFormatException {

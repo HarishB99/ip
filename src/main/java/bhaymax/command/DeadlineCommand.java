@@ -1,10 +1,16 @@
 package bhaymax.command;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 import bhaymax.controller.MainWindow;
 import bhaymax.exception.TaskAlreadyExistsException;
 import bhaymax.exception.command.AttemptToCreateDuplicateTaskException;
 import bhaymax.exception.command.InvalidCommandFormatException;
+import bhaymax.exception.command.InvalidDateTimeFormatInCommandException;
 import bhaymax.exception.file.FileWriteException;
+import bhaymax.parser.Parser;
 import bhaymax.storage.Storage;
 import bhaymax.task.TaskList;
 import bhaymax.task.timesensitive.Deadline;
@@ -21,7 +27,7 @@ public class DeadlineCommand extends Command {
             + "You now have %d task%s to complete.";
 
     private final String taskDescription;
-    private final String deadline;
+    private final LocalDateTime deadline;
 
     /**
      * Constructor for {@code DeadlineCommand}
@@ -30,9 +36,14 @@ public class DeadlineCommand extends Command {
      * @param deadline the date and time the deadline will be due by, as a {@code String}
      * @see bhaymax.parser.Parser#DATETIME_INPUT_FORMAT
      */
-    public DeadlineCommand(String taskDescription, String deadline) {
-        this.taskDescription = taskDescription;
-        this.deadline = deadline;
+    public DeadlineCommand(String taskDescription, String deadline) throws InvalidDateTimeFormatInCommandException {
+        try {
+            this.taskDescription = taskDescription;
+            this.deadline = LocalDateTime.parse(
+                    deadline, DateTimeFormatter.ofPattern(Parser.DATETIME_INPUT_FORMAT));
+        } catch (DateTimeParseException e) {
+            throw new InvalidDateTimeFormatInCommandException();
+        }
     }
 
     @Override
