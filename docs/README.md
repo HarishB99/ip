@@ -8,7 +8,7 @@
 
 Greets the chatbot. (And the chatbot greets you back!)
 
-Format: `hello` ___OR___ `hi`
+Format: `hello` __or__ `hi`
 
 ## Adding To-Do Items: `todo`
 
@@ -54,14 +54,13 @@ Format: `clear`
 
 Exits the program.
 
-Format: `bye` ___OR___ `exit`
+Format: `bye` __or__ `exit`
 
 ## Editing the data file
 
-The data file is first created when the first task is added to
-the program. It is saved at `[JAR file
-location]/data/tasks.txt`. Tasks are stored in the following
-format:
+The data file is automatically created when a task is added to the program.
+It is saved at `[JAR file location]/data/tasks.txt`.
+Tasks are stored in the following format:
 
 `TASK_TYPE | TASK_COMPLETION_STATUS | TASK_DESCRIPTION |
 [DUE_BY_DATE or START_DATE] | [END_DATE]`
