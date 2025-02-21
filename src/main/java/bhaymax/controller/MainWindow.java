@@ -177,27 +177,27 @@ public class MainWindow {
     }
 
     private DialogBox getUserDialog(String input) {
-        return DialogBox.getUserDialog(input, this.userImage);
+        return DialogBox.getUserDialogBox(input, this.userImage);
     }
 
     private DialogBox getNormalChatbotDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotNormalImage);
+        return DialogBox.getChatbotDialogBox(input, this.chatbotNormalImage, DialogBoxStyleClass.CHATBOT_NORMAL);
     }
 
     private DialogBox getAnnoyedChatbotDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotAnnoyedImage);
+        return DialogBox.getChatbotDialogBox(input, this.chatbotAnnoyedImage, DialogBoxStyleClass.CHATBOT_ANNOYED);
     }
 
     private DialogBox getExcitedChatbotDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotExcitedImage);
+        return DialogBox.getChatbotDialogBox(input, this.chatbotExcitedImage, DialogBoxStyleClass.CHATBOT_NORMAL);
     }
 
     private DialogBox getHappyChatbotDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotHappyImage);
+        return DialogBox.getChatbotDialogBox(input, this.chatbotHappyImage, DialogBoxStyleClass.CHATBOT_NORMAL);
     }
 
     private DialogBox getSadChatbotDialog(String input) {
-        return DialogBox.getChatbotDialog(input, this.chatbotSadImage);
+        return DialogBox.getChatbotDialogBox(input, this.chatbotSadImage, DialogBoxStyleClass.CHATBOT_SAD);
     }
 
     /**
