@@ -192,12 +192,12 @@ public class Parser {
         case TODO:
             return new TodoCommand(Parser.getTodoDescription(arguments));
         case DEADLINE:
-            Pair<String, String> descriptionAndDeadline = Parser.getTaskDescriptionAndArgs(
+            Pair<String, String> descriptionAndDueByDate = Parser.getTaskDescriptionAndArgs(
                     arguments, Deadline.FLAG_DUE_BY,
                     new MissingDeadlineDescriptionException(), new MissingDeadlineDueByDateException());
-            String deadlineDescription = descriptionAndDeadline.first();
-            String deadline = descriptionAndDeadline.second();
-            return new DeadlineCommand(deadlineDescription, deadline);
+            String deadlineDescription = descriptionAndDueByDate.first();
+            String dueByDate = descriptionAndDueByDate.second();
+            return new DeadlineCommand(deadlineDescription, dueByDate);
         case EVENT:
             Pair<String, String> descriptionAndArgs = Parser.getTaskDescriptionAndArgs(
                     arguments, Event.FLAG_START_DATE,
