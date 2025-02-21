@@ -1,4 +1,6 @@
-package bhaymax.exception.command;
+package bhaymax.exception.command.event;
+
+import bhaymax.exception.command.InvalidCommandFormatException;
 
 /**
  * Thrown when an end date is not provided for a {@link bhaymax.task.timesensitive.Event}

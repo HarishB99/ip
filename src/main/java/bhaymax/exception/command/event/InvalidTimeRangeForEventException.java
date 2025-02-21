@@ -1,4 +1,6 @@
-package bhaymax.exception.command;
+package bhaymax.exception.command.event;
+
+import bhaymax.exception.command.InvalidCommandFormatException;
 
 /**
  * Thrown when the end date for an event precedes its start date

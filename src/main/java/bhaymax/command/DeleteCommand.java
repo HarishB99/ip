@@ -11,6 +11,9 @@ import bhaymax.util.Pair;
  * Represents a {@code delete} command
  */
 public class DeleteCommand extends Command {
+    public static final String COMMAND_FORMAT =
+            "delete {index number of task to be deleted - use 'list' to find the index}";
+
     private static final String RESPONSE_FORMAT = "Noted. Removing: " + System.lineSeparator()
                 + "  %s" + System.lineSeparator()
                 + "from your list of tasks." + System.lineSeparator();

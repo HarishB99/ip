@@ -8,8 +8,9 @@ import bhaymax.task.Task;
  * {@inheritDoc}
  */
 public class WrongTaskFormatException extends TaskDeSerialisationException {
-    public static final String MESSAGE_TEMPLATE = "%s in file should be of format "
-            + "'%s " + Task.DELIMITER + " {0, 1} " + Task.DELIMITER + " {description}%s'";
+    public static final String MESSAGE_TEMPLATE = "%s in file should be of format '%s " + Task.DELIMITER
+            + " {0, 1 - indicates whether the task has been marked as done} " + Task.DELIMITER
+            + " {description}%s'";
     public static final String ADDITIONAL_DETAILS_TEMPLATE = " " + Task.DELIMITER + " %s";
 
     /**

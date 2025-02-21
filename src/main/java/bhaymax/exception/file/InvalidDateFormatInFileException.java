@@ -1,6 +1,4 @@
-package bhaymax.exception.command;
-
-import bhaymax.exception.file.InvalidFileFormatException;
+package bhaymax.exception.file;
 
 /**
  * Thrown when a date encountered in file is not of valid format

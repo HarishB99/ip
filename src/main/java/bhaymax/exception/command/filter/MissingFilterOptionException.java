@@ -1,4 +1,6 @@
-package bhaymax.exception.command;
+package bhaymax.exception.command.filter;
+
+import bhaymax.exception.command.InvalidCommandFormatException;
 
 /**
  * Thrown when a filter option is not specified for the {@link bhaymax.command.FilterCommand}
