@@ -25,7 +25,6 @@ import bhaymax.exception.command.MissingEventStartDateException;
 import bhaymax.exception.command.MissingFilterDateException;
 import bhaymax.exception.command.MissingFilterOptionException;
 import bhaymax.exception.command.MissingSearchTermException;
-import bhaymax.exception.command.MissingTaskNumberException;
 import bhaymax.exception.command.MissingTaskNumberForDeleteException;
 import bhaymax.exception.command.MissingTaskNumberForMarkException;
 import bhaymax.exception.command.MissingTaskNumberForUnmarkException;
@@ -74,9 +73,13 @@ public class Parser {
         );
     }
 
-    private static int getTaskIndex(CommandString commandString, String arguments, TaskList taskList)
+    private static int getTaskIndex(CommandString commandString, String arguments, TaskList taskList,
+                                    InvalidCommandFormatException exceptionToThrowOnMissingTaskNumber)
             throws InvalidCommandFormatException {
-        String trimmedArguments = Parser.getTrimmedArguments(commandString, arguments);
+        String trimmedArguments = arguments.trim();
+        if (trimmedArguments.isEmpty()) {
+            throw exceptionToThrowOnMissingTaskNumber;
+        }
 
         try {
             int index = Integer.parseInt(trimmedArguments) + Parser.INDEX_OFFSET;
@@ -89,22 +92,6 @@ public class Parser {
         }
     }
 
-    private static String getTrimmedArguments(CommandString commandString, String arguments)
-            throws MissingTaskNumberException {
-        String trimmedArguments = arguments.trim();
-        if (trimmedArguments.isEmpty()) {
-            if (commandString.equals(CommandString.DELETE)) {
-                throw new MissingTaskNumberForDeleteException();
-            } else if (commandString.equals(CommandString.MARK)) {
-                throw new MissingTaskNumberForMarkException();
-            } else {
-                assert commandString.equals(CommandString.UNMARK);
-                throw new MissingTaskNumberForUnmarkException();
-            }
-        }
-        return trimmedArguments;
-    }
-
     private static String getTodoDescription(String arguments)
             throws InvalidCommandFormatException {
         if (arguments.isEmpty()) {
@@ -114,27 +101,22 @@ public class Parser {
     }
 
     private static Pair<String, String> getTaskDescriptionAndArgs(
-            CommandString commandString,
             String arguments,
             String option,
-            InvalidCommandFormatException exceptionToThrow
+            InvalidCommandFormatException exceptionToThrowOnMissingDescription,
+            InvalidCommandFormatException exceptionToThrowOnMissingArgs
     ) throws InvalidCommandFormatException {
         String[] tokens = arguments.split(option, Parser.TWO_TOKENS);
         String taskDescription = tokens[Parser.FIRST_TOKEN].trim();
         if (taskDescription.isEmpty()) {
-            if (commandString.equals(CommandString.DEADLINE)) {
-                throw new MissingDeadlineDescriptionException();
-            } else {
-                assert commandString.equals(CommandString.EVENT);
-                throw new MissingEventDescriptionException();
-            }
+            throw exceptionToThrowOnMissingDescription;
         }
         if (tokens.length < Parser.TWO_TOKENS) {
-            throw exceptionToThrow;
+            throw exceptionToThrowOnMissingArgs;
         }
         String argumentForOption = tokens[Parser.SECOND_TOKEN].trim();
         if (argumentForOption.isEmpty()) {
-            throw exceptionToThrow;
+            throw exceptionToThrowOnMissingArgs;
         }
         return new Pair<String, String>(taskDescription, argumentForOption);
     }
@@ -199,22 +181,27 @@ public class Parser {
         case LIST:
             return new ListCommand();
         case DELETE:
-            return new DeleteCommand(Parser.getTaskIndex(commandString, arguments, taskList));
+            return new DeleteCommand(Parser.getTaskIndex(commandString, arguments, taskList,
+                    new MissingTaskNumberForDeleteException()));
         case MARK:
-            return new MarkCommand(Parser.getTaskIndex(commandString, arguments, taskList));
+            return new MarkCommand(Parser.getTaskIndex(commandString, arguments, taskList,
+                    new MissingTaskNumberForMarkException()));
         case UNMARK:
-            return new UnmarkCommand(Parser.getTaskIndex(commandString, arguments, taskList));
+            return new UnmarkCommand(Parser.getTaskIndex(commandString, arguments, taskList,
+                    new MissingTaskNumberForUnmarkException()));
         case TODO:
             return new TodoCommand(Parser.getTodoDescription(arguments));
         case DEADLINE:
             Pair<String, String> descriptionAndDeadline = Parser.getTaskDescriptionAndArgs(
-                    commandString, arguments, Deadline.FLAG_DUE_BY, new MissingDeadlineDueByDateException());
+                    arguments, Deadline.FLAG_DUE_BY,
+                    new MissingDeadlineDescriptionException(), new MissingDeadlineDueByDateException());
             String deadlineDescription = descriptionAndDeadline.first();
             String deadline = descriptionAndDeadline.second();
             return new DeadlineCommand(deadlineDescription, deadline);
         case EVENT:
             Pair<String, String> descriptionAndArgs = Parser.getTaskDescriptionAndArgs(
-                    commandString, arguments, Event.FLAG_START_DATE, new MissingEventStartDateException());
+                    arguments, Event.FLAG_START_DATE,
+                    new MissingEventDescriptionException(), new MissingEventStartDateException());
             String eventDescription = descriptionAndArgs.first();
             String eventArguments = descriptionAndArgs.second();
             Pair<String, String> eventStartAndEnd = Parser.getEventStartAndEndDates(eventArguments);
