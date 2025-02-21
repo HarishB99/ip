@@ -13,7 +13,7 @@
 .button {
     -fx-background-color: rgb(192, 32, 49);
     -fx-text-fill: white;
-    -fx-font: italic bold 16px "Arial";
+    -fx-font: italic bold 20px "Arial";
 }
 
 .button:hover {
@@ -32,8 +32,6 @@
 .scroll-pane .viewport {
     -fx-background-color: transparent;
 }
-
-
 
 .scroll-bar {
     -fx-font-size: 10px;  /* Change width of scroll bar. */

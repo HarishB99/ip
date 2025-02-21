@@ -18,7 +18,6 @@ import javafx.scene.layout.HBox;
  * Controller for DialogBox
  */
 public class DialogBox extends HBox {
-    public static final String REPLY_LABEL_CLASS_NAME = "reply-label";
     @FXML
     private Label dialog;
     @FXML
@@ -36,27 +35,31 @@ public class DialogBox extends HBox {
         }
 
         this.dialog.setText(text);
+        this.dialog.getStyleClass().add(DialogBoxStyleClass.USER.getCssClassName());
         this.displayPicture.setImage(img);
     }
 
     /**
      * Flips the dialog box such that the ImageView is on the left and text is on the right
      */
-    private void flip() {
+    private void flip(DialogBoxStyleClass dialogBoxStyleClass) {
         ObservableList<Node> nodes = FXCollections.observableArrayList(this.getChildren());
         FXCollections.reverse(nodes);
         this.getChildren().setAll(nodes);
+        // this.dialog.getStyleClass().clear();
+        this.dialog.getStyleClass().add(dialogBoxStyleClass.getCssClassName());
         this.setAlignment(Pos.TOP_LEFT);
-        dialog.getStyleClass().add(DialogBox.REPLY_LABEL_CLASS_NAME);
     }
 
-    public static DialogBox getUserDialog(String text, Image img) {
+    public static DialogBox getUserDialogBox(String text, Image img) {
         return new DialogBox(text, img);
     }
 
-    public static DialogBox getChatbotDialog(String text, Image img) {
+    public static DialogBox getChatbotDialogBox(String text, Image img, DialogBoxStyleClass dialogBoxStyleClass) {
         DialogBox db = new DialogBox(text, img);
-        db.flip();
+        // db.getStyleClass().clear();
+        // db.getStyleClass().add(dialogBoxStyleClass.getCssClassName());
+        db.flip(dialogBoxStyleClass);
         return db;
     }
 }

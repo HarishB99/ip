@@ -1,18 +1,43 @@
 .label {
+    -fx-font: 20px "Arial";
+    -fx-border-width: 2px;
+    -fx-padding: 10px;
     -fx-background-color: white;
     -fx-border-color: #e4182e;
-    -fx-font: 16px "Arial";
-    -fx-border-width: 2px;
     -fx-background-radius: 1em 1em 0 1em;
     -fx-border-radius: 1em 1em 0 1em;
-    -fx-padding: 6px;
     -fx-border-insets: 0px 7px 0px 7px;
     -fx-background-insets: 0px 7px 0px 7px;
 }
 
-.reply-label {
+.label-user {
+    -fx-background-color: #3c4157;
+    -fx-text-fill: white;
+    -fx-border-color: #e4182e;
+}
+
+.label-chatbot-normal {
     -fx-background-radius: 1em 1em 1em 0;
     -fx-border-radius: 1em 1em 1em 0;
+    -fx-background-color: white;
+    -fx-text-fill: black;
+    -fx-border-color: #e4182e;
+}
+
+.label-chatbot-annoyed {
+    -fx-background-radius: 1em 1em 1em 0;
+    -fx-border-radius: 1em 1em 1em 0;
+    -fx-background-color: #ffd700;
+    -fx-text-fill: black;
+    -fx-border-color: #e4182e;
+}
+
+.label-chatbot-sad {
+    -fx-background-radius: 1em 1em 1em 0;
+    -fx-border-radius: 1em 1em 1em 0;
+    -fx-background-color: #e4182e;
+    -fx-text-fill: white;
+    -fx-border-color: #e4182e;
 }
 
 #displayPicture {
