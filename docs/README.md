@@ -4,13 +4,40 @@
 
 Bhaymax is a chatbot app that is designed to manage tasks {i.e., to-do items, deadlines and events}.
 
-## Greeting the chatbot (Optional)
+- [Usage](#usage)
+- [Features](#features)
+  - [Greet Chatbot](#greeting-the-chatbot-optional)
+  - [Add To-Do items](#adding-to-do-items-todo)
+  - [Add Deadlines](#adding-deadline-deadline)
+  - [Add Events](#adding-events-event)
+  - [List Tasks and Events](#listing-all-tasks-and-events-list)
+  - [Filter by Date (with/without time)](#filtering-deadlines-and-events-by-date-filter)
+  - [Search using keyword or keyprase](#search-for-tasks-with-description-matching-keywords-search)
+  - [Mark Task as Complete](#marking-a-task-as-completed-mark)
+  - [Mark Task as Incomplete](#marking-a-task-as-_incomplete_-unmark)
+  - [Delete Task](#deleting-a-task-delete)
+  - [Clear Chat](#clear-the-chat-area-clear)
+  - [Exit Chat(bot)](#exiting-the-program-bye-or-exit)
+  - [Editing the data file](#editing-the-data-file)
+
+## Usage
+
+1. Make sure _Java 17_ is installed in your computer.
+2. Bhaymax is available as a Java Archive (`.jar`) file. You can download the latest version from this [URL](https://github.com/HarishB99/ip/releases).
+3. Copy the `.jar` file (downloaded in step 2.) to the folder you want to use as the _home folder_ for the application.
+4. Open a terminal and change your working directory to the folder selected in step 3.
+5. Execute the app by running `java -jar bhaymax.java`
+6. You should see a window similar to the one shown [above](#bhaymax-user-guide).
+
+## Features
+
+### Greeting the chatbot (Optional)
 
 Greets the chatbot. (And the chatbot greets you back!)
 
 Format: `hello` __or__ `hi`
 
-## Adding To-Do Items: `todo`
+### Adding To-Do Items: `todo`
 
 Adds a to-do item to be tracked.
 
@@ -25,7 +52,7 @@ Examples:
 - `todo buy groceries for mother`
 - `todo study`
 
-## Adding Deadline: `deadline`
+### Adding Deadlines: `deadline`
 
 Adds a deadline item to be tracked.
 
@@ -47,7 +74,7 @@ Examples:
   1:00pm
     - `deadline finish essay /by 05/01/2025 13:00`
 
-## Adding Events: `event`
+### Adding Events: `event`
 
 Adds an event to be tracked.
 
@@ -73,13 +100,13 @@ Examples:
     - `event movie screening /from 22/02/2025 13:00 /to
       22/02/2025 15:00`
 
-## Listing all tasks and events: `list`
+### Listing all tasks and events: `list`
 
 Shows a list of all to-do items, deadlines and events created.
 
 Format: `list`
 
-## Filtering deadlines and events by date: `filter`
+### Filtering deadlines and events by date: `filter`
 
 Filters deadlines and events by date.
 
@@ -99,7 +126,23 @@ Explanation of parameters:
       `_time`, then a time is also required for the filter
 - Order of the parameters must be followed strictly.
 
-## Search for tasks with description matching keywords: `search`
+Examples:
+- To filter for deadline and events due by / occurring ___BEFORE___ March 2nd, 2025:
+    - `filter /before 02/03/2025`
+- To filter for deadline and events due by / occurring ___ON___ March 2nd, 2025:
+    - `filter /on 02/03/2025`
+- To filter for deadline and events due by / occurring ___AFTER___ March 2nd, 2025:
+    - `filter /after 02/03/2025`
+- To filter for deadline and events due by / occurring ___BEFORE___ March 2nd, 2025, 11:59pm:
+    - `filter /before_time 02/03/2025 23:59`
+- To filter for deadline and events due by / occurring ___ON___ March 2nd, 2025, 11:59pm:
+    - `filter /on_time 02/03/2025`
+- To filter for deadline and events due by / occurring ___AFTER___ March 2nd, 2025, 11:59pm:
+    - `filter /after_time 02/03/2025 23:59`
+> Note that for the last three examples the `{filter_option}` is suffixed with `_time` as we are specifying the time (alongside the
+> date) to filter the tasks by.
+
+### Search for tasks with description matching keywords: `search`
 
 Searches for a task that has a description matching the provided
 search term.
@@ -115,7 +158,7 @@ Examples:
 - `search buy`
 - `search movie`
 
-## Marking a task as completed: `mark`
+### Marking a task as completed: `mark`
 
 Marks a task (i.e., a to-do item, deadline or event) as
 completed.
@@ -132,7 +175,7 @@ Examples:
 - `mark 1`
 - `mark 23`
 
-## Marking a task as _incomplete_: `unmark`
+### Marking a task as _incomplete_: `unmark`
 
 Marks a task (i.e., a to-do item, deadline or event) as
 incomplete.
@@ -149,7 +192,7 @@ Examples:
 - `unmark 1`
 - `unmark 23`
 
-## Deleting a task: `delete`
+### Deleting a task: `delete`
 
 Removes a task (i.e., a to-do item, deadline or event) from
 getting tracked.
@@ -166,19 +209,19 @@ Examples:
 - `delete 1`
 - `delete 23`
 
-## Clear the chat area: `clear`
+### Clear the chat area: `clear`
 
 Clears the chat (box) area.
 
 Format: `clear`
 
-## Exiting the program: `bye` or `exit`
+### Exiting the program: `bye` or `exit`
 
 Exits the program.
 
 Format: `bye` __or__ `exit`
 
-## Editing the data file
+### Editing the data file
 
 The data file is automatically created when a task is added to the program.
 It is saved at `[JAR file location]/data/tasks.txt`.
