@@ -1,6 +1,6 @@
 # Bhaymax project
 
-This project was made from a template for a greenfield Java project provided in NUS CS2103T, which was named after the Java mascot _Duke_. 
+This project was made from a template for a greenfield Java project provided in NUS CS2103T (see [here](https://github.com/nus-cs2103-AY2425S2/ip)), which was named after the Java mascot _Duke_. 
 Given below are instructions on how to use this project.
 
 ## Setting up in Intellij
